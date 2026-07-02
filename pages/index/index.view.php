@@ -436,7 +436,7 @@
     </div>
 
     <div class="hero-visual anim-scale-up anim-delay-200">
-      <img src="/assets/images/hero-gmicloud.png" alt="<?= __('index_hero_title2') ?>">
+      <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>">
     </div>
   </div>
 

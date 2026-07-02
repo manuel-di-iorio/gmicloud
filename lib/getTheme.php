@@ -1,5 +1,5 @@
 <?php
 
-$theme = isset($_COOKIE["theme"]) ? $_COOKIE["theme"] : "light";
+$theme = isset($_COOKIE["theme"]) ? $_COOKIE["theme"] : "dark";
 
-if ($theme !== "light" && $theme !== "dark") $theme = "light";
+if ($theme !== "light" && $theme !== "dark") $theme = "dark";
