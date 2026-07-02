@@ -384,55 +384,37 @@
   position: relative;
 }
 .process-line::before {
-  content: '';
-  position: absolute;
-  left: 32px;
-  top: 40px;
-  bottom: 40px;
-  width: 2px;
-  transform: translateX(-50%);
-  background: linear-gradient(to bottom, var(--gradient-start, #6366f1), var(--gradient-end, #ec4899));
-  opacity: 0.3;
+  display: none;
 }
 
 .process-step {
   position: relative;
-  padding-left: 80px;
-  margin-bottom: 48px;
+  margin-bottom: 0;
 }
 .process-step:last-child { margin-bottom: 0; }
 
 .process-step__number {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  left: 16px;
+  top: 14px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  display: block;
   font-weight: 800;
-  font-size: 1.3em;
-  color: white;
-  background: linear-gradient(135deg, var(--gradient-start, #6366f1), var(--gradient-end, #ec4899));
-  box-shadow: 0 4px 16px rgba(var(--primary-color-rgb, 99, 102, 241), 0.3);
+  font-size: 0.7em;
+  color: var(--text-color-secondary, #aaa);
+  opacity: 0.5;
+  background: none;
+  box-shadow: none;
 }
 .process-step__number::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--gradient-start, #6366f1), var(--gradient-end, #ec4899));
-  z-index: -1;
-  opacity: 0.2;
-  animation: pulseGlow 2s ease-in-out infinite;
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .process-step { padding-left: 64px; }
-  .process-step__number { width: 48px; height: 48px; font-size: 1em; }
-  .process-line::before { left: 24px; }
+  .process-step { padding-left: 0; }
+  .process-step__number { font-size: 0.7em; }
 }
 
 /* ----------------------------------------------------------
@@ -783,6 +765,66 @@
 .hero-mockup__row:nth-child(3) .hero-mockup__bar-fill { animation-delay: 0.4s; width: 72%; }
 .hero-mockup__row:nth-child(4) .hero-mockup__bar-fill { animation-delay: 0.5s; width: 64%; }
 .hero-mockup__row:nth-child(5) .hero-mockup__bar-fill { animation-delay: 0.6s; width: 55%; }
+
+/* ----------------------------------------------------------
+   Hero game cards (mockup replacement)
+   ---------------------------------------------------------- */
+.hero-game-cards {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  perspective: 1200px;
+}
+
+.game-card {
+  position: absolute;
+  width: 140px;
+  height: 200px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+}
+
+.game-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+}
+
+.game-card--1 { top: 0; left: 10%; transform: rotateY(-15deg) rotateX(5deg) translateZ(0); z-index: 7; background: linear-gradient(135deg, #1a1a3e, #2d1b69); }
+.game-card--2 { top: -20px; left: 30%; transform: rotateY(-8deg) rotateX(3deg) translateZ(-40px); z-index: 6; background: linear-gradient(135deg, #1b3a4b, #0d2137); }
+.game-card--3 { top: 10px; left: 50%; transform: rotateY(0deg) rotateX(2deg) translateZ(-80px); z-index: 5; background: linear-gradient(135deg, #2d1b4e, #1a0a3e); }
+.game-card--4 { top: -10px; right: 25%; transform: rotateY(8deg) rotateX(3deg) translateZ(-40px); z-index: 4; background: linear-gradient(135deg, #3d1b1b, #1a0a0a); }
+.game-card--5 { top: 20px; right: 5%; transform: rotateY(15deg) rotateX(5deg) translateZ(0); z-index: 3; background: linear-gradient(135deg, #1b3d2d, #0a1a12); }
+.game-card--6 { top: 80px; left: 20%; transform: rotateY(-5deg) rotateX(-3deg) translateZ(-120px); z-index: 2; background: linear-gradient(135deg, #2d2d1b, #1a1a0a); opacity: 0.6; }
+.game-card--7 { top: 60px; right: 15%; transform: rotateY(5deg) rotateX(-3deg) translateZ(-120px); z-index: 1; background: linear-gradient(135deg, #1b2d3d, #0a121a); opacity: 0.5; }
+
+.hero-game-cards:hover .game-card--1 { transform: rotateY(-20deg) rotateX(5deg) translateZ(20px); }
+.hero-game-cards:hover .game-card--2 { transform: rotateY(-12deg) rotateX(3deg) translateZ(-20px); }
+.hero-game-cards:hover .game-card--3 { transform: rotateY(0deg) rotateX(2deg) translateZ(-60px); }
+.hero-game-cards:hover .game-card--4 { transform: rotateY(12deg) rotateX(3deg) translateZ(-20px); }
+.hero-game-cards:hover .game-card--5 { transform: rotateY(20deg) rotateX(5deg) translateZ(20px); }
+.hero-game-cards:hover .game-card--6 { transform: rotateY(-8deg) rotateX(-3deg) translateZ(-100px); opacity: 0.7; }
+.hero-game-cards:hover .game-card--7 { transform: rotateY(8deg) rotateX(-3deg) translateZ(-100px); opacity: 0.6; }
+
+@media (max-width: 900px) {
+  .hero-game-cards { display: none; }
+}
 
 /* ----------------------------------------------------------
    Landing responsive
