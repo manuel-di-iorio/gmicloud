@@ -1,7 +1,7 @@
 {
   "html_lang": "fr",
   "cookie_banner_text": "Ce site utilise uniquement des cookies techniques pour vous offrir la meilleure expérience. Nous n'utilisons pas de cookies tiers.",
-  "cookie_banner_link": "Plus d'informations",
+  "cookie_banner_link": "Lire notre politique de cookies",
   "cookie_banner_accept": "Ok",
   "back_tooltip": "Revenir en arrière",
   "footer_about": "Une plateforme de services en ligne pour jeux créée par la communauté GameMaker Italia.",
@@ -36,7 +36,7 @@
   "index_hero_title2": "pour vos jeux.",
   "index_hero_subtitle": "Tout ce dont vous avez besoin pour distribuer, gérer et développer vos jeux avec des performances élevées, la sécurité et des outils professionnels.",
   "index_hero_cta": "Commencer maintenant",
-  "index_hero_docs": "Découvrir plus",
+  "index_hero_docs": "Lire la documentation",
   "index_scroll": "Découvrir",
   "index_theme_toggle": "Changer le thème",
   "index_how_title": "Comment ça marche",

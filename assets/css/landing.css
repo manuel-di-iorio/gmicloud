@@ -178,6 +178,7 @@
   -webkit-text-fill-color: transparent;
   background-size: 200% 200%;
   animation: gradientShift 4s ease infinite;
+  will-change: background-position;
 }
 
 .glass-card {
@@ -333,6 +334,7 @@
   background: linear-gradient(135deg, var(--primary-color), var(--gradient-end, #ec4899), var(--primary-color));
   background-size: 200% 200%;
   animation: gradientShift 4s ease infinite;
+  will-change: background-position;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -563,6 +565,7 @@
     rgba(var(--overlay-color-3, 15, 17, 23), 0.8) 100%);
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
+  will-change: background-position;
   pointer-events: none;
 }
 

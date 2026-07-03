@@ -272,7 +272,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
       require_once(__DIR__ . "/../includes/navbar.php"); 
     } ?>
 
-    <div class="PageContent" <?php if ($isIndexPage || !empty($hidePageHeader)) { echo 'style="margin-left: 0 !important; padding: 0 !important;"'; } ?>>
+    <main class="PageContent" <?php if ($isIndexPage || !empty($hidePageHeader)) { echo 'style="margin-left: 0 !important; padding: 0 !important;"'; } ?>>
       <!-- Header -->
       <?php if (!$isIndexPage && empty($hidePageHeader)) { ?>
         <header id="portfolio" style="padding-bottom:0">
@@ -302,7 +302,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
         require_once(__DIR__ . "/../includes/table-filters.php");
         require_once(__DIR__ . "/../pages/$view/$view.view.php");
       ?>
-    </div>
+    </main>
 
     <!-- Footer -->
     <?php
@@ -320,7 +320,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
     .footer-lang { display: flex; align-items: center; gap: 8px; }
     .footer-lang-link { color: var(--text-color-secondary, #9ca3af); text-decoration: none; font-size: 0.82em; transition: color 0.2s; }
     .footer-lang-link:hover { color: var(--text-color, #e5e7eb); }
-    .footer-lang-link--active { color: var(--primary-color, #6366f1); font-weight: 600; }
+    .footer-lang-link--active { color: #818cf8; font-weight: 600; }
     .footer-lang-sep { color: var(--text-color-secondary, #9ca3af); font-size: 0.82em; opacity: 0.4; }
     .nav-badge {
       display: inline-flex;

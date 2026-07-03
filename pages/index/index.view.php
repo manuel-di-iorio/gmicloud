@@ -235,7 +235,7 @@
   @media (max-width: 500px) { .ProcessStepsGrid { grid-template-columns: 1fr; } }
 
   /* ===== FEATURES ===== */
-  .FeaturesSection { padding: 80px 20px; background: var(--bg-color, white); }
+  .FeaturesSection { padding: 80px 20px; background: var(--section-alt-bg, #f8fafc); }
   .FeaturesGrid {
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 20px; max-width: 1100px; margin: 0 auto;
@@ -352,7 +352,7 @@
   .CtaCard h4 { font-size: 1.5em; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
   .CtaCard p { font-size: 0.95em; opacity: 0.85; line-height: 1.6; margin-bottom: 28px; }
   .CtaCard .CtaButton {
-    background: white !important; color: var(--gradient-start, #6366f1) !important;
+    background: white !important; color: #3730a3 !important;
     display: inline-flex; align-items: center; gap: 8px;
     text-decoration: none; padding: 14px 28px; font-weight: 700;
   }
@@ -436,7 +436,7 @@
     </div>
 
     <div class="hero-visual anim-scale-up anim-delay-200">
-      <img src="/assets/images/hero-image.webp" alt="<?= __('index_hero_title2') ?>">
+      <img src="/assets/images/hero-image.webp" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
     </div>
   </div>
 
