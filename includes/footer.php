@@ -17,7 +17,7 @@ $footerMarginLeft = $footerMarginLeft ?? '0!important';
 <footer class="modern-footer PageContentFooter" style="margin-left:<?= $footerMarginLeft ?>">
   <div class="footer-content">
     <div class="footer-section about">
-      <a href="/"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="footer-logo" alt="Logo"></a>
+      <a href="/"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="footer-logo" alt="Logo" width="451" height="109"></a>
       <p><?= __("footer_about") ?></p>
       <p>&copy; <?= date("Y") ?> GameMaker Italia. <?= __("footer_copyright") ?></p>
     </div>

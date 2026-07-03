@@ -389,7 +389,7 @@
 <!-- ===== STICKY HEADER ===== -->
 <header class="landing-header" role="banner">
   <a href="./index.php" class="header-logo">
-    <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Logo">
+    <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Logo" width="451" height="109">
   </a>
   <nav class="header-nav">
     <a href="#come-funziona" class="nav-link-underline"><?= __('index_nav_how') ?></a>
@@ -411,7 +411,7 @@
 
 <!-- ===== HERO ===== -->
 <div class="HomeBanner">
-  <img src="/assets/images/logoWhite.svg" class="hero-logo" alt="Logo">
+  <img src="/assets/images/logoWhite.svg" class="hero-logo" alt="Logo" width="451" height="109">
   <div id="hero-particles"></div>
 
   <div class="hero-inner">
