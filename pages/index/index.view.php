@@ -595,8 +595,6 @@
         "players" => "fas fa-users",
         "games" => "fas fa-gamepad",
         "active-games" => "fas fa-bolt",
-        "top-game" => "fas fa-trophy",
-        "dev-with-more-games" => "fas fa-user-astronaut",
         "unique-scores-countries" => "fas fa-globe-americas",
         "users" => "fas fa-code"
       ];
