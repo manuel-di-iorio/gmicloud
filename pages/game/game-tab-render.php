@@ -27,7 +27,7 @@ switch ($activeTab) {
       ['name' => 'player', 'label' => __('bans_filter_player'), 'type' => 'text', 'placeholder' => __('bans_filter_player_placeholder')],
       ['name' => 'banned', 'label' => __('game_players_filter_banned'), 'type' => 'select', 'options' => ['0' => __('game_players_filter_banned_no'), '1' => __('game_players_filter_banned_yes')]],
     ];
-    render_table_filters($playerFilters, ['reset_preserve' => ['sort', 'dir']]);
+    render_table_filters($playerFilters, ['reset_preserve' => ['id', 'tab', 'sort', 'dir']]);
 
     if (!empty($playersData)) {
       $tableColumns = [
@@ -190,17 +190,17 @@ function performPlayerAction() {
     echo ui_button(__('leaderboards_create_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]);
     echo '</div>';
 
+    $lbFilters = [
+      ['name' => 'name', 'label' => __('leaderboards_filter_name'), 'type' => 'text', 'placeholder' => __('leaderboards_filter_placeholder')],
+    ];
+    $lbBaseUrl = "game.php?id=$gameId&tab=leaderboards&ajax=1";
+    render_table_filters($lbFilters, ['reset_preserve' => ['id', 'tab', 'sort', 'dir']]);
+
     if (!empty($leaderboards)) {
       foreach ($leaderboards as &$row) {
         $row["_created_at_pretty"] = date("H:i:s - d/m/Y", strtotime($row["created_at"]));
       }
       unset($row);
-
-      $lbFilters = [
-        ['name' => 'name', 'label' => __('leaderboards_filter_name'), 'type' => 'text', 'placeholder' => __('leaderboards_filter_placeholder')],
-      ];
-      $lbBaseUrl = "game.php?id=$gameId&tab=leaderboards&ajax=1";
-      render_table_filters($lbFilters, ['reset_preserve' => ['sort', 'dir']]);
 
       $tableColumns = [
         [
@@ -284,14 +284,24 @@ function performPlayerAction() {
       ];
 
       render_table($leaderboards, $tableColumns, $tableActions, $tableOptions);
-    } else { ?>
-      <div class="internal-empty">
-        <i class="fas fa-trophy"></i>
-        <h4><?= __('leaderboards_empty_title') ?></h4>
-        <p><?= __('leaderboards_empty_desc') ?></p>
-        <?= ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]) ?>
-      </div>
-    <?php }
+    } else {
+      $hasFilter = ($lbNameFilter && $lbNameFilter !== '');
+      if ($hasFilter) { ?>
+        <div class="internal-empty">
+          <i class="fas fa-search"></i>
+          <h4><?= __('leaderboards_empty_filter_title') ?></h4>
+          <p><?= __('leaderboards_empty_filter_desc') ?></p>
+          <?= ui_button(__('leaderboards_empty_filter_btn'), 'primary', 'md', ['attrs' => ['onclick' => "window.location.href='game.php?id=$gameId&tab=leaderboards'"]]) ?>
+        </div>
+      <?php } else { ?>
+        <div class="internal-empty">
+          <i class="fas fa-trophy"></i>
+          <h4><?= __('leaderboards_empty_title') ?></h4>
+          <p><?= __('leaderboards_empty_desc') ?></p>
+          <?= ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]) ?>
+        </div>
+      <?php }
+    }
     echo '</div>';
 
     echo '<script>
