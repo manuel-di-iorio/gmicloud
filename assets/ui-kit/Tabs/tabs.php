@@ -5,7 +5,7 @@ function ui_tabs($tabs, $options = []) {
   $activeTab = $options['active'] ?? ($tabs[0]['id'] ?? '');
 
   $html = '<div class="ui-tabs flex flex-col gap-0 ' . htmlspecialchars($class) . '">';
-  $html .= '<div class="ui-tabs__nav flex gap-0.5 overflow-x-auto relative" role="tablist">';
+  $html .= '<div class="ui-tabs__nav flex flex-wrap gap-0.5 relative" role="tablist">';
 
   foreach ($tabs as $i => $tab) {
     $tabId = $tab['id'] ?? 'tab-' . $i;

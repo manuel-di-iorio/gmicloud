@@ -18,8 +18,6 @@
   pointer-events: none;
 }
 
-.ui-tabs__nav::-webkit-scrollbar { display: none; }
-.ui-tabs__nav { scrollbar-width: none; -ms-overflow-style: none; }
 
 .ui-tabs__btn::after {
   content: '';
