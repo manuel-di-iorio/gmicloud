@@ -308,7 +308,7 @@
     pointer-events: none;
   }
   .StatCardContainer {
-    display: grid; grid-template-columns: repeat(8, 1fr);
+    display: grid; grid-template-columns: repeat(6, 1fr);
     gap: 16px; max-width: 1200px; margin: 0 auto; position: relative;
   }
   .StatCard {
@@ -329,7 +329,7 @@
   }
   .StatCard__Label { font-size: 0.72em; color: var(--text-color-secondary, #555); line-height: 1.3; }
 
-  @media (max-width: 1100px) { .StatCardContainer { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 1100px) { .StatCardContainer { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 600px) { .StatCardContainer { grid-template-columns: repeat(2, 1fr); } }
 
   /* ===== FAQ + CTA ===== */
