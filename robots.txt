@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /login.php
+Disallow: /logout.php
+Disallow: /switch-theme.php
+Disallow: /switch-lang.php
+Disallow: /migrate.php
+
+Sitemap: https://gmicloud.altervista.org/sitemap.xml
