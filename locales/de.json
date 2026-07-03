@@ -102,7 +102,7 @@
   "index_service3_title": "Spieler-Login",
   "index_service3_desc": "Bieten Sie Ihren Spielern eine sichere Identität mit integrierter Authentifizierung.",
   "index_service4_title": "Offline Sync",
-  "index_service4_desc": "Offline-Sync für Ihre Daten. Operationen werden lokal in die Warteschlange gestellt und automatisch gesendet, wenn die Verbindung wiederhergestellt ist.",
+  "index_service4_desc": "Operationen werden lokal in die Warteschlange gestellt und automatisch gesendet, wenn die Verbindung wiederhergestellt ist.",
   "index_stats_title1": "Die Community in",
   "index_stats_title2": "Zahlen",
   "index_stats_subtitle": "",

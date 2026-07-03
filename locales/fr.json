@@ -79,7 +79,7 @@
   "index_service3_title": "Connexion des joueurs",
   "index_service3_desc": "Offrez à vos joueurs une identité sécurisée avec une authentification intégrée.",
   "index_service4_title": "Offline Sync",
-  "index_service4_desc": "Synchronisation hors ligne pour vos données. Les opérations sont mises en file d'attente localement et envoyées automatiquement lorsque la connexion est rétablie.",
+  "index_service4_desc": "Les opérations sont mises en file d'attente localement et envoyées automatiquement lorsque la connexion est rétablie.",
   "index_stats_title1": "La communauté en",
   "index_stats_title2": "chiffres",
   "index_stats_subtitle": "",

@@ -79,7 +79,7 @@
   "index_service3_title": "Player Login",
   "index_service3_desc": "Give your players a secure identity with built-in authentication.",
   "index_service4_title": "Offline Sync",
-  "index_service4_desc": "Offline sync for your data. Operations are queued locally and sent automatically when connectivity is restored.",
+  "index_service4_desc": "Operations are queued locally and sent automatically when connectivity is restored.",
   "index_stats_title1": "The community in",
   "index_stats_title2": "numbers",
   "index_stats_subtitle": "",

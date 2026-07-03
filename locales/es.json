@@ -79,7 +79,7 @@
   "index_service3_title": "Inicio de sesión de jugadores",
   "index_service3_desc": "Ofrece a tus jugadores una identidad segura con autenticación integrada.",
   "index_service4_title": "Offline Sync",
-  "index_service4_desc": "Sincronización offline para tus datos. Las operaciones se encolan localmente y se envían automáticamente cuando se restaura la conectividad.",
+  "index_service4_desc": "Las operaciones se encolan localmente y se envían automáticamente cuando se restaura la conectividad.",
   "index_stats_title1": "La comunidad en",
   "index_stats_title2": "números",
   "index_stats_subtitle": "",
