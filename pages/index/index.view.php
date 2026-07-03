@@ -228,7 +228,7 @@
     padding: 0; line-height: 1;
   }
   .process-step .process-step__number::after { display: none !important; }
-  .process-step h5 { font-size: 1em; font-weight: 700; margin-bottom: 8px; color: var(--text-color-headings, #333); }
+  .process-step h3 { font-size: 1em; font-weight: 700; margin-bottom: 8px; color: var(--text-color-headings, #333); }
   .process-step p { font-size: 0.85em; color: var(--text-color-secondary, #666); line-height: 1.6; margin: 0; }
 
   @media (max-width: 900px) { .ProcessStepsGrid { grid-template-columns: repeat(2, 1fr); } }
@@ -259,7 +259,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.2em; color: var(--primary-color, #6366f1); margin-bottom: 16px;
   }
-  .FeatureCard h5 { font-size: 1em; font-weight: 700; color: var(--text-color-headings, #333); margin-bottom: 8px; }
+  .FeatureCard h3 { font-size: 1.1em; font-weight: 700; color: var(--text-color-headings, #333); margin-bottom: 8px; }
   .FeatureCard p { font-size: 0.85em; color: var(--text-color-secondary, #555); line-height: 1.6; }
 
   @media (max-width: 900px) { .FeaturesGrid { grid-template-columns: repeat(2, 1fr); } }
@@ -287,7 +287,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.4em; color: var(--primary-color, #6366f1);
   }
-  .ServiceCard h5 { font-size: 1.05em; font-weight: 700; color: var(--text-color-headings, #333); margin-bottom: 10px; }
+  .ServiceCard h3 { font-size: 1.05em; font-weight: 700; color: var(--text-color-headings, #333); margin-bottom: 10px; }
   .ServiceCard p { font-size: 0.88em; color: var(--text-color-secondary, #555); line-height: 1.6; }
 
   @media (max-width: 900px) { .ServicesGrid { grid-template-columns: repeat(2, 1fr); } }
@@ -349,7 +349,7 @@
     font-size: 0.72em; letter-spacing: 2px; text-transform: uppercase;
     opacity: 0.7; margin-bottom: 12px; font-weight: 600;
   }
-  .CtaCard h4 { font-size: 1.5em; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+  .CtaCard h3 { font-size: 1.5em; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
   .CtaCard p { font-size: 0.95em; opacity: 0.85; line-height: 1.6; margin-bottom: 28px; }
   .CtaCard .CtaButton {
     background: white !important; color: #3730a3 !important;
@@ -470,25 +470,25 @@
     <div class="process-step fade-in-up-on-scroll">
       <div class="process-step__number">1</div>
       <div class="process-step__icon"><i class="fas fa-gamepad"></i></div>
-      <h5><?= __('index_step1_title') ?></h5>
+      <h3><?= __('index_step1_title') ?></h3>
       <p><?= __('index_step1_desc') ?></p>
     </div>
     <div class="process-step fade-in-up-on-scroll anim-delay-100">
       <div class="process-step__number">2</div>
       <div class="process-step__icon"><i class="fas fa-puzzle-piece"></i></div>
-      <h5><?= __('index_step2_title') ?></h5>
+      <h3><?= __('index_step2_title') ?></h3>
       <p><?= __('index_step2_desc') ?></p>
     </div>
     <div class="process-step fade-in-up-on-scroll anim-delay-200">
       <div class="process-step__number">3</div>
       <div class="process-step__icon"><i class="fas fa-cloud"></i></div>
-      <h5><?= __('index_step3_title') ?></h5>
+      <h3><?= __('index_step3_title') ?></h3>
       <p><?= __('index_step3_desc') ?></p>
     </div>
     <div class="process-step fade-in-up-on-scroll anim-delay-300">
       <div class="process-step__number">4</div>
       <div class="process-step__icon"><i class="fas fa-chart-bar"></i></div>
-      <h5><?= __('index_step4_title') ?></h5>
+      <h3><?= __('index_step4_title') ?></h3>
       <p><?= __('index_step4_desc') ?></p>
     </div>
   </div>
@@ -508,49 +508,49 @@
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-cogs"></i></div>
-      <h5><?= __('index_feature1_title') ?></h5>
+      <h3><?= __('index_feature1_title') ?></h3>
       <p><?= __('index_feature1_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-expand-arrows-alt"></i></div>
-      <h5><?= __('index_feature2_title') ?></h5>
+      <h3><?= __('index_feature2_title') ?></h3>
       <p><?= __('index_feature2_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-shield-alt"></i></div>
-      <h5><?= __('index_feature3_title') ?></h5>
+      <h3><?= __('index_feature3_title') ?></h3>
       <p><?= __('index_feature3_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-server"></i></div>
-      <h5><?= __('index_feature4_title') ?></h5>
+      <h3><?= __('index_feature4_title') ?></h3>
       <p><?= __('index_feature4_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-tachometer-alt"></i></div>
-      <h5><?= __('index_feature5_title') ?></h5>
+      <h3><?= __('index_feature5_title') ?></h3>
       <p><?= __('index_feature5_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-users"></i></div>
-      <h5><?= __('index_feature6_title') ?></h5>
+      <h3><?= __('index_feature6_title') ?></h3>
       <p><?= __('index_feature6_desc') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fab fa-github"></i></div>
-      <h5><?= __('index_feature7_title') ?></h5>
+      <h3><?= __('index_feature7_title') ?></h3>
       <p><?= __('index_feature7_desc1') ?> <a href="https://github.com/manuel-di-iorio/gmicloud" style="color:var(--primary-color);"><?= __('index_feature7_github') ?></a>. <?= __('index_feature7_desc2') ?></p>
     </div>
     <div class="FeatureCard fade-in-up-on-scroll tilt-card">
       <div class="tilt-card__shine"></div>
       <div class="FeatureCard__Icon"><i class="fas fa-rocket"></i></div>
-      <h5><?= __('index_feature8_title') ?></h5>
+      <h3><?= __('index_feature8_title') ?></h3>
       <p><?= __('index_feature8_desc') ?></p>
     </div>
   </div>
@@ -563,22 +563,22 @@
   <div class="ServicesGrid">
     <div class="ServiceCard fade-in-up-on-scroll">
       <div class="ServiceCard__Icon"><i class="fas fa-trophy"></i></div>
-      <h5><?= __('index_service1_title') ?></h5>
+      <h3><?= __('index_service1_title') ?></h3>
       <p><?= __('index_service1_desc') ?></p>
     </div>
     <div class="ServiceCard fade-in-up-on-scroll anim-delay-100">
       <div class="ServiceCard__Icon"><i class="fas fa-chart-pie"></i></div>
-      <h5><?= __('index_service2_title') ?></h5>
+      <h3><?= __('index_service2_title') ?></h3>
       <p><?= __('index_service2_desc') ?></p>
     </div>
     <div class="ServiceCard fade-in-up-on-scroll anim-delay-200">
       <div class="ServiceCard__Icon"><i class="fas fa-user-shield"></i></div>
-      <h5><?= __('index_service3_title') ?></h5>
+      <h3><?= __('index_service3_title') ?></h3>
       <p><?= __('index_service3_desc') ?></p>
     </div>
     <div class="ServiceCard fade-in-up-on-scroll anim-delay-300">
       <div class="ServiceCard__Icon"><i class="fas fa-cloud-upload-alt"></i></div>
-      <h5><?= __('index_service4_title') ?></h5>
+      <h3><?= __('index_service4_title') ?></h3>
       <p><?= __('index_service4_desc') ?></p>
     </div>
   </div>
@@ -655,7 +655,7 @@
 
     <div class="CtaCard">
       <div class="CtaCard__Label"><?= __('index_cta_card_label') ?></div>
-      <h4><?= __('index_cta_title1') ?> <span style="opacity:0.9;"><?= __('index_cta_title2') ?></span></h4>
+      <h3><?= __('index_cta_title1') ?> <span style="opacity:0.9;"><?= __('index_cta_title2') ?></span></h3>
       <p><?= __('index_cta_desc') ?></p>
       <a href="<?= isset($user) ? './home.php' : './add-game.php' ?>" class="CtaButton">
         <?= __('index_cta_button') ?> <i class="fas fa-arrow-right"></i>
