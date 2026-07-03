@@ -32,7 +32,7 @@
   top: calc(100% + 4px);
   right: 0;
   min-width: 200px;
-  background: var(--bg-surface-card, #fff);
+  background: var(--bg-color-card, #fff);
   border: 1px solid var(--border-color, #e5e7eb);
   border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.08);

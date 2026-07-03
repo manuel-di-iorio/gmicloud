@@ -239,3 +239,10 @@ textarea.internal-input {
   color: #dc2626;
   background: rgba(220,38,38,0.08);
 }
+
+/* Dark mode calendar picker icon */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.dark input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.9);
+}

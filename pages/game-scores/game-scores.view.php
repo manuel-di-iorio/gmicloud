@@ -172,10 +172,12 @@
     render_table($scores, $tableColumns, $tableActions, $tableOptions);
 
   } else {
-    // Controlla se sono stati applicati filtri
+    // Controlla se sono stati applicati filtri (escludi sempre-presenti)
     $filtersApplied = false;
+    $skipFilterKeys = ['leaderboard_id', 'env'];
     if (isset($filters) && is_array($filters)) {
-      foreach ($filters as $fv) {
+      foreach ($filters as $fk => $fv) {
+        if (in_array($fk, $skipFilterKeys, true)) continue;
         if ($fv !== null && $fv !== '') { $filtersApplied = true; break; }
       }
     }
