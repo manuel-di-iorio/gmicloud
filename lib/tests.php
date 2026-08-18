@@ -1505,6 +1505,132 @@ assertTest(
 clearScores();
 
 // =========================================================================
+// LEGACY ENDPOINT TESTS — /api/v1/list.php and /api/v1/add.php
+// =========================================================================
+echo "</ul></section>\n<section>\n<h2>LEGACY ENDPOINTS &mdash; /api/v1/add.php &amp; /api/v1/list.php</h2>\n<ul>\n";
+
+function legacyAddUrl($params = []) {
+  global $config;
+  $query = http_build_query($params);
+  return $config["host"] . "/api/v1/add.php" . ($query ? "?$query" : "");
+}
+
+function legacyListUrl($params = []) {
+  global $config;
+  $query = http_build_query($params);
+  return $config["host"] . "/api/v1/list.php" . ($query ? "?$query" : "");
+}
+
+// 1. Legacy add: minimal valid request → 200
+clearScores(); clearRateLimit();
+$t0 = microtime(true);
+$resp = rawRequest("POST", legacyAddUrl(), [
+  "game" => $gameId, "score" => $score, "player" => $player,
+  "hash" => computeAddHash(),
+]);
+$lastTestTime = microtime(true) - $t0;
+assertTest(
+  "legacy add: minimal valid request → 200",
+  isset($resp["status"]) && $resp["status"] === 200,
+  "got " . json_encode($resp)
+);
+
+// 2. Legacy add: score is in response
+assertTest(
+  "legacy add: response contains scoreAction",
+  isset($resp["scoreAction"]),
+  "got " . json_encode($resp)
+);
+
+// 3. Legacy add: invalid hash → 401
+clearScores(); clearRateLimit();
+$resp = rawRequest("POST", legacyAddUrl(), [
+  "game" => $gameId, "score" => $score, "player" => $player,
+  "hash" => "badhash",
+]);
+assertTest(
+  "legacy add error: invalid hash → 401",
+  isset($resp["status"]) && $resp["status"] === 401,
+  "got " . json_encode($resp)
+);
+
+// 4. Legacy add: missing hash → 400
+clearScores(); clearRateLimit();
+$resp = rawRequest("POST", legacyAddUrl(), [
+  "game" => $gameId, "score" => $score, "player" => $player,
+]);
+assertTest(
+  "legacy add error: missing hash → 400",
+  isset($resp["status"]) && $resp["status"] === 400,
+  "got " . json_encode($resp)
+);
+
+// 5. Legacy add: GET method not allowed → error
+clearRateLimit();
+$resp = rawRequest("GET", legacyAddUrl());
+assertTest(
+  "legacy add error: GET method not allowed",
+  !isset($resp["status"]) || $resp["status"] !== 200,
+  "got " . json_encode($resp)
+);
+
+// 6. Legacy list: minimal valid request → 200
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", legacyListUrl(["game" => $gameId]));
+assertTest(
+  "legacy list: minimal valid request → 200",
+  isset($resp["status"]) && $resp["status"] === 200,
+  "got " . json_encode($resp)
+);
+
+// 7. Legacy list: response has scores array
+assertTest(
+  "legacy list: response contains scores array",
+  isset($resp["scores"]) && is_array($resp["scores"]),
+  "got " . json_encode($resp)
+);
+
+// 8. Legacy list: inserted score is visible
+clearScores(); clearRateLimit();
+rawRequest("POST", legacyAddUrl(), [
+  "game" => $gameId, "score" => 777, "player" => $player,
+  "hash" => computeAddHash(["score" => 777]),
+]);
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", legacyListUrl(["game" => $gameId]));
+$found = false;
+if (isset($resp["scores"]) && is_array($resp["scores"])) {
+  foreach ($resp["scores"] as $s) {
+    if ((float)($s["score"] ?? 0) === 777.0) { $found = true; break; }
+  }
+}
+assertTest(
+  "legacy list: score inserted via legacy add is visible",
+  $found,
+  "got scores=" . json_encode($resp["scores"] ?? null)
+);
+
+// 9. Legacy list: missing game → 400
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", legacyListUrl());
+assertTest(
+  "legacy list error: missing game → 400",
+  isset($resp["status"]) && $resp["status"] === 400,
+  "got " . json_encode($resp)
+);
+
+// 10. Legacy list: non-existent game → 404
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", legacyListUrl(["game" => 99999]));
+assertTest(
+  "legacy list error: non-existent game → 404",
+  isset($resp["status"]) && $resp["status"] === 404,
+  "got " . json_encode($resp)
+);
+
+clearScores();
+
+// =========================================================================
 // Cleanup & Summary
 // =========================================================================
 clearAllScores();
