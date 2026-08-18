@@ -514,7 +514,7 @@
   "docs_response_example": "Exemple de réponse :",
   "docs_note1": "Remarque 1 : si 'sign' a été utilisé lors de l'envoi, chaque score aura également la clé 'sign'.",
   "docs_note2": "Remarque 2 : playerScore sera null si le paramètre 'includePlayer' n'a pas été spécifié.",
-  "docs_note_list_pagination": "Remarque 3 : 'count' est le nombre total de résultats disponibles avec les filtres actuels ; utilisez-le avec 'limit' et 'page' pour construire la pagination.",
+  "docs_note_list_pagination": "Remarque 3 : 'count' est le nombre total de résultats disponibles avec les filtres actuels ; utilisez 'limit', 'page' et 'pages' pour construire la pagination.",
   "docs_example_gms2": "Exemple avec GameMaker Studio",
   "docs_code_create_comment": "À mettre dans l'événement 'Create' d'un objet.",
   "docs_code_request_comment": "Ceci effectue la requête pour récupérer les scores",

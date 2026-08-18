@@ -514,7 +514,7 @@
   "docs_response_example": "Ejemplo de respuesta:",
   "docs_note1": "Nota 1: si se usó 'sign' en el envío, cada puntuación también tendrá la clave 'sign'.",
   "docs_note2": "Nota 2: playerScore será null si no se especificó el parámetro 'includePlayer'.",
-  "docs_note_list_pagination": "Nota 3: 'count' es el número total de resultados disponibles con los filtros actuales; úsalo junto con 'limit' y 'page' para construir la paginación.",
+  "docs_note_list_pagination": "Nota 3: 'count' es el número total de resultados disponibles con los filtros actuales; usa 'limit', 'page' y 'pages' para construir la paginación.",
   "docs_example_gms2": "Ejemplo con GameMaker Studio",
   "docs_code_create_comment": "Poner en el evento 'Create' de un objeto.",
   "docs_code_request_comment": "Esto realiza la solicitud para obtener puntuaciones",

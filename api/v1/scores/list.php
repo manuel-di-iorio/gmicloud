@@ -137,6 +137,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $totalCount = Score::countSortedByGameId($gameId, $leaderboardId, $playerIdOrName, $startTime, $endTime, $envFilter);
+$totalPages = $limit > 0 ? (int)ceil($totalCount / $limit) : 0;
 
 $resp = [
   "status" => 200,
@@ -144,6 +145,7 @@ $resp = [
   "limit" => $limit,
   "page" => $page,
   "count" => $totalCount,
+  "pages" => $totalPages,
   "playerScore" => NULL
 ];
 

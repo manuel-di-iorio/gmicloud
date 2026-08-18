@@ -577,7 +577,7 @@
               <button class="copy-code-btn" onclick="copyBlockContent(this)" data-tippy-content="Copia codice">
                 <i class="far fa-copy"></i>
               </button>
-              <div class="code-block jsHigh">{<br/>&nbsp;&nbsp;"status": 200,<br/>&nbsp;&nbsp;"scores": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{ "player_id": 130, "username": "Freank", "score": 2000, "created_at": "2020-05-03 08:58:12" },<br/>&nbsp;&nbsp;&nbsp;&nbsp;{ "player_id": 54, "username": "Jak", "score": 1200, "created_at": "2020-05-04 22:20:20" }<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"limit": 10,<br/>&nbsp;&nbsp;"page": 0,<br/>&nbsp;&nbsp;"count": 245,<br/>&nbsp;&nbsp;"playerScore": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"player_id": 75,<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "Rolando",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"score": 1000,<br/>&nbsp;&nbsp;&nbsp;&nbsp;"position": 1<br/>&nbsp;&nbsp;}<br/>}</div>
+              <div class="code-block jsHigh">{<br/>&nbsp;&nbsp;"status": 200,<br/>&nbsp;&nbsp;"scores": [<br/>&nbsp;&nbsp;&nbsp;&nbsp;{ "player_id": 130, "username": "Freank", "score": 2000, "created_at": "2020-05-03 08:58:12" },<br/>&nbsp;&nbsp;&nbsp;&nbsp;{ "player_id": 54, "username": "Jak", "score": 1200, "created_at": "2020-05-04 22:20:20" }<br/>&nbsp;&nbsp;],<br/>&nbsp;&nbsp;"limit": 10,<br/>&nbsp;&nbsp;"page": 0,<br/>&nbsp;&nbsp;"count": 13,<br/>&nbsp;&nbsp;"pages": 2,<br/>&nbsp;&nbsp;"playerScore": {<br/>&nbsp;&nbsp;&nbsp;&nbsp;"player_id": 75,<br/>&nbsp;&nbsp;&nbsp;&nbsp;"username": "Rolando",<br/>&nbsp;&nbsp;&nbsp;&nbsp;"score": 1000,<br/>&nbsp;&nbsp;&nbsp;&nbsp;"position": 1<br/>&nbsp;&nbsp;}<br/>}</div>
             </div>
           </div>
 
