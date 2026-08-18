@@ -144,8 +144,8 @@ $resp = [
   "scores" => $scores,
   "limit" => $limit,
   "page" => $page,
-  "count" => $totalCount,
   "pages" => $totalPages,
+  "count" => $totalCount,
   "playerScore" => NULL
 ];
 
