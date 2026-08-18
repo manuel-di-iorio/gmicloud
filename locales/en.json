@@ -309,6 +309,8 @@
   "scores_modal_add_mode_higher": "Only if higher than previous (higher)",
   "scores_modal_add_mode_lower": "Only if lower than previous (lower)",
   "scores_modal_add_env": "Environment",
+  "scores_modal_add_country": "Country (optional)",
+  "scores_modal_add_country_placeholder": "e.g. Italy, France, Germany...",
   "scores_modal_add_cancel": "Cancel",
   "scores_modal_add_submit": "Insert",
   "scores_modal_delete_selected_title": "Confirm deletion",

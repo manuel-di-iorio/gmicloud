@@ -63,7 +63,7 @@ if (!is_null($insertMode) && $insertMode !== "higher" && $insertMode !== "lower"
 }
 
 $ip = NULL;
-$country = NULL;
+$country = isset($_POST["country"]) && $_POST["country"] !== '' ? (string)$_POST["country"] : NULL;
 
 [
   "scoreId" => $scoreId,

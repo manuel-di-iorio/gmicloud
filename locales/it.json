@@ -309,6 +309,8 @@
   "scores_modal_add_mode_higher": "Solo se maggiore del precedente (higher)",
   "scores_modal_add_mode_lower": "Solo se minore del precedente (lower)",
   "scores_modal_add_env": "Ambiente",
+  "scores_modal_add_country": "Nazione (opzionale)",
+  "scores_modal_add_country_placeholder": "es. Italia, France, Germany...",
   "scores_modal_add_cancel": "Annulla",
   "scores_modal_add_submit": "Inserisci",
   "scores_modal_delete_selected_title": "Conferma eliminazione",
