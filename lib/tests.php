@@ -1631,6 +1631,87 @@ assertTest(
 clearScores();
 
 // =========================================================================
+// LEGACY PROXY CHAIN — /proxy.php?path=api/v1/... (simula vecchio server)
+// =========================================================================
+echo "</ul></section>\n<section>\n<h2>LEGACY PROXY CHAIN &mdash; via proxy.php (old-server simulation)</h2>\n<ul>\n";
+
+function proxyUrl($path, $params = []) {
+  global $config;
+  $query = http_build_query(array_merge(["path" => $path], $params));
+  return $config["host"] . "/proxy.php?" . $query;
+}
+
+// 1. Proxy list: game param forwarded → 200
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", proxyUrl("api/v1/list.php", ["game" => $gameId]));
+assertTest(
+  "proxy list: game param forwarded correctly → 200",
+  isset($resp["status"]) && $resp["status"] === 200,
+  "got " . json_encode($resp)
+);
+
+// 2. Proxy list: scores array present
+assertTest(
+  "proxy list: response contains scores array",
+  isset($resp["scores"]) && is_array($resp["scores"]),
+  "got " . json_encode($resp)
+);
+
+// 3. Proxy list via scores/ subpath still works
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", proxyUrl("api/v1/scores/list.php", ["game" => $gameId]));
+assertTest(
+  "proxy list: scores/ subpath also routed correctly → 200",
+  isset($resp["status"]) && $resp["status"] === 200,
+  "got " . json_encode($resp)
+);
+
+// 4. Proxy add: POST body forwarded → 200
+clearScores(); clearRateLimit();
+$resp = rawRequest("POST", proxyUrl("api/v1/add.php", ["_method" => "POST"]), [
+  "game" => $gameId, "score" => $score, "player" => $player,
+  "hash" => computeAddHash(),
+]);
+assertTest(
+  "proxy add: POST body forwarded → 200",
+  isset($resp["status"]) && $resp["status"] === 200,
+  "got " . json_encode($resp)
+);
+
+// 5. Proxy add: score inserted via proxy is visible in list
+clearRateLimit("get_scores");
+$resp = rawRequest("GET", proxyUrl("api/v1/list.php", ["game" => $gameId]));
+$found = false;
+if (isset($resp["scores"]) && is_array($resp["scores"])) {
+  foreach ($resp["scores"] as $s) {
+    if ((float)($s["score"] ?? 0) === (float)$score) { $found = true; break; }
+  }
+}
+assertTest(
+  "proxy add: inserted score visible via proxy list",
+  $found,
+  "got scores=" . json_encode($resp["scores"] ?? null)
+);
+
+// 6. Proxy: path outside api/ → 404
+$resp = rawRequest("GET", proxyUrl("lib/db.php"));
+assertTest(
+  "proxy: path outside api/ rejected → 404",
+  !isset($resp["status"]) || $resp["status"] !== 200,
+  "got http response (should be 404)"
+);
+
+// 7. Proxy: missing path → 400
+$resp = rawRequest("GET", $config["host"] . "/proxy.php");
+assertTest(
+  "proxy: missing path param → 400/404",
+  !isset($resp["status"]) || $resp["status"] !== 200,
+  "got " . json_encode($resp)
+);
+
+clearScores();
+
+// =========================================================================
 // Cleanup & Summary
 // =========================================================================
 clearAllScores();
