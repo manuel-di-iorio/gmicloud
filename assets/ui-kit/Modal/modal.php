@@ -12,7 +12,7 @@ function ui_modal($id, $options = []) {
 
   $widthClass = $sizeWidths[$size] ?? $sizeWidths['md'];
 
-  $html = '<div id="' . htmlspecialchars($id) . '" class="ui-modal-overlay items-center justify-center bg-black/50" onclick="if (event.target === this) closeModal(\'' . htmlspecialchars($id) . '\')">';
+  $html = '<div id="' . htmlspecialchars($id) . '" class="ui-modal-overlay items-center justify-center bg-black/50" onmousedown="if (event.target === this) this._dismissOnMouseup = true;" onmouseup="if (this._dismissOnMouseup && event.target === this) { this._dismissOnMouseup = false; closeModal(\'' . htmlspecialchars($id) . '\'); } else { this._dismissOnMouseup = false; }">';
   $html .= '<div class="ui-modal bg-surface-card rounded-2xl shadow-2xl w-full ' . $widthClass . ' flex flex-col overflow-hidden ' . htmlspecialchars($class) . '">';
 
   if ($title) {
