@@ -119,13 +119,11 @@ function banPlayer() {
 }
 
 // MODAL: Ban Player
-const modalDivViewScoreData_scoreId = document.getElementById('modal-view-score-data__score-id');
 const modalDivViewScoreData_playerName = document.getElementById('modal-view-score-data__player-name');
 const modalDivViewScoreData_data = document.getElementById('modal-view-score-data__data');
 
-function onViewScoreDataModalOpen({ scoreId, playerName, data }) {
+function onViewScoreDataModalOpen({ playerName, data }) {
   // modalSelectedScore = scoreId;
-  modalDivViewScoreData_scoreId.innerHTML = scoreId;
   modalDivViewScoreData_playerName.innerHTML = playerName;
   modalDivViewScoreData_data.value = atob(data);
 }

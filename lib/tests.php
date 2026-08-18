@@ -14,6 +14,8 @@ error_reporting(E_ALL);
 require_once("../models/Game.php");
 require_once("../models/Score.php");
 require_once("../models/Leaderboard.php");
+require_once("../models/Player.php");
+require_once("./insertScore.php");
 
 $gameId = 36;
 $userId = 19;
@@ -1334,6 +1336,172 @@ assertTest(
 );
 
 clearRateLimit('add_score');
+clearScores();
+
+// =========================================================================
+// INSERT SCORE MODAL — direct insert_score() unit tests
+// =========================================================================
+echo "</ul></section>\n<section>\n<h2>INSERT SCORE MODAL &mdash; insert_score() Direct Tests</h2>\n<ul>\n";
+
+function modalScoreParams($overrides = []) {
+  global $gameId, $testLbId, $userId;
+  return array_merge([
+    "insertMode"   => "higher",
+    "playerName"   => "ModalTestPlayer",
+    "gameId"       => $gameId,
+    "score"        => 100,
+    "ip"           => null,
+    "country"      => null,
+    "sign"         => null,
+    "leaderboardId"=> $testLbId,
+    "tags"         => null,
+    "data"         => null,
+    "minScore"     => null,
+    "maxScore"     => null,
+    "env"          => "production",
+    "userId"       => null,
+  ], $overrides);
+}
+
+// 1. Insert new score → scoreAction = "inserted"
+clearScores();
+$res = insert_score(modalScoreParams());
+assertTest(
+  "modal: new score → scoreAction = inserted",
+  isset($res["scoreAction"]) && $res["scoreAction"] === "inserted",
+  "got " . json_encode($res)
+);
+
+// 2. Return value contains scoreId, score, position
+assertTest(
+  "modal: return value has scoreId, score, position",
+  isset($res["scoreId"]) && isset($res["score"]) && isset($res["position"]),
+  "got " . json_encode($res)
+);
+
+// 3. insertMode=higher: same player, lower score → "nothing"
+clearScores();
+insert_score(modalScoreParams(["score" => 200]));
+$res = insert_score(modalScoreParams(["score" => 100, "insertMode" => "higher"]));
+assertTest(
+  "modal: insertMode=higher + lower score → nothing",
+  isset($res["scoreAction"]) && $res["scoreAction"] === "nothing",
+  "got " . json_encode($res)
+);
+
+// 4. insertMode=higher: same player, higher score → "updated"
+clearScores();
+insert_score(modalScoreParams(["score" => 100]));
+$res = insert_score(modalScoreParams(["score" => 200, "insertMode" => "higher"]));
+assertTest(
+  "modal: insertMode=higher + higher score → updated",
+  isset($res["scoreAction"]) && $res["scoreAction"] === "updated",
+  "got " . json_encode($res)
+);
+
+// 5. insertMode=lower: same player, higher score → "nothing"
+clearScores();
+insert_score(modalScoreParams(["score" => 100]));
+$res = insert_score(modalScoreParams(["score" => 200, "insertMode" => "lower"]));
+assertTest(
+  "modal: insertMode=lower + higher score → nothing",
+  isset($res["scoreAction"]) && $res["scoreAction"] === "nothing",
+  "got " . json_encode($res)
+);
+
+// 6. insertMode=lower: same player, lower score → "updated"
+clearScores();
+insert_score(modalScoreParams(["score" => 200]));
+$res = insert_score(modalScoreParams(["score" => 50, "insertMode" => "lower"]));
+assertTest(
+  "modal: insertMode=lower + lower score → updated",
+  isset($res["scoreAction"]) && $res["scoreAction"] === "updated",
+  "got " . json_encode($res)
+);
+
+// 7. Two different players → both "inserted"
+clearScores();
+$res1 = insert_score(modalScoreParams(["playerName" => "ModalPlayer1", "score" => 100]));
+$res2 = insert_score(modalScoreParams(["playerName" => "ModalPlayer2", "score" => 200]));
+assertTest(
+  "modal: two different players → both inserted",
+  ($res1["scoreAction"] ?? "") === "inserted" && ($res2["scoreAction"] ?? "") === "inserted",
+  "p1=" . json_encode($res1) . " p2=" . json_encode($res2)
+);
+
+// 8. With tags → inserted
+clearScores();
+$res = insert_score(modalScoreParams(["tags" => "secondary", "score" => 50]));
+assertTest(
+  "modal: with tags → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 9. With data → inserted
+clearScores();
+$res = insert_score(modalScoreParams(["data" => '{"level":3}', "score" => 75]));
+assertTest(
+  "modal: with data → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 10. With env=test → inserted (test environment)
+clearScores();
+$res = insert_score(modalScoreParams(["env" => "test", "score" => 99]));
+assertTest(
+  "modal: with env=test → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 11. Score = 0 → inserted
+clearScores();
+$res = insert_score(modalScoreParams(["score" => 0]));
+assertTest(
+  "modal: score=0 → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 12. Negative score → inserted
+clearScores();
+$res = insert_score(modalScoreParams(["score" => -999]));
+assertTest(
+  "modal: negative score → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 13. Float score → inserted
+clearScores();
+$res = insert_score(modalScoreParams(["score" => 99.5]));
+assertTest(
+  "modal: float score → inserted",
+  ($res["scoreAction"] ?? "") === "inserted",
+  "got " . json_encode($res)
+);
+
+// 14. insertMode=higher equal score → "nothing" (no update on equal)
+clearScores();
+insert_score(modalScoreParams(["score" => 100]));
+$res = insert_score(modalScoreParams(["score" => 100, "insertMode" => "higher"]));
+assertTest(
+  "modal: insertMode=higher equal score → nothing",
+  ($res["scoreAction"] ?? "") === "nothing",
+  "got " . json_encode($res)
+);
+
+// 15. position is a positive integer
+clearScores();
+$res = insert_score(modalScoreParams(["score" => 500]));
+assertTest(
+  "modal: position is a positive integer",
+  isset($res["position"]) && is_numeric($res["position"]) && (int)$res["position"] >= 1,
+  "got position=" . json_encode($res["position"] ?? null)
+);
+
 clearScores();
 
 // =========================================================================

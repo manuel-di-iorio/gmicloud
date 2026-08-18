@@ -62,10 +62,6 @@ if (!is_null($insertMode) && $insertMode !== "higher" && $insertMode !== "lower"
   api_reply_error("Invalid parameter 'insertMode'", "ValidationError", 400);
 }
 
-Player::create($playerName);
-$player = Player::getByName($playerName)->fetch_assoc();
-$playerId = $player["player_id"];
-
 $ip = NULL;
 $country = NULL;
 
@@ -73,7 +69,7 @@ $country = NULL;
   "scoreId" => $scoreId,
   "scoreAction" => $scoreAction,
   "position" => $position,
-] = insert_score([ 
+] = insert_score([
   "insertMode" => $insertMode,
   "playerName" => $playerName,
   "gameId" => $gameId,
@@ -86,7 +82,8 @@ $country = NULL;
   "data" => $data,
   "minScore" => $minScore,
   "maxScore" => $maxScore,
-  "env" => $env
+  "env" => $env,
+  "userId" => null
 ]);
 
 header("Location: game-scores.php?id=$gameId&leaderboard_id=$leaderboardId");

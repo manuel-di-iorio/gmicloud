@@ -15,10 +15,8 @@ function insert_score($params) {
     "minScore" => $minScore,
     "maxScore" => $maxScore,
     "env" => $env,
-    "userId" => $userId
-  ] = $params;
-
-  $userId = $userId ?? null;
+    "userId" => $userId,
+  ] = $params + ["userId" => null];
 
   if ($userId) {
     $player = Player::getOrCreateForUser($userId, $playerName, $gameId);
@@ -42,7 +40,7 @@ function insert_score($params) {
       ($insertMode === "higher" && $score > $currentScore["score"]) ||
       ($insertMode === "lower" && $score < $currentScore["score"]) 
     ) {        
-      Score::update($scoreId, $score, $ip, $country, $sign, $data);        
+      Score::update($scoreId, $score, $ip, $country, $sign, $data, $tags, $env);        
       $scoreAction = "updated";
     }
   }

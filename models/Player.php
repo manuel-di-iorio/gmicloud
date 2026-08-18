@@ -31,7 +31,7 @@ class Player {
               SELECT username FROM $dbTablePlayers WHERE username = ?
             ) LIMIT 1";
 
-    exec_query($sql, [ "ssi", $playerName, $gameId, $playerName ]);
+    exec_query($sql, [ "sis", $playerName, $gameId, $playerName ]);
   }
 
   /**

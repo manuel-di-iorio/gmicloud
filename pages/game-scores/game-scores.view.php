@@ -298,7 +298,7 @@
 
 <?= ui_modal('modal-view-score-data', [
   'title' => __('scores_modal_data_title'),
-  'content' => '<p>' . __('scores_modal_data_body') . '<span id="modal-view-score-data__score-id"></span> ' . __('scores_modal_data_of') . ' <strong><span id="modal-view-score-data__player-name"></span></strong></p>
+  'content' => '<p>' . __('scores_modal_data_body') . ' <strong><span id="modal-view-score-data__player-name"></span></strong></p>
     <textarea id="modal-view-score-data__data" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed min-h-[80px] resize-y" style="min-height:120px"></textarea>',
   'footer' => ui_button(__('scores_modal_data_close'), 'secondary', 'md', ['attrs' => ['onclick' => "closeModal('modal-view-score-data')"]]),
   'footer_right' => true,

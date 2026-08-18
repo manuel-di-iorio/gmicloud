@@ -62,11 +62,11 @@ class Score {
     return exec_query($sql, ["iiii", $gameId, $leaderboardId, $playerId, $limit]);
   }
 
-  public static function update(int $scoreId, float $score, ?string $ip = NULL, ?string $country = NULL, ?string $sign = NULL, ?string $data = NULL) {
+  public static function update(int $scoreId, float $score, ?string $ip = NULL, ?string $country = NULL, ?string $sign = NULL, ?string $data = NULL, ?string $tags = NULL, ?string $env = 'production') {
     global $dbTableScores;
-    $sql = "UPDATE $dbTableScores SET score=?, ip=?, ip_country=?, sign=?, data=?, updated_at=NOW() WHERE score_id=?";
+    $sql = "UPDATE $dbTableScores SET score=?, ip=?, ip_country=?, sign=?, data=?, tags=?, env=?, updated_at=NOW() WHERE score_id=?";
 
-    exec_query($sql, [ "dssssi", $score, $ip, $country, $sign, $data, $scoreId]);
+    exec_query($sql, [ "dssssssi", $score, $ip, $country, $sign, $data, $tags, $env, $scoreId]);
   }
 
   public static function listSortedByGameId(int $gameId, int $leaderboardId, int $page, int $limit, string $order, $playerIdOrName = NULL,
@@ -126,13 +126,12 @@ class Score {
   public static function listByGame(int $gameId, int $page, string $sort, string $sortOrder, array $filters = []) {
     global $dbTableScores;
     global $dbTablePlayers;
-    global $dbTableUsers;
     $pageOffset = $page * 100;
     $sortSanitized = preg_replace("/[^A-Za-z_]/", '', $sort);
 
     $allowedSortColumns = [
         'tags' => 'S.tags',
-        'username' => 'COALESCE(U.username, P.username)',
+      'username' => 'P.username',
         'score' => 'S.score',
         'ip_country' => 'S.ip_country',
         'updated_at' => 'S.updated_at'
@@ -141,10 +140,9 @@ class Score {
     $sqlSortExpression = $allowedSortColumns[$sortSanitized] ?? 'S.updated_at';
     $sortDirection = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
 
-    $sql = "SELECT P.player_id, COALESCE(U.username, P.username) AS username, S.score_id, S.score, S.data, S.updated_at, S.ip_country, S.tags, S.env
+    $sql = "SELECT P.player_id, P.username AS username, S.score_id, S.score, S.data, S.updated_at, S.ip_country, S.tags, S.env
             FROM $dbTableScores AS S
             INNER JOIN $dbTablePlayers AS P ON S.player_id = P.player_id
-            LEFT JOIN $dbTableUsers AS U ON P.user_id = U.id
             WHERE S.game_id=?";
 
     $params = [ "i", $gameId ];
@@ -156,9 +154,8 @@ class Score {
     }
 
     if (!empty($filters['player'])) {
-      $sql .= " AND (P.username LIKE ? OR U.username LIKE ?)";
-      $params[0] .= "ss";
-      $params[] = "%" . $filters['player'] . "%";
+      $sql .= " AND P.username LIKE ?";
+      $params[0] .= "s";
       $params[] = "%" . $filters['player'] . "%";
     }
     if (isset($filters['score_min']) && $filters['score_min'] !== '') {
@@ -209,11 +206,9 @@ class Score {
   public static function countByGame(int $gameId, array $filters = []) {
     global $dbTableScores;
     global $dbTablePlayers;
-    global $dbTableUsers;
 
     $sql = "SELECT COUNT(S.score_id) as count FROM $dbTableScores AS S
             INNER JOIN $dbTablePlayers AS P ON S.player_id = P.player_id
-            LEFT JOIN $dbTableUsers AS U ON P.user_id = U.id
             WHERE S.game_id=?";
 
     $params = [ "i", $gameId ];
@@ -225,9 +220,8 @@ class Score {
     }
 
     if (!empty($filters['player'])) {
-      $sql .= " AND (P.username LIKE ? OR U.username LIKE ?)";
-      $params[0] .= "ss";
-      $params[] = "%" . $filters['player'] . "%";
+      $sql .= " AND P.username LIKE ?";
+      $params[0] .= "s";
       $params[] = "%" . $filters['player'] . "%";
     }
     if (isset($filters['score_min']) && $filters['score_min'] !== '') {
