@@ -136,7 +136,16 @@ while ($row = $result->fetch_assoc()) {
   $scores[] = $row;
 }
 
-$resp = [ "status" => 200, "scores" => $scores, "playerScore" => NULL ];
+$totalCount = Score::countSortedByGameId($gameId, $leaderboardId, $playerIdOrName, $startTime, $endTime, $envFilter);
+
+$resp = [
+  "status" => 200,
+  "scores" => $scores,
+  "limit" => $limit,
+  "page" => $page,
+  "count" => $totalCount,
+  "playerScore" => NULL
+];
 
 if (!is_null($includePlayer)) {
   $result = Score::listSortedByGameId($gameId, $leaderboardId, 0, 1, $order, $includePlayer, $startTime, $endTime, $envFilter);

@@ -537,6 +537,7 @@
   "docs_response_example": "Beispielantwort:",
   "docs_note1": "Hinweis 1: Wenn beim Senden 'sign' verwendet wurde, hat jede Punktzahl auch den Schlüssel 'sign'.",
   "docs_note2": "Hinweis 2: playerScore ist null, wenn der Parameter 'includePlayer' nicht angegeben wurde.",
+  "docs_note_list_pagination": "Hinweis 3: 'count' ist die Gesamtzahl der mit den aktuellen Filtern verfügbaren Ergebnisse; verwende ihn zusammen mit 'limit' und 'page' für die Paginierung.",
   "docs_example_gms2": "Beispiel mit GameMaker Studio",
   "docs_code_create_comment": "Füge dies in das 'Create'-Ereignis eines Objekts ein.",
   "docs_code_request_comment": "Dies stellt die Anfrage zum Abrufen der Punktzahlen",

@@ -514,6 +514,7 @@
   "docs_response_example": "Example response:",
   "docs_note1": "Note 1: if 'sign' was used when submitting, each score will also have the 'sign' key.",
   "docs_note2": "Note 2: playerScore will be null if the 'includePlayer' parameter was not specified.",
+  "docs_note_list_pagination": "Note 3: 'count' is the total number of results available with the current filters; use it with 'limit' and 'page' to build pagination.",
   "docs_example_gms2": "Example with GameMaker Studio",
   "docs_code_create_comment": "Put in the 'Create' event of an object.",
   "docs_code_request_comment": "This makes the request to fetch scores",

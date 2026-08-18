@@ -123,6 +123,52 @@ class Score {
     return exec_query($sql, $params);
   }
 
+  public static function countSortedByGameId(int $gameId, int $leaderboardId, $playerIdOrName = NULL,
+  ?string $startTime = NULL, ?string $endTime = NULL, ?string $env = NULL): int {
+    global $dbTableScores;
+    global $dbTablePlayers;
+
+    $sql = "SELECT COUNT(S.score_id) AS count
+            FROM $dbTableScores AS S
+            INNER JOIN $dbTablePlayers AS P ON S.player_id = P.player_id
+            WHERE S.game_id=? AND S.leaderboard_id=?";
+
+    $params = ["ii", $gameId, $leaderboardId];
+
+    if (!is_null($playerIdOrName)) {
+      if (is_numeric($playerIdOrName)) {
+        $sql .= " AND P.player_id=?";
+        $params[0] .= "i";
+        $params[] = (int)$playerIdOrName;
+      } else {
+        $sql .= " AND P.username=?";
+        $params[0] .= "s";
+        $params[] = base64_decode($playerIdOrName);
+      }
+    }
+
+    if (!is_null($startTime)) {
+      $sql .= " AND S.updated_at>=?";
+      $params[0] .= "s";
+      $params[] = $startTime;
+    }
+    if (!is_null($endTime)) {
+      $sql .= " AND S.updated_at<=?";
+      $params[0] .= "s";
+      $params[] = $endTime;
+    }
+    if (!is_null($env)) {
+      $sql .= " AND S.env=?";
+      $params[0] .= "s";
+      $params[] = $env;
+    }
+
+    $result = exec_query($sql, $params);
+    $row = $result->fetch_assoc();
+
+    return (int)($row["count"] ?? 0);
+  }
+
   public static function listByGame(int $gameId, int $page, string $sort, string $sortOrder, array $filters = []) {
     global $dbTableScores;
     global $dbTablePlayers;

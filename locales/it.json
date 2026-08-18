@@ -514,6 +514,7 @@
   "docs_response_example": "Esempio di risposta:",
   "docs_note1": "Nota 1: se nell'invio è stato usato il 'sign', ogni punteggio avrà anche la chiave 'sign'.",
   "docs_note2": "Nota 2: playerScore sarà null se non è stato specificato il parametro 'includePlayer'.",
+  "docs_note_list_pagination": "Nota 3: 'count' è il numero totale di risultati disponibili con i filtri correnti; usalo insieme a 'limit' e 'page' per costruire la paginazione.",
   "docs_example_gms2": "Esempio con Game Maker Studio",
   "docs_code_create_comment": "Da mettere nell'evento 'Create' di un oggetto.",
   "docs_code_request_comment": "Questo effettua la richiesta per prendere i punteggi",
