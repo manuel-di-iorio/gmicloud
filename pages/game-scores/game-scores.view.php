@@ -138,6 +138,20 @@
         }
       ],
       [
+        "label" => __('scores_action_edit'),
+        "icon" => "fas fa-edit",
+        "url" => "javascript:;",
+        "class" => "btn-link",
+        "onclick" => function ($data) {
+          $scoreVal  = $data['score'] ?? 0;
+          $tagsB64   = base64_encode($data['tags']       ?? '');
+          $countryB64= base64_encode($data['ip_country'] ?? '');
+          $env       = $data['env'] ?? 'production';
+          $dataB64   = base64_encode($data['data']       ?? '');
+          return "openModal('modal-edit-score', onEditScoreModalOpen, { scoreId: {$data['score_id']}, score: {$scoreVal}, tags: '{$tagsB64}', country: '{$countryB64}', env: '{$env}', data: '{$dataB64}' })";
+        }
+      ],
+      [
         "label" => __('scores_action_ban'),
         "icon" => "fas fa-user-times",
         "url" => "javascript:;",
@@ -259,6 +273,44 @@
       ' . ui_button(__('scores_modal_add_submit'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'type' => 'submit']) . '
     </div>
   </form>',
+]) ?>
+
+<?= ui_modal('modal-edit-score', [
+  'title' => __('scores_modal_edit_title'),
+  'content' =>
+    '<div class="mb-4">
+      <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_score') . '</label>
+      <input id="input-edit-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
+    </div>
+    <h5 class="accordion" onclick="toggleAccordion(this)" style="display:block;width:100%;text-align:left;background:var(--bg-color-offset,#f1f1f1);border:none;padding:8px 16px;cursor:pointer">
+      <span style="margin-right:16px">' . __('scores_modal_add_optional') . '</span>
+      <small><i class="fas fa-arrow-circle-down"></i></small>
+    </h5>
+    <div class="accordion-content" style="display:none">
+      <div class="mb-4">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_tags') . '</label>
+        <input id="input-edit-score__tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_data') . '</label>
+        <textarea id="input-edit-score__data" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed min-h-[80px] resize-y"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_country') . '</label>
+        <input id="input-edit-score__country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+      </div>
+      <div class="mb-4">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_env') . '</label>
+        <select id="input-edit-score__env" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+          <option value="production">' . __('scores_env_production') . '</option>
+          <option value="test">' . __('scores_env_test') . '</option>
+        </select>
+      </div>
+    </div>',
+  'footer' =>
+    ui_button(__('scores_modal_edit_cancel'), 'secondary', 'md', ['attrs' => ['onclick' => "closeModal('modal-edit-score')"]]) .
+    ui_button(__('scores_modal_edit_submit'), 'primary', 'md', ['icon' => 'fas fa-save', 'attrs' => ['onclick' => 'editScore()']]),
+  'footer_right' => true,
 ]) ?>
 
 <?= ui_modal('modal-delete-selected-scores', [

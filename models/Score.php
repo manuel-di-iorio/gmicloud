@@ -412,6 +412,13 @@ class Score {
     return $result->num_rows ? $result->fetch_assoc() : null;
   }
 
+  public static function getForEdit(int $scoreId): ?array {
+    global $dbTableScores;
+    $sql = "SELECT score_id, game_id, score, ip, sign, ip_country, tags, data, env FROM $dbTableScores WHERE score_id=? LIMIT 1";
+    $result = exec_query($sql, [ "i", $scoreId ]);
+    return $result->num_rows ? $result->fetch_assoc() : null;
+  }
+
   public static function deleteAsAdmin(int $scoreId) {
     global $dbTableScores;
     $sql = "DELETE FROM $dbTableScores WHERE score_id=?";

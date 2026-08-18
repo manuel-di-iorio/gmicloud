@@ -139,4 +139,47 @@ document.getElementById("form-add-score").addEventListener("submit", function() 
 function resetInsertScoreForm() {
   document.getElementById("form-add-score").reset();
 }
+
+/* Edit score */
+let modalEditScoreId;
+
+function onEditScoreModalOpen({ scoreId, score, tags, country, env, data }) {
+  modalEditScoreId = scoreId;
+  document.getElementById('input-edit-score__score').value   = score;
+  document.getElementById('input-edit-score__tags').value    = tags    ? atob(tags)    : '';
+  document.getElementById('input-edit-score__country').value = country ? atob(country) : '';
+  document.getElementById('input-edit-score__env').value     = env;
+  document.getElementById('input-edit-score__data').value    = data    ? atob(data)    : '';
+}
+
+function editScore() {
+  var score   = document.getElementById('input-edit-score__score').value;
+  var tags    = document.getElementById('input-edit-score__tags').value;
+  var data    = document.getElementById('input-edit-score__data').value;
+  var country = document.getElementById('input-edit-score__country').value;
+  var env     = document.getElementById('input-edit-score__env').value;
+
+  fetch('game-scores-edit.php', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: 'score_id='     + encodeURIComponent(modalEditScoreId)
+        + '&game_id=<?= $game["game_id"]; ?>'
+        + '&leaderboard_id=<?= $leaderboardId; ?>'
+        + '&score='       + encodeURIComponent(score)
+        + '&tags='        + encodeURIComponent(tags)
+        + '&data='        + encodeURIComponent(data)
+        + '&country='     + encodeURIComponent(country)
+        + '&env='         + encodeURIComponent(env)
+        + '&csrf_token='  + encodeURIComponent(csrfToken)
+  }).then(function(r) { return r.json(); })
+  .then(function(resp) {
+    if (resp.success) {
+      location.reload();
+    } else {
+      alert(<?= json_encode(__('scores_script_error_prefix')) ?> + (resp.error || <?= json_encode(__('scores_script_error_fallback')) ?>));
+    }
+  }).catch(function() {
+    alert(<?= json_encode(__('scores_script_network_error')) ?>);
+  });
+}
 </script>
