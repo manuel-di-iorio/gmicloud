@@ -504,7 +504,7 @@
   "docs_param_sync_operations": "Array de operaciones a procesar en lote. Cada operación contiene op_id, type y payload.",
   "docs_param_sync_op_id": "UUID v4 generado por el cliente. Usado para idempotencia: si el servidor ya procesó esta operación, devuelve el resultado almacenado.",
   "docs_param_sync_type": "Tipo de operación. Actualmente soportado: \"score.submit\".",
-  "docs_param_sync_payload": "Objeto con los mismos parámetros que se enviarían a /add.php (game, score, player, hash, leaderboard_id, token, etc.).",
+  "docs_param_sync_payload": "Objeto con los mismos parámetros que se enviarían a /add.php (game, score, player en base64, hash, leaderboard_id, token, etc.).",
   "docs_note_sync": "El servidor procesa cada operación independientemente: una operación fallida no bloquea las demás. Máximo 20 operaciones por solicitud. Límite de velocidad: 30 solicitudes por minuto.",
   "docs_sync_response_comment": "Cada operación tiene un estado: applied (nueva), duplicate (ya procesada) o failed (error).",
   "docs_sync_sdk_example_comment": "Ejemplo de envío por lote (sin SDK)",

@@ -503,7 +503,7 @@
   "docs_param_sync_operations": "Tableau d'opérations à traiter en lot. Chaque opération contient op_id, type et payload.",
   "docs_param_sync_op_id": "UUID v4 généré par le client. Utilisé pour l'idempotence : si le serveur a déjà traité cette opération, il retourne le résultat stocké.",
   "docs_param_sync_type": "Type d'opération. Actuellement supporté : \"score.submit\".",
-  "docs_param_sync_payload": "Objet avec les mêmes paramètres qui seraient envoyés à /add.php (game, score, player, hash, leaderboard_id, token, etc.).",
+  "docs_param_sync_payload": "Objet avec les mêmes paramètres qui seraient envoyés à /add.php (game, score, player en base64, hash, leaderboard_id, token, etc.).",
   "docs_note_sync": "Le serveur traite chaque opération indépendamment : une opération échouée ne bloque pas les autres. Max 20 opérations par requête. Limite de débit : 30 requêtes par minute.",
   "docs_sync_response_comment": "Chaque opération a un statut : applied (nouvelle), duplicate (déjà traitée) ou failed (erreur).",
   "docs_sync_sdk_example_comment": "Exemple d'envoi par lot (sans SDK)",

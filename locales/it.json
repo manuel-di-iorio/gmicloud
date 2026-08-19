@@ -505,7 +505,7 @@
   "docs_param_sync_operations": "Array di operazioni da processare in batch. Ogni operazione contiene op_id, type e payload.",
   "docs_param_sync_op_id": "UUID v4 generato dal client. Usato per l'idempotenza: se il server ha già processato questa operazione, restituisce il risultato memorizzato.",
   "docs_param_sync_type": "Tipo di operazione. Attualmente supportato: \"score.submit\".",
-  "docs_param_sync_payload": "Oggetto con gli stessi parametri che verrebbero inviati a /add.php (game, score, player, hash, leaderboard_id, token, ecc.).",
+  "docs_param_sync_payload": "Oggetto con gli stessi parametri che verrebbero inviati a /add.php (game, score, player in base64, hash, leaderboard_id, token, ecc.).",
   "docs_note_sync": "Il server processa ogni operazione indipendentemente: un'operazione fallita non blocca le altre. Max 20 operazioni per richiesta. Rate limit: 30 richieste per minuto.",
   "docs_sync_response_comment": "Ogni operazione ha uno stato: applied (nuova), duplicate (già processata) o failed (errore).",
   "docs_sync_sdk_example_comment": "Esempio di invio batch (senza SDK)",

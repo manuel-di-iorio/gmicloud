@@ -703,7 +703,7 @@
               <button class="copy-code-btn" onclick="copyBlockContent(this)" data-tippy-content="Copia codice">
                 <i class="far fa-copy"></i>
               </button>
-              <div class="code-block jsHigh">// <?= __('docs_sync_sdk_example_comment') ?><br/>var _body = {<br/>&nbsp;&nbsp;operations: [{<br/>&nbsp;&nbsp;&nbsp;&nbsp;op_id: "a1b2c3d4-...",<br/>&nbsp;&nbsp;&nbsp;&nbsp;type: "score.submit",<br/>&nbsp;&nbsp;&nbsp;&nbsp;payload: {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;game: GAME_ID,<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score: 5000,<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player: "Harry",<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hash: "..."<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;}]<br/>};<br/>http_request("<?= $baseApiPath ?>/sync.php", "POST", json_stringify(_body));</div>
+              <div class="code-block jsHigh">// <?= __('docs_sync_sdk_example_comment') ?><br/>var _body = {<br/>&nbsp;&nbsp;operations: [{<br/>&nbsp;&nbsp;&nbsp;&nbsp;op_id: "a1b2c3d4-...",<br/>&nbsp;&nbsp;&nbsp;&nbsp;type: "score.submit",<br/>&nbsp;&nbsp;&nbsp;&nbsp;payload: {<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;game: GAME_ID,<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score: 5000,<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player: base64_encode("Harry"),<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hash: "..."<br/>&nbsp;&nbsp;&nbsp;&nbsp;}<br/>&nbsp;&nbsp;}]<br/>};<br/>http_request("<?= $baseApiPath ?>/sync.php", "POST", json_stringify(_body));</div>
             </div>
           </div>
         </div>

@@ -528,7 +528,7 @@
   "docs_param_sync_operations": "Array von Operationen, die verarbeitet werden sollen. Jede Operation enthält op_id, type und payload.",
   "docs_param_sync_op_id": "Vom Client generierte UUID v4. Wird für Idempotenz verwendet: Wenn der Server diese Operation bereits verarbeitet hat, gibt er das gespeicherte Ergebnis zurück.",
   "docs_param_sync_type": "Operationstyp. Aktuell unterstützt: \"score.submit\".",
-  "docs_param_sync_payload": "Objekt mit den gleichen Parametern, die an /add.php gesendet würden (game, score, player, hash, leaderboard_id, token usw.).",
+  "docs_param_sync_payload": "Objekt mit den gleichen Parametern, die an /add.php gesendet würden (game, score, player als Base64, hash, leaderboard_id, token usw.).",
   "docs_note_sync": "Der Server verarbeitet jede Operation unabhängig: Eine fehlgeschlagene Operation blockiert die anderen nicht. Max. 20 Operationen pro Anfrage. Rate-Limit: 30 Anfragen pro Minute.",
   "docs_sync_response_comment": "Jede Operation hat einen Status: applied (neu), duplicate (bereits verarbeitet) oder failed (Fehler).",
   "docs_sync_sdk_example_comment": "Batch-Send-Beispiel (ohne SDK)",
