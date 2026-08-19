@@ -13,7 +13,7 @@ A server-side platform for managing game leaderboards, scores, and player data. 
 | Frontend CSS | Tailwind CSS (CDN) + custom CSS variables (dark/light theme) |
 | Frontend JS | Vanilla JS, Chart.js, Tippy.js, Popper.js |
 | i18n | Custom JSON-based system with `__()` helper (EN, IT, ES, FR, DE) |
-| API | REST (JSON), rate-limited, HMAC-verified score submission |
+| API | REST (JSON), rate-limited, hash-verified score submission (SHA-1 + secret) |
 | SDK | GameMaker Studio 2 package (GML) |
 | Hosting | Altervista / XAMPP, Cloudflare-compatible |
 
@@ -91,8 +91,8 @@ Endpoints live under `/api/`. The public v1 API handles:
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/api/v1/add.php` | POST | Submit a score (rate-limited, HMAC-verified) |
-| `/api/v1/list.php` | GET | Retrieve scores for a game/leaderboard |
+| `/api/v1/scores/add.php` | POST | Submit a score (rate-limited, hash-verified: SHA-1 + secret) |
+| `/api/v1/scores/list.php` | GET | Retrieve scores for a game/leaderboard |
 | `/api/v1/sync.php` | POST | Cloud save synchronization |
 | `/api/v1/gmi-login.php` | GET | Discord OAuth callback for player login |
 | `/api/v1/player-logout.php` | POST | Player session logout |
