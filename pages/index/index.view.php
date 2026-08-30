@@ -3,7 +3,7 @@
 <!-- ===== STICKY HEADER ===== -->
 <header class="landing-header" role="banner">
   <a href="./index.php" class="header-logo">
-    <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Logo" width="451" height="109">
+    <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.png" alt="Logo" width="451" height="109">
   </a>
   <nav class="header-nav">
     <a href="#come-funziona" class="nav-link-underline"><?= __('index_nav_how') ?></a>
@@ -26,7 +26,7 @@
 <!-- ===== HERO ===== -->
 <div class="HomeBanner relative box-border flex min-h-screen w-full items-center overflow-hidden bg-[#08081a] px-4 py-10 text-white md:px-6 md:py-[60px] lg:px-10 lg:pb-20 lg:pt-[100px]">
   <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_30%,rgba(99,102,241,0.15)_0%,transparent_60%),radial-gradient(ellipse_60%_50%_at_80%_70%,rgba(168,85,247,0.1)_0%,transparent_55%),radial-gradient(ellipse_50%_40%_at_60%_20%,rgba(236,72,153,0.08)_0%,transparent_50%)]"></div>
-  <img src="/assets/images/logoWhite.svg" class="hero-logo absolute left-10 top-7 z-[3] hidden h-9 w-auto lg:block" alt="Logo" width="451" height="109">
+  <img src="/assets/images/logoWhite.png" class="hero-logo absolute left-10 top-7 z-[3] hidden h-9 w-auto lg:block" alt="Logo" width="451" height="109">
   <div id="hero-particles" class="pointer-events-none absolute inset-0 z-[1] overflow-hidden"></div>
 
   <div class="hero-inner relative z-[2] mx-auto flex w-full max-w-[1200px] flex-col items-center gap-10 text-center lg:flex-row lg:gap-[60px] lg:text-left">

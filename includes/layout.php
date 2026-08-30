@@ -301,7 +301,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
       <?php if (!$isIndexPage && empty($hidePageHeader)) { ?>
         <header id="portfolio" class="pb-0">
           <!-- Small logo shown on small screens -->
-          <a href="./index.php"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="shape-circle LogoSmall float-right m-4 hidden w-[120px]" id="logo-small" width="451" height="109" alt="Logo"></a>
+          <a href="./index.php"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.png" class="shape-circle LogoSmall float-right m-4 hidden w-[120px]" id="logo-small" width="451" height="109" alt="Logo"></a>
 
           <!-- Close sidebar button -->
           <span id="btn-sidebar-open" class="hidden text-[32px] cursor-pointer px-4 py-2" onclick="w3_open()"><i class="fas fa-bars"></i></span>

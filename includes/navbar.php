@@ -14,7 +14,7 @@ if ($isAdminUser) {
   $adminLabel = __("nav_admin");
   $pendingCount = User::countUnapproved();
   if ($pendingCount > 0) {
-    $adminLabel .= ' <span class="ml-1.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1.5 align-middle text-[0.7rem] font-bold leading-none text-white">' . $pendingCount . '</span>';
+    $adminLabel .= ' <span class="nav-badge">' . $pendingCount . '</span>';
   }
   $navbarItems[] = ["label" => $adminLabel, "url" => "/admin.php", "icon" => "cogs", "showOnlyLogged" => true, "allowHtml" => true];
 }
@@ -43,14 +43,14 @@ if ($selectedTeamId !== null && isset($user)) {
 <nav id="navbar">
   <div class="LogoContainer">
     <a href="./index.php" class="navbar-logo-link">
-      <img src="/assets/images/logo<?= $navbarLogoColor ?>.svg" class="round Logo" alt="Logo Piattaforma">
+      <img src="/assets/images/logo<?= $navbarLogoColor ?>.png" class="round Logo" alt="Logo Piattaforma">
     </a>
   </div>
   
   <div class="navbar-menu">
     <?php if (isset($user) && count($userTeamsList) > 0) { ?>
-      <div class="my-2 px-4 py-2">
-        <label class="mb-2 block text-[0.72rem] font-semibold uppercase tracking-wide text-text-secondary"><?= __('team_selector_label') ?></label>
+      <div style="padding:8px 16px;margin-top:8px;margin-bottom:8px">
+        <label style="font-size:0.72em;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-color-secondary,#6b7280);font-weight:600;display:block;margin-bottom:8px"><?= __('team_selector_label') ?></label>
           <select onchange="document.cookie='selected_team_id='+(this.value==='0'?'':this.value)+';path=/;max-age=31536000;SameSite=Lax';location.reload();" class="w-full px-3 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.85rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none cursor-pointer">
             <option value="0" <?= $selectedTeamId === null ? 'selected' : '' ?>><?= __('team_selector_personal') ?></option>
             <?php foreach ($userTeamsList as $ut) { ?>

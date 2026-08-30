@@ -1,5 +1,5 @@
 <div class="fixed left-8 top-7 z-10">
-  <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Platform Logo" class="h-10 opacity-[0.85] transition-opacity hover:opacity-100">
+  <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.png" alt="Platform Logo" class="h-10 opacity-[0.85] transition-opacity hover:opacity-100">
 </div>
 
 <div class="relative flex h-screen min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_20%_50%,rgba(239,68,68,0.08)_0%,transparent_50%),radial-gradient(ellipse_at_80%_20%,rgba(248,113,113,0.06)_0%,transparent_50%),radial-gradient(ellipse_at_50%_80%,rgba(239,68,68,0.05)_0%,transparent_50%),var(--bg-color)] px-5 py-10">

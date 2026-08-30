@@ -17,7 +17,7 @@ $footerFlushClass = $footerMarginLeft !== '' ? ' !ml-0' : '';
 <footer class="modern-footer PageContentFooter mt-[100px] shrink-0 border-0 border-t border-solid border-[var(--footer-border-color)] bg-[var(--footer-bg)] pb-5 pt-10 text-[var(--footer-text-color)] shadow-[var(--shadow-footer)] transition-[margin-left] duration-300 lg:ml-[260px]<?= $footerFlushClass ?>">
   <div class="mx-auto flex max-w-[1200px] flex-wrap items-start justify-between px-[15px]">
     <div class="mb-[30px] basis-full md:mr-5 md:basis-[calc(33.333%-20px)]">
-      <a href="/"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="mb-3 h-auto max-w-[120px]" alt="Logo" width="451" height="109"></a>
+      <a href="/"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.png" class="mb-3 h-auto max-w-[120px]" alt="Logo" width="451" height="109"></a>
       <p class="mb-2.5 text-[0.9em] leading-relaxed"><?= __("footer_about") ?></p>
       <p class="mb-2.5 text-[0.9em] leading-relaxed">&copy; <?= date("Y") ?> GameMaker Italia. <?= __("footer_copyright") ?></p>
     </div>
