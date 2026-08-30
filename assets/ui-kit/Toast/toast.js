@@ -52,7 +52,7 @@ function uiToast(options) {
   }
 
   if (duration > 0) {
-    html += '<div class="ui-toast__progress" style="width:100%"></div>';
+    html += '<div class="ui-toast__progress w-full"></div>';
   }
 
   el.innerHTML = html;

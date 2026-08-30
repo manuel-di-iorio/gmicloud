@@ -1,6 +1,6 @@
 <div class="internal-page">
   <?php if (!empty($games)) { ?>
-    <div class="internal-actions internal-actions--right">
+    <div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
       <?= ui_button(__('games_add_button'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']) ?>
     </div>
   <?php } ?>
@@ -71,19 +71,17 @@
       // Se è stato applicato un filtro, mostra messaggio specifico
       $hasFilter = isset($_GET['name']) && trim($_GET['name']) !== '';
       if ($hasFilter) { ?>
-        <div class="internal-empty">
-          <i class="fas fa-search"></i>
-          <h4><?= __('games_empty_filter_title') ?></h4>
-          <p><?= __('games_empty_filter_desc') ?></p>
-          <?= ui_button(__('games_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF'])]) ?>
-        </div>
+        <?= ui_empty_state(__('games_empty_filter_title'), [
+          'icon' => 'fas fa-search',
+          'description' => __('games_empty_filter_desc'),
+          'action' => ui_button(__('games_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF'])]),
+        ]) ?>
       <?php } else { ?>
-        <div class="internal-empty">
-          <i class="fas fa-gamepad"></i>
-          <h4><?= __('games_empty_title') ?></h4>
-          <p><?= __('games_empty_desc') ?></p>
-          <?= ui_button(__('games_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']) ?>
-        </div>
+        <?= ui_empty_state(__('games_empty_title'), [
+          'icon' => 'fas fa-gamepad',
+          'description' => __('games_empty_desc'),
+          'action' => ui_button(__('games_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']),
+        ]) ?>
       <?php } }
   ?>
 </div>

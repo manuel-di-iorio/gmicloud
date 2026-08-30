@@ -1,5 +1,5 @@
 <div class="internal-page">
-    <div class="internal-actions internal-actions--right">
+    <div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
         <?= ui_button(__('leaderboards_create_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $game['game_id']]) ?>
     </div>
 
@@ -95,12 +95,11 @@
 
         render_table($leaderboards, $tableColumns, $tableActions, $tableOptions);
     } else { ?>
-        <div class="internal-empty">
-            <i class="fas fa-trophy"></i>
-            <h4><?= __('leaderboards_empty_title') ?></h4>
-            <p><?= __('leaderboards_empty_desc') ?></p>
-            <?= ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $game['game_id']]) ?>
-        </div>
+        <?= ui_empty_state(__('leaderboards_empty_title'), [
+            'icon' => 'fas fa-trophy',
+            'description' => __('leaderboards_empty_desc'),
+            'action' => ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $game['game_id']]),
+        ]) ?>
     <?php } ?>
 </div>
 

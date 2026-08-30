@@ -40,18 +40,16 @@
     } else {
       $hasFilter = isset($_GET['player']) && trim($_GET['player']) !== '';
       if ($hasFilter) { ?>
-        <div class="internal-empty">
-          <i class="fas fa-search"></i>
-          <h4><?= __('bans_empty_filter_title') ?></h4>
-          <p><?= __('bans_empty_filter_desc') ?></p>
-          <?= ui_button(__('bans_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $game['game_id']]) ?>
-        </div>
+        <?= ui_empty_state(__('bans_empty_filter_title'), [
+          'icon' => 'fas fa-search',
+          'description' => __('bans_empty_filter_desc'),
+          'action' => ui_button(__('bans_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $game['game_id']]),
+        ]) ?>
       <?php } else { ?>
-        <div class="internal-empty">
-          <i class="fas fa-user-check"></i>
-          <h4><?= __('bans_empty_title') ?></h4>
-          <p><?= __('bans_empty_desc') ?></p>
-        </div>
+        <?= ui_empty_state(__('bans_empty_title'), [
+          'icon' => 'fas fa-user-check',
+          'description' => __('bans_empty_desc'),
+        ]) ?>
       <?php }
     } ?>
 </div>

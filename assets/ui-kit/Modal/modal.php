@@ -12,8 +12,8 @@ function ui_modal($id, $options = []) {
 
   $widthClass = $sizeWidths[$size] ?? $sizeWidths['md'];
 
-  $html = '<div id="' . htmlspecialchars($id) . '" class="ui-modal-overlay items-center justify-center bg-black/50" onmousedown="if (event.target === this) this._dismissOnMouseup = true;" onmouseup="if (this._dismissOnMouseup && event.target === this) { this._dismissOnMouseup = false; closeModal(\'' . htmlspecialchars($id) . '\'); } else { this._dismissOnMouseup = false; }">';
-  $html .= '<div class="ui-modal bg-surface-card rounded-2xl shadow-2xl w-full ' . $widthClass . ' flex flex-col overflow-hidden ' . htmlspecialchars($class) . '">';
+  $html = '<div id="' . htmlspecialchars($id) . '" class="ui-modal-overlay fixed inset-0 z-[10000] hidden box-border flex items-center justify-center bg-black/50 p-6" onmousedown="if (event.target === this) this._dismissOnMouseup = true;" onmouseup="if (this._dismissOnMouseup && event.target === this) { this._dismissOnMouseup = false; closeModal(\'' . htmlspecialchars($id) . '\'); } else { this._dismissOnMouseup = false; }">';
+  $html .= '<div class="ui-modal flex max-h-[90vh] w-full ' . $widthClass . ' animate-modal-in flex-col overflow-hidden rounded-2xl bg-surface-card shadow-2xl ' . htmlspecialchars($class) . '">';
 
   if ($title) {
     $html .= '<div class="flex items-center justify-between px-6 py-4 border-0 border-b border-solid border-border-color flex-shrink-0">';

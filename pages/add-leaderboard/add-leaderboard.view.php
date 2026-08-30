@@ -1,11 +1,11 @@
 <div class="internal-page">
-    <form method="POST" class="internal-card internal-card--form">
+    <form method="POST" class="<?= ui_card_classes(['padding' => 'md', 'class' => 'max-w-2xl']) ?>">
         <?= csrf_field() ?>
         <?php if (isset($error)) { ?>
-            <div style="background:#f44336;color:#fff;padding:8px 16px;border-radius:4px;margin-bottom:16px"><?= htmlspecialchars($error) ?></div>
+            <?= ui_alert($error, 'danger') ?>
         <?php } ?>
 
-        <div class="internal-card__title"><i class="fas fa-trophy"></i> <?= __('add_lb_title') ?></div>
+        <?= ui_card_title(__('add_lb_title'), ['icon' => 'fas fa-trophy']) ?>
 
         <div class="mb-4">
             <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]" for="name"><?= __('add_lb_name') ?></label>
@@ -24,7 +24,7 @@
             'icon' => 'fas fa-lock'
         ]) ?>
 
-        <div style="display:flex;gap:10px;margin-top:20px">
+        <div class="mt-5 flex gap-2.5">
             <?= ui_button(__('add_lb_submit'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'type' => 'submit']) ?>
             <?= ui_button(__('add_lb_cancel'), 'secondary', 'md', ['href' => 'leaderboards.php?game_id=' . $game_id]) ?>
         </div>

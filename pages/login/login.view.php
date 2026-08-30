@@ -1,70 +1,18 @@
-<style>
-.login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 212px);
-  /* margin: 0 -80px; */
-  padding-top: 64px 20px 40px;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(88, 101, 242, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(129, 140, 248, 0.04) 0%, transparent 50%),
-    var(--bg-color-offset, #f4f7f6);
-}
-
-.login-card {
-  background: var(--bg-color-card, #fff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 20px;
-  padding: 52px 48px 44px;
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
-}
-.login-discord-icon {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 24px;
-  background: linear-gradient(135deg, #5865F2 0%, #818cf8 100%);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(88, 101, 242, 0.3);
-}
-.login-discord-icon i { font-size: 2em; color: #fff; }
-.login-card h2 {
-  font-size: 1.45rem;
-  font-weight: 700;
-  margin-bottom: 28px;
-  color: var(--text-color-headings, #333);
-}
-.login-terms {
-  margin-top: 24px;
-  font-size: 0.78em;
-  color: var(--text-color-secondary, #999);
-  line-height: 1.6;
-}
-.login-terms a { color: #5865F2; text-decoration: none; }
-.login-terms a:hover { text-decoration: underline; }
-</style>
-
-<div class="login-page">
-  <div class="login-card">
-    <div class="login-discord-icon">
-      <i class="fab fa-discord"></i>
+<div class="flex min-h-[calc(100vh-212px)] items-center justify-center bg-[radial-gradient(ellipse_at_20%_50%,rgba(88,101,242,0.06)_0%,transparent_50%),radial-gradient(ellipse_at_80%_20%,rgba(129,140,248,0.04)_0%,transparent_50%),var(--bg-color-offset)] px-5 pb-10 pt-16">
+  <div class="w-full max-w-[500px] rounded-[20px] border border-solid border-[var(--border-color)] bg-[var(--bg-color-card)] px-8 pb-11 pt-12 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)] sm:px-12 sm:pt-[52px]">
+    <div class="mx-auto mb-6 flex h-[72px] w-[72px] items-center justify-center rounded-[20px] bg-gradient-to-br from-[#5865f2] to-indigo-400 shadow-[0_4px_16px_rgba(88,101,242,0.3)]">
+      <i class="fab fa-discord text-3xl text-white"></i>
     </div>
-    <h2><?= __('login_title') ?></h2>
+    <h2 class="mb-7 text-[1.45rem] font-bold text-[var(--text-color-headings)]"><?= __('login_title') ?></h2>
 
     <?= ui_button(__('login_button'), 'primary', 'lg', [
       'icon' => 'fab fa-discord',
       'href' => $loginRedirectUrl,
       'full' => true,
-      'class' => 'login-discord-btn'
+      'class' => '!border-0 !bg-[#5865f2] shadow-[0_2px_8px_rgba(88,101,242,0.25)] hover:!-translate-y-0.5 hover:!bg-[#4752c4] hover:shadow-[0_6px_20px_rgba(88,101,242,0.35)]'
     ]) ?>
 
-    <div class="login-terms">
+    <div class="mt-6 text-[0.78rem] leading-6 text-[var(--text-color-secondary)] [&_a]:text-[#5865f2] [&_a]:no-underline hover:[&_a]:underline">
       <?= __('login_disclaimer') ?>
       <a href="terms.php" target="_blank"><?= __('login_terms') ?></a>,
       <a href="privacy.php" target="_blank"><?= __('login_privacy') ?></a> e
@@ -72,17 +20,3 @@
     </div>
   </div>
 </div>
-
-<style>
-.login-discord-btn {
-  display: flex !important;
-  background: #5865F2 !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(88, 101, 242, 0.25);
-}
-.login-discord-btn:hover {
-  background: #4752C4 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(88, 101, 242, 0.35);
-}
-</style>

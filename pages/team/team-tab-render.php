@@ -4,18 +4,18 @@ switch ($activeTab) {
     $html = '';
 
     if ($isTeamAdmin) {
-      $html .= '<div class="internal-actions internal-actions--right" style="margin-bottom:20px">
+      $html .= '<div class="mb-5 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
         ' . ui_button(__('team_settings_delete'), 'danger', 'md', ['icon' => 'fas fa-trash', 'attrs' => ['onclick' => "openModal('modal-delete-team')"]]) . '
       </div>';
     }
 
-    $html .= '<div class="team-settings-card">
-      <div class="internal-card">
-        <div class="internal-card__title"><i class="fas fa-edit"></i> ' . __('team_settings_title') . '</div>
+    $html .= '<div class="max-w-[500px]">
+      <div class="' . ui_card_classes(['padding' => 'md']) . '">
+        ' . ui_card_title(__('team_settings_title'), ['icon' => 'fas fa-edit']) . '
         <form method="POST" action="/team-settings.php?id=' . $teamId . '">
           ' . csrf_field() . '
-          <label style="display:block;font-weight:600;margin-bottom:8px;color:var(--text-color-headings,#444)">' . __('team_settings_name') . '</label>
-          <div class="input-group">
+          <label class="mb-2 block font-semibold text-text-headings">' . __('team_settings_name') . '</label>
+          <div class="mb-5">
             <input name="name" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" value="' . htmlspecialchars($team['name']) . '" required>
           </div>
           ' . ui_button(__('team_settings_save'), 'primary', 'md', ['icon' => 'fa fa-edit', 'type' => 'submit', 'class' => 'mt-2']) . '
@@ -29,24 +29,24 @@ switch ($activeTab) {
     $html = '';
 
     if ($isTeamAdmin) {
-      $html .= '<div class="internal-card" style="margin-bottom:20px">
-        <div class="internal-card__title"><i class="fas fa-user-plus"></i> ' . __('team_members_add_title') . '</div>
-        <p style="color:var(--text-color-secondary,#6b7280);font-size:0.875em;margin:0 0 16px">' . __('team_members_add_note', ['site' => $config['platformTitle']]) . '</p>
-        <form method="POST" action="/team-members.php?id=' . $teamId . '" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+      $html .= '<div class="' . ui_card_classes(['padding' => 'md', 'class' => 'mb-5']) . '">
+        ' . ui_card_title(__('team_members_add_title'), ['icon' => 'fas fa-user-plus']) . '
+        <p class="mb-4 mt-0 text-sm text-text-secondary">' . __('team_members_add_note', ['site' => $config['platformTitle']]) . '</p>
+        <form method="POST" action="/team-members.php?id=' . $teamId . '" class="flex flex-wrap items-end gap-3">
           ' . csrf_field() . '
-          <div style="flex:1;min-width:200px">
-            <label style="display:block;font-weight:600;margin-bottom:8px;color:var(--text-color-headings,#444)">' . __('team_members_add_discord_id') . '</label>
-            <input name="discord_id" type="text" required style="height:42px" class="w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" placeholder="' . __('team_members_add_discord_id') . '">
+          <div class="min-w-[200px] flex-1">
+            <label class="mb-2 block font-semibold text-text-headings">' . __('team_members_add_discord_id') . '</label>
+            <input name="discord_id" type="text" required class="h-[42px] w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" placeholder="' . __('team_members_add_discord_id') . '">
           </div>
-          <div style="min-width:150px">
-            <label style="display:block;font-weight:600;margin-bottom:8px;color:var(--text-color-headings,#444)">' . __('team_members_add_role') . '</label>
-            <select name="role" style="height:42px" class="w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]">
+          <div class="min-w-[150px]">
+            <label class="mb-2 block font-semibold text-text-headings">' . __('team_members_add_role') . '</label>
+            <select name="role" class="h-[42px] w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]">
               <option value="member">' . __('team_members_role_member') . '</option>
               <option value="admin">' . __('team_members_role_admin') . '</option>
             </select>
           </div>
           <div>
-            <label style="display:block;margin-bottom:8px;visibility:hidden">-</label>
+            <label class="invisible mb-2 block">-</label>
             ' . ui_button(__('team_members_add_submit'), 'primary', 'md', ['icon' => 'fas fa-user-plus', 'type' => 'submit', 'class' => '!h-[42px]']) . '
           </div>
         </form>
@@ -67,7 +67,7 @@ switch ($activeTab) {
       foreach ($members as $m) {
         $isSelf = (int)$m['user_id'] === $userId;
         $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell">' . htmlspecialchars($m['username']) . ($isSelf ? ' <span style="color:var(--text-color-secondary,#6b7280)">(tu)</span>' : '') . '</td>
+          <td class="ui-table-cell">' . htmlspecialchars($m['username']) . ($isSelf ? ' <span class="text-text-secondary">(tu)</span>' : '') . '</td>
           <td class="ui-table-cell">';
 
         if ($m['role'] === 'admin') {
@@ -94,7 +94,7 @@ switch ($activeTab) {
 
       $html .= '</tbody></table></div>';
     } else {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-users" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . __('table_empty') . '</div>';
+      $html .= ui_empty_state(__('table_empty'), ['icon' => 'fas fa-users']);
     }
 
     echo $html;
@@ -105,7 +105,7 @@ switch ($activeTab) {
     $nameValue = htmlspecialchars($_GET['name'] ?? '');
 
     if ($isTeamAdmin) {
-      $html .= '<div class="internal-actions internal-actions--right" style="margin-bottom:20px">
+      $html .= '<div class="mb-5 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
         ' . ui_button(__('add_game_submit'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']) . '
       </div>';
     }
@@ -173,9 +173,13 @@ switch ($activeTab) {
     } else {
       $hasFilter = isset($_GET['name']) && trim($_GET['name']) !== '';
       if ($hasFilter) {
-        $html .= '<div class="internal-empty"><i class="fas fa-search"></i><h4>' . __('games_empty_filter_title') . '</h4><p>' . __('games_empty_filter_desc') . '</p>' . ui_button(__('games_empty_filter_btn'), 'primary', 'md', ['href' => '/team.php?id=' . $teamId . '&tab=games']) . '</div>';
+        $html .= ui_empty_state(__('games_empty_filter_title'), [
+          'icon' => 'fas fa-search',
+          'description' => __('games_empty_filter_desc'),
+          'action' => ui_button(__('games_empty_filter_btn'), 'primary', 'md', ['href' => '/team.php?id=' . $teamId . '&tab=games']),
+        ]);
       } else {
-        $html .= '<div class="internal-empty"><i class="fas fa-gamepad"></i><h4>' . __('team_games_empty') . '</h4></div>';
+        $html .= ui_empty_state(__('team_games_empty'), ['icon' => 'fas fa-gamepad']);
       }
     }
 

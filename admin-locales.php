@@ -116,103 +116,65 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controllo Locales - Admin</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; padding: 20px; }
-    .container { max-width: 1400px; margin: 0 auto; }
-    h1 { margin-bottom: 20px; color: #1a1a1a; }
-    .summary { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
-    .summary-card { background: white; border-radius: 8px; padding: 16px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .summary-card h3 { font-size: 14px; color: #666; margin-bottom: 4px; }
-    .summary-card .value { font-size: 28px; font-weight: 700; }
-    .summary-card .value.green { color: #16a34a; }
-    .summary-card .value.red { color: #dc2626; }
-    .summary-card .value.orange { color: #ea580c; }
-    .summary-card .value.gray { color: #6b7280; }
-    .legend { background: white; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 24px; flex-wrap: wrap; font-size: 14px; }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-icon { width: 20px; text-align: center; font-weight: bold; }
-    .filters { background: white; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .filters label { font-size: 14px; color: #666; }
-    .filters select, .filters input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-    .filters input[type="text"] { width: 250px; }
-    table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    th { background: #f8fafc; padding: 12px 16px; text-align: left; font-size: 13px; font-weight: 600; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; }
-    td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-    tr:hover { background: #f8fafc; }
-    tr.highlight-missing { background: #fef2f2; }
-    tr.highlight-orphan { background: #fff7ed; }
-    tr.highlight-unused { background: #f9fafb; }
-    .status-ok { color: #16a34a; font-weight: 600; }
-    .status-missing { color: #dc2626; font-weight: 600; }
-    .status-orphan { color: #ea580c; font-weight: 600; }
-    .status-unused { color: #9ca3af; font-style: italic; }
-    .orphan-section { margin-top: 30px; }
-    .orphan-section h2 { margin-bottom: 16px; color: #1a1a1a; font-size: 20px; }
-    .orphan-lang { margin-bottom: 20px; }
-    .orphan-lang h3 { margin-bottom: 8px; color: #475569; font-size: 16px; }
-    .orphan-list { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .orphan-list code { display: inline-block; background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 4px; margin: 2px 4px 2px 0; font-size: 13px; }
-    .empty { color: #9ca3af; font-style: italic; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>Controllo Locales</h1>
+<body class="m-0 bg-neutral-100 p-5 text-neutral-800">
+  <div class="mx-auto max-w-[1400px]">
+    <h1 class="mb-5 text-3xl font-bold text-neutral-900">Controllo Locales</h1>
 
-    <div class="summary">
-      <div class="summary-card">
-        <h3>Totale chiavi (EN)</h3>
-        <div class="value"><?= count($enKeys) ?></div>
+    <div class="mb-5 flex flex-wrap gap-5">
+      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+        <h3 class="mb-1 text-sm text-neutral-500">Totale chiavi (EN)</h3>
+        <div class="text-[28px] font-bold"><?= count($enKeys) ?></div>
       </div>
-      <div class="summary-card">
-        <h3>Chiavi mancanti</h3>
+      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+        <h3 class="mb-1 text-sm text-neutral-500">Chiavi mancanti</h3>
         <?php
         $totalMissing = 0;
         foreach ($otherLangs as $lang) {
           $totalMissing += count(array_diff($enKeys, array_keys($localeData[$lang] ?? [])));
         }
         ?>
-        <div class="value <?= $totalMissing > 0 ? 'red' : 'green' ?>"><?= $totalMissing ?></div>
+        <div class="text-[28px] font-bold <?= $totalMissing > 0 ? 'text-red-600' : 'text-green-600' ?>"><?= $totalMissing ?></div>
       </div>
-      <div class="summary-card">
-        <h3>Chiavi orfane</h3>
+      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+        <h3 class="mb-1 text-sm text-neutral-500">Chiavi orfane</h3>
         <?php $totalOrphan = array_sum(array_map('count', $orphanKeys)); ?>
-        <div class="value <?= $totalOrphan > 0 ? 'orange' : 'green' ?>"><?= $totalOrphan ?></div>
+        <div class="text-[28px] font-bold <?= $totalOrphan > 0 ? 'text-orange-600' : 'text-green-600' ?>"><?= $totalOrphan ?></div>
       </div>
-      <div class="summary-card">
-        <h3>Chiavi inutilizzate</h3>
-        <div class="value <?= count($unusedKeys) > 0 ? 'gray' : 'green' ?>"><?= count($unusedKeys) ?></div>
+      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+        <h3 class="mb-1 text-sm text-neutral-500">Chiavi inutilizzate</h3>
+        <div class="text-[28px] font-bold <?= count($unusedKeys) > 0 ? 'text-gray-500' : 'text-green-600' ?>"><?= count($unusedKeys) ?></div>
       </div>
     </div>
 
-    <div class="legend">
-      <div class="legend-item"><span class="legend-icon status-ok">✓</span> Presente</div>
-      <div class="legend-item"><span class="legend-icon status-missing">✗</span> Mancante (in EN ma non nel locale)</div>
-      <div class="legend-item"><span class="legend-icon status-orphan">⚠</span> Orfana (nel locale ma non in EN)</div>
-      <div class="legend-item"><span class="legend-icon status-unused">●</span> Inutilizzata (non usata in codice)</div>
+    <div class="mb-5 flex flex-wrap gap-6 rounded-lg bg-white p-4 text-sm shadow-sm">
+      <div class="flex items-center gap-1.5"><span class="w-5 text-center font-bold text-green-600">✓</span> Presente</div>
+      <div class="flex items-center gap-1.5"><span class="status-missing w-5 text-center font-bold text-red-600">✗</span> Mancante (in EN ma non nel locale)</div>
+      <div class="flex items-center gap-1.5"><span class="w-5 text-center font-bold text-orange-600">⚠</span> Orfana (nel locale ma non in EN)</div>
+      <div class="flex items-center gap-1.5"><span class="status-unused w-5 text-center italic text-gray-400">●</span> Inutilizzata (non usata in codice)</div>
     </div>
 
-    <div class="filters">
-      <label>Filtro:</label>
-      <select id="filterType">
+    <div class="mb-5 flex flex-wrap items-center gap-3 rounded-lg bg-white p-4 shadow-sm">
+      <label class="text-sm text-neutral-500">Filtro:</label>
+      <select id="filterType" class="rounded-md border border-solid border-neutral-300 px-3 py-2 text-sm">
         <option value="all">Tutte</option>
         <option value="missing">Mancanti</option>
         <option value="orphan">Orfane</option>
         <option value="unused">Inutilizzate</option>
       </select>
-      <input type="text" id="filterSearch" placeholder="Cerca chiave...">
-      <button id="exportCsv" style="margin-left:auto;padding:8px 16px;background:#3b82f6;color:white;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Esporta CSV</button>
+      <input type="text" id="filterSearch" placeholder="Cerca chiave..." class="w-[250px] rounded-md border border-solid border-neutral-300 px-3 py-2 text-sm">
+      <button id="exportCsv" class="ml-auto cursor-pointer rounded-md border-0 bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">Esporta CSV</button>
     </div>
 
-    <table>
+    <table class="w-full overflow-hidden rounded-lg bg-white shadow-sm">
       <thead>
         <tr>
-          <th>Chiave</th>
+          <th class="sticky top-0 border-b-2 border-slate-200 bg-slate-50 px-4 py-3 text-left text-[13px] font-semibold text-slate-600">Chiave</th>
           <?php foreach ($otherLangs as $lang): ?>
-            <th><?= strtoupper($lang) ?></th>
+            <th class="sticky top-0 border-b-2 border-slate-200 bg-slate-50 px-4 py-3 text-left text-[13px] font-semibold text-slate-600"><?= strtoupper($lang) ?></th>
           <?php endforeach; ?>
-          <th>Stato</th>
+          <th class="sticky top-0 border-b-2 border-slate-200 bg-slate-50 px-4 py-3 text-left text-[13px] font-semibold text-slate-600">Stato</th>
         </tr>
       </thead>
       <tbody>
@@ -220,25 +182,25 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
           $hasMissing = in_array(false, $row['locales']);
           if (!$row['unused'] && !$hasMissing) continue;
           $rowClass = '';
-          if ($row['unused']) $rowClass = 'highlight-unused';
-          elseif ($hasMissing) $rowClass = 'highlight-missing';
+          if ($row['unused']) $rowClass = 'bg-gray-50';
+          elseif ($hasMissing) $rowClass = 'bg-red-50';
         ?>
-        <tr class="<?= $rowClass ?>" data-key="<?= htmlspecialchars($row['key']) ?>">
-          <td><code><?= htmlspecialchars($row['key']) ?></code></td>
+        <tr class="<?= $rowClass ?> hover:bg-slate-50" data-key="<?= htmlspecialchars($row['key']) ?>">
+          <td class="border-b border-slate-100 px-4 py-2.5 text-sm"><code><?= htmlspecialchars($row['key']) ?></code></td>
           <?php foreach ($otherLangs as $lang): ?>
-            <td>
+            <td class="border-b border-slate-100 px-4 py-2.5 text-sm">
               <?php if ($row['locales'][$lang]): ?>
-                <span class="status-ok">✓</span>
+                <span class="font-semibold text-green-600">✓</span>
               <?php else: ?>
-                <span class="status-missing">✗</span>
+                <span class="status-missing font-semibold text-red-600">✗</span>
               <?php endif; ?>
             </td>
           <?php endforeach; ?>
-          <td>
+          <td class="border-b border-slate-100 px-4 py-2.5 text-sm">
             <?php if ($row['unused']): ?>
-              <span class="status-unused">● Inutilizzata</span>
+              <span class="status-unused italic text-gray-400">● Inutilizzata</span>
             <?php else: ?>
-              <span class="status-ok">✓ Usata</span>
+              <span class="font-semibold text-green-600">✓ Usata</span>
             <?php endif; ?>
           </td>
         </tr>
@@ -254,18 +216,18 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
     }
     ?>
     <?php if ($problemCount === 0): ?>
-    <p style="text-align:center;color:#6b7280;padding:32px 0;font-style:italic;">Nessun problema trovato. Tutte le chiavi sono complete e utilizzate.</p>
+    <p class="py-8 text-center italic text-gray-500">Nessun problema trovato. Tutte le chiavi sono complete e utilizzate.</p>
     <?php endif; ?>
 
     <?php if (!empty($orphanKeys)): ?>
-    <div class="orphan-section">
-      <h2>Chiavi orfane (presenti nei locale ma non in EN)</h2>
+    <div class="mt-[30px]">
+      <h2 class="mb-4 text-xl font-bold text-neutral-900">Chiavi orfane (presenti nei locale ma non in EN)</h2>
       <?php foreach ($orphanKeys as $lang => $keys): ?>
-        <div class="orphan-lang">
-          <h3><?= strtoupper($lang) ?> (<?= count($keys) ?> chiavi)</h3>
-          <div class="orphan-list">
+        <div class="mb-5">
+          <h3 class="mb-2 text-base font-semibold text-slate-600"><?= strtoupper($lang) ?> (<?= count($keys) ?> chiavi)</h3>
+          <div class="rounded-lg bg-white p-4 shadow-sm">
             <?php foreach ($keys as $key): ?>
-              <code><?= htmlspecialchars($key) ?></code>
+              <code class="mb-0.5 mr-1 inline-block rounded bg-red-50 px-2 py-0.5 text-[13px] text-red-600"><?= htmlspecialchars($key) ?></code>
             <?php endforeach; ?>
           </div>
         </div>
@@ -274,11 +236,11 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
     <?php endif; ?>
 
     <?php if (!empty($unusedKeys)): ?>
-    <div class="orphan-section">
-      <h2>Chiavi inutilizzate (<?= count($unusedKeys) ?>)</h2>
-      <div class="orphan-list">
+    <div class="mt-[30px]">
+      <h2 class="mb-4 text-xl font-bold text-neutral-900">Chiavi inutilizzate (<?= count($unusedKeys) ?>)</h2>
+      <div class="rounded-lg bg-white p-4 shadow-sm">
         <?php foreach ($unusedKeys as $key): ?>
-          <code><?= htmlspecialchars($key) ?></code>
+          <code class="mb-0.5 mr-1 inline-block rounded bg-red-50 px-2 py-0.5 text-[13px] text-red-600"><?= htmlspecialchars($key) ?></code>
         <?php endforeach; ?>
       </div>
     </div>

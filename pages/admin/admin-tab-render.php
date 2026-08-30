@@ -9,26 +9,26 @@ switch ($activeTab) {
     $searchValue = htmlspecialchars($search ?? "");
 
     $html = '
-<div class="search-form">
-  <form method="GET" action="/admin.php" style="display:flex;gap:8px;align-items:center;flex:1;flex-wrap:wrap">
+<div class="mb-4 flex flex-wrap items-center gap-2">
+  <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="users">
     ' . ($pendingOnly ? '<input type="hidden" name="pending" value="1">' : '') . '
-    <input type="text" name="search" class="w-full px-3.5 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed h-10" placeholder="' . 'Search by username...' . '" value="' . $searchValue . '" style="max-width:220px">
+    <input type="text" name="search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $searchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . (($search || $pendingOnly) ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=users']) : '') . '
-    <a href="/admin.php?tab=users' . ($pendingOnly ? '' : '&pending=1') . ($search ? '&search=' . urlencode($search) : '') . '" class="pending-filter-btn ' . ($pendingOnly ? 'pending-filter-btn--active' : 'pending-filter-btn--inactive') . '">
+    <a href="/admin.php?tab=users' . ($pendingOnly ? '' : '&pending=1') . ($search ? '&search=' . urlencode($search) : '') . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-lg border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($pendingOnly ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-border-color bg-surface-offset text-text-secondary hover:bg-surface-card hover:text-text') . '">
       <i class="fas fa-clock"></i> ' . 'Pending only' . '
       ' . ($unapprovedCount > 0 ? ui_badge((string)$unapprovedCount, 'warning', ['pill' => true]) : '') . '
     </a>
   </form>
-  <div style="font-size:0.85em;color:var(--text-color-secondary,#6b7280);white-space:nowrap">
+  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
     ' . 'Total users' . ': ' . $totalUsers . '
-    ' . ($unapprovedCount > 0 && !$pendingOnly ? '<span style="color:#ef4444;margin-left:8px">(' . $unapprovedCount . ' ' . 'pending approval' . ')</span>' : '') . '
+    ' . ($unapprovedCount > 0 && !$pendingOnly ? '<span class="ml-2 text-red-500">(' . $unapprovedCount . ' ' . 'pending approval' . ')</span>' : '') . '
   </div>
 </div>';
 
     if (empty($users)) {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-users" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . 'No data available.' . '</div>';
+      $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-users']);
     } else {
       $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
         <th class="ui-table-header-cell">ID</th>
@@ -53,12 +53,12 @@ switch ($activeTab) {
         $html .= '<tr class="ui-table-row">
           <td class="ui-table-cell">' . (int)$u["id"] . '</td>
           <td class="ui-table-cell">' . htmlspecialchars($u["username"]) . '</td>
-          <td class="ui-table-cell"><code style="font-size:0.85em">' . htmlspecialchars($u["auth_discord_id"]) . '</code></td>
+          <td class="ui-table-cell"><code class="text-[0.85rem]">' . htmlspecialchars($u["auth_discord_id"]) . '</code></td>
           <td class="ui-table-cell">' . ($isUserApproved
             ? ui_badge('Yes', 'success', ['icon' => 'fas fa-check-circle'])
             : ui_badge('No', 'danger', ['icon' => 'fas fa-times-circle'])) . '</td>
           <td class="ui-table-cell">' . ($isUserAdmin
-            ? '<span style="color:#6366f1"><i class="fas fa-crown"></i></span>'
+            ? '<span class="text-indigo-500"><i class="fas fa-crown"></i></span>'
             : '') . '</td>
           <td class="ui-table-cell actions-cell">
             ' . ui_toggle($isUserApproved, '/admin-users-toggle.php', ['labelOn' => 'Disable user', 'labelOff' => 'Enable user', 'size' => 'md', 'method' => 'POST', 'postBody' => $togglePostBody]) . '
@@ -74,7 +74,7 @@ switch ($activeTab) {
         unset($urlParams['page'], $urlParams['ajax']);
         $baseQuery = http_build_query($urlParams);
         $urlPattern = $baseQuery ? '/admin.php?' . $baseQuery . '&page={page}' : '/admin.php?page={page}';
-        $html .= '<div style="text-align:center;margin-top:16px">' .
+        $html .= '<div class="mt-4 text-center">' .
           ui_paginator($page, $totalPages, [
             'url' => $urlPattern,
             'prevLabel' => 'Previous',
@@ -103,10 +103,10 @@ switch ($activeTab) {
       if ($isActive) {
         $icon = $pCurrentDir === 'ASC' ? ' <i class="fas fa-sort-up"></i>' : ' <i class="fas fa-sort-down"></i>';
       } else {
-        $icon = ' <i class="fas fa-sort" style="opacity:0.3"></i>';
+        $icon = ' <i class="fas fa-sort opacity-30"></i>';
       }
       $url = $pSortUrlBase . '&players_sort=' . $key . '&players_dir=' . $nextDir;
-      return '<a href="' . htmlspecialchars($url) . '" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:4px">' . $label . $icon . '</a>';
+      return '<a href="' . htmlspecialchars($url) . '" class="inline-flex items-center gap-1 text-inherit no-underline">' . $label . $icon . '</a>';
     }
 
     $bannedFilterActive = $pBannedOnly;
@@ -115,23 +115,23 @@ switch ($activeTab) {
     if (!$bannedFilterActive) $bannedFilterUrl .= '&players_banned=1';
 
     $html = '
-<div class="search-form">
-  <form method="GET" action="/admin.php" style="display:flex;gap:8px;align-items:center;flex:1;flex-wrap:wrap">
+<div class="mb-4 flex flex-wrap items-center gap-2">
+  <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="players">
-    <input type="text" name="players_search" class="w-full px-3.5 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed h-10" placeholder="' . 'Search by username...' . '" value="' . $playersSearchValue . '" style="max-width:220px">
+    <input type="text" name="players_search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $playersSearchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . ($playersSearch ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=players']) : '') . '
-    <a href="' . htmlspecialchars($bannedFilterUrl) . '" class="pending-filter-btn ' . ($bannedFilterActive ? 'pending-filter-btn--active' : 'pending-filter-btn--inactive') . '">
+    <a href="' . htmlspecialchars($bannedFilterUrl) . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-lg border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($bannedFilterActive ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-border-color bg-surface-offset text-text-secondary hover:bg-surface-card hover:text-text') . '">
       <i class="fas fa-ban"></i> ' . 'Banned' . '
     </a>
   </form>
-  <div style="font-size:0.85em;color:var(--text-color-secondary,#6b7280);white-space:nowrap">
+  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
     ' . 'Total players' . ': ' . $totalPlayers . '
   </div>
 </div>';
 
     if (empty($players)) {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-user-friends" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . 'No data available.' . '</div>';
+      $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-user-friends']);
     } else {
       $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
         <th class="ui-table-header-cell">' . playerSortLink('ID', 'id', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
@@ -156,8 +156,8 @@ switch ($activeTab) {
         $html .= '<tr class="ui-table-row">
           <td class="ui-table-cell">' . (int)$p["player_id"] . '</td>
           <td class="ui-table-cell">' . htmlspecialchars($p["username"]) . '</td>
-          <td class="ui-table-cell">' . (isset($p["top_score"]) ? number_format((float)$p["top_score"], 2) : '<span style="color:var(--text-color-secondary,#6b7280)">-</span>') . '</td>
-          <td class="ui-table-cell">' . ($p["top_game"] ? htmlspecialchars($p["top_game"]) : '<span style="color:var(--text-color-secondary,#6b7280)">-</span>') . '</td>
+          <td class="ui-table-cell">' . (isset($p["top_score"]) ? number_format((float)$p["top_score"], 2) : '<span class="text-text-secondary">-</span>') . '</td>
+          <td class="ui-table-cell">' . ($p["top_game"] ? htmlspecialchars($p["top_game"]) : '<span class="text-text-secondary">-</span>') . '</td>
           <td class="ui-table-cell">' . ($isBanned
             ? ui_badge('Yes', 'danger', ['icon' => 'fas fa-ban'])
             : ui_badge('No', 'default', ['icon' => 'fas fa-check'])) . '</td>
@@ -175,7 +175,7 @@ switch ($activeTab) {
         unset($urlParams['players_page'], $urlParams['ajax']);
         $baseQuery = http_build_query($urlParams);
         $urlPattern = $baseQuery ? '/admin.php?' . $baseQuery . '&players_page={page}' : '/admin.php?players_page={page}';
-        $html .= '<div style="text-align:center;margin-top:16px">' .
+        $html .= '<div class="mt-4 text-center">' .
           ui_paginator($playersPage, $playersTotalPages, [
             'url' => $urlPattern,
             'prevLabel' => 'Previous',
@@ -202,27 +202,27 @@ switch ($activeTab) {
       if ($isActive) {
         $icon = $currentDir === 'ASC' ? ' <i class="fas fa-sort-up"></i>' : ' <i class="fas fa-sort-down"></i>';
       } else {
-        $icon = ' <i class="fas fa-sort" style="opacity:0.3"></i>';
+        $icon = ' <i class="fas fa-sort opacity-30"></i>';
       }
       $url = $sortUrlBase . '&scores_sort=' . $key . '&scores_dir=' . $nextDir;
-      return '<a href="' . htmlspecialchars($url) . '" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:4px">' . $label . $icon . '</a>';
+      return '<a href="' . htmlspecialchars($url) . '" class="inline-flex items-center gap-1 text-inherit no-underline">' . $label . $icon . '</a>';
     }
 
     $html = '
-<div class="search-form">
-  <form method="GET" action="/admin.php" style="display:flex;gap:8px;align-items:center;flex:1;flex-wrap:wrap">
+<div class="mb-4 flex flex-wrap items-center gap-2">
+  <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="scores">
-    <input type="text" name="scores_search" class="w-full px-3.5 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed h-10" placeholder="' . 'Search by username...' . '" value="' . $scoresSearchValue . '" style="max-width:220px">
+    <input type="text" name="scores_search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $scoresSearchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . ($scoresSearch ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=scores']) : '') . '
   </form>
-  <div style="font-size:0.85em;color:var(--text-color-secondary,#6b7280);white-space:nowrap">
+  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
     ' . 'Total scores' . ': ' . number_format($totalScores) . '
   </div>
 </div>';
 
     if (empty($scores)) {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-star" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . 'No data available.' . '</div>';
+      $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-star']);
     } else {
       $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
         <th class="ui-table-header-cell">' . scoreSortLink('Username', 'username', $currentSort, $currentDir, $sortUrlBase) . '</th>
@@ -278,7 +278,7 @@ switch ($activeTab) {
         if ($currentDir !== 'DESC') $scoresUrlParams['scores_dir'] = $currentDir;
         $scoresBaseQuery = http_build_query($scoresUrlParams);
         $scoresUrlPattern = '/admin.php?' . $scoresBaseQuery . '&scores_page={page}';
-        $html .= '<div style="text-align:center;margin-top:16px">' .
+        $html .= '<div class="mt-4 text-center">' .
           ui_paginator($scoresPage, $scoresTotalPages, [
             'url' => $scoresUrlPattern,
             'prevLabel' => 'Previous',
@@ -325,79 +325,29 @@ switch ($activeTab) {
     }
     $countryCountVal = count($countryLabelsAll);
 
-    $html = '
-<div class="admin-stats-grid">
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--primary"><i class="fas fa-star"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . number_format($globalTotalScores) . '</div>
-      <div class="admin-stat-card__label">' . 'Scores' . '</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--success"><i class="fas fa-gamepad"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . $globalTotalGames . '</div>
-      <div class="admin-stat-card__label">' . 'Games' . '</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--info"><i class="fas fa-users"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . number_format($globalTotalPlayers) . '</div>
-      <div class="admin-stat-card__label">' . 'Players' . '</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--purple"><i class="fas fa-user-friends"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . number_format($totalUsers) . '</div>
-      <div class="admin-stat-card__label">' . 'Users' . '</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--warning"><i class="fas fa-play-circle"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . $globalActiveGames . '</div>
-      <div class="admin-stat-card__label">' . 'Active games' . '</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--pink"><i class="fas fa-globe"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . $countryCountVal . '</div>
-      <div class="admin-stat-card__label">' . 'Countries' . '</div>
-    </div>
-  </div>
-</div>';
+    $html = '<div class="mb-6 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 md:grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">' .
+      ui_stat_card(number_format($globalTotalScores), 'Scores', ['icon' => 'fas fa-star']) .
+      ui_stat_card($globalTotalGames, 'Games', ['icon' => 'fas fa-gamepad', 'variant' => 'success']) .
+      ui_stat_card(number_format($globalTotalPlayers), 'Players', ['icon' => 'fas fa-users', 'variant' => 'info']) .
+      ui_stat_card(number_format($totalUsers), 'Users', ['icon' => 'fas fa-user-friends', 'variant' => 'purple']) .
+      ui_stat_card($globalActiveGames, 'Active games', ['icon' => 'fas fa-play-circle', 'variant' => 'warning']) .
+      ui_stat_card($countryCountVal, 'Countries', ['icon' => 'fas fa-globe', 'variant' => 'pink']) .
+    '</div>';
 
     if ($globalTotalScores > 0) {
-      $html .= '
-<div class="admin-stats-grid" style="grid-template-columns:1fr 1fr;margin-top:0">
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--primary"><i class="fas fa-trophy"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . htmlspecialchars($globalTopGame["name"] ?? "N/A") . '</div>
-      <div class="admin-stat-card__label">' . 'Top game' . ' (' . ($globalTopGame["count"] ?? 0) . ' ' . 'Scores' . ')</div>
-    </div>
-  </div>
-  <div class="admin-stat-card">
-    <div class="admin-stat-card__icon admin-stat-card__icon--success"><i class="fas fa-crown"></i></div>
-    <div>
-      <div class="admin-stat-card__value">' . htmlspecialchars($globalTopPlayer["username"] ?? "N/A") . '</div>
-      <div class="admin-stat-card__label">' . 'Top player' . ' (' . ($globalTopPlayer["count"] ?? 0) . ' ' . 'Scores' . ')</div>
-    </div>
-  </div>
-</div>';
+      $html .= '<div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">' .
+        ui_stat_card($globalTopGame["name"] ?? "N/A", 'Top game (' . ($globalTopGame["count"] ?? 0) . ' Scores)', ['icon' => 'fas fa-trophy']) .
+        ui_stat_card($globalTopPlayer["username"] ?? "N/A", 'Top player (' . ($globalTopPlayer["count"] ?? 0) . ' Scores)', ['icon' => 'fas fa-crown', 'variant' => 'success']) .
+      '</div>';
 
       $html .= '
-<div class="chart-grid">
+<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-line text-primary-color mr-2"></i>' . 'Global scores last 30 days' . '
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartAdminScoresOverTime"></canvas>
       </div>
     </div>
@@ -407,7 +357,7 @@ switch ($activeTab) {
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-bar text-primary-color mr-2"></i>' . 'Total scores per game' . '
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartAdminScoresByGame"></canvas>
       </div>
     </div>
@@ -417,14 +367,14 @@ switch ($activeTab) {
       if (count($countryLabelsAll) > 0) {
         $moreCountries = count($countryLabelsAll) - 30;
         $html .= '
-<div style="margin-top:20px">
+<div class="mt-5">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-globe text-primary-color mr-2"></i>' . 'Countries' . '
-        ' . ($moreCountries > 0 ? '<span style="font-weight:400;font-size:0.8em;color:var(--text-color-secondary,#6b7280);margin-left:8px">(' . 'Top 30 - ' . $moreCountries . ' more' . ')</span>' : '') . '
+        ' . ($moreCountries > 0 ? '<span class="ml-2 text-[0.8rem] font-normal text-text-secondary">(' . 'Top 30 - ' . $moreCountries . ' more' . ')</span>' : '') . '
       </div>
-      <div class="chart-container" style="max-height:350px">
+      <div class="relative max-h-[350px] w-full">
         <canvas id="chartAdminCountries"></canvas>
       </div>
     </div>
@@ -432,7 +382,7 @@ switch ($activeTab) {
 </div>';
       }
     } else {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-chart-bar" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . 'No scores have been submitted yet.' . '</div>';
+      $html .= ui_empty_state('No scores have been submitted yet.', ['icon' => 'fas fa-chart-bar']);
     }
 
     echo $html;
@@ -550,8 +500,8 @@ switch ($activeTab) {
   case 'api-errors':
     $csrfToken = csrf_token();
     $html = '<div id="api-errors-container">
-      <div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)">
-        <i class="fas fa-spinner fa-spin" style="font-size:1.5em;opacity:0.5"></i>
+      <div class="px-5 py-10 text-center text-text-secondary">
+        <i class="fas fa-spinner fa-spin text-2xl opacity-50"></i>
       </div>
     </div>';
     echo $html;
@@ -564,7 +514,7 @@ switch ($activeTab) {
   var csrfToken = "' . addslashes($csrfToken) . '";
 
   function loadPage(page) {
-    container.innerHTML = "<div style=\"text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)\"><i class=\"fas fa-spinner fa-spin\" style=\"font-size:1.5em;opacity:0.5\"></i></div>";
+    container.innerHTML = "<div class=\"px-5 py-10 text-center text-text-secondary\"><i class=\"fas fa-spinner fa-spin text-2xl opacity-50\"></i></div>";
 
     fetch("/api/internal/admin/api-errors.php?page=" + page + "&csrf_token=" + encodeURIComponent(csrfToken), {
       credentials: "same-origin"
@@ -572,11 +522,11 @@ switch ($activeTab) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (!data.errors || data.errors.length === 0) {
-        container.innerHTML = "<div style=\"text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)\"><i class=\"fas fa-check-circle\" style=\"font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block\"></i>No errors logged.</div>";
+        container.innerHTML = "<div class=\"px-5 py-10 text-center text-text-secondary\"><i class=\"fas fa-check-circle mb-3 block text-4xl opacity-30\"></i>No errors logged.</div>";
         return;
       }
 
-      var html = "<div style=\"font-size:0.85em;color:var(--text-color-secondary,#6b7280);margin-bottom:12px\">Total: " + data.total + " errors</div>";
+      var html = "<div class=\"mb-3 text-[0.85rem] text-text-secondary\">Total: " + data.total + " errors</div>";
       html += "<div class=\"ui-table-container\"><table class=\"ui-table\"><thead class=\"ui-table-header\"><tr>";
       html += "<th class=\"ui-table-header-cell\">Date</th>";
       html += "<th class=\"ui-table-header-cell\">Code</th>";
@@ -592,15 +542,15 @@ switch ($activeTab) {
       data.errors.forEach(function(e) {
         var statusClass = e.status >= 500 ? "danger" : (e.status >= 400 ? "warning" : "default");
         html += "<tr class=\"ui-table-row\">";
-        html += "<td class=\"ui-table-cell\" style=\"white-space:nowrap;font-size:0.85em\">" + escapeHtml(e.created_at) + "</td>";
-        html += "<td class=\"ui-table-cell\"><code style=\"font-size:0.85em\">" + escapeHtml(e.error_code) + "</code></td>";
+        html += "<td class=\"ui-table-cell whitespace-nowrap text-[0.85rem]\">" + escapeHtml(e.created_at) + "</td>";
+        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.error_code) + "</code></td>";
         html += "<td class=\"ui-table-cell\"><span class=\"ui-badge ui-badge--" + statusClass + "\">" + e.status + "</span></td>";
-        html += "<td class=\"ui-table-cell\"><code style=\"font-size:0.85em\">" + (e.game_id ? escapeHtml(e.game_id) : "-") + "</code></td>";
-        html += "<td class=\"ui-table-cell\"><code style=\"font-size:0.85em\">" + escapeHtml(e.endpoint) + "</code></td>";
+        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + (e.game_id ? escapeHtml(e.game_id) : "-") + "</code></td>";
+        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.endpoint) + "</code></td>";
         html += "<td class=\"ui-table-cell\">" + escapeHtml(e.method) + "</td>";
-        html += "<td class=\"ui-table-cell\"><code style=\"font-size:0.85em\">" + escapeHtml(e.ip || "-") + "</code></td>";
-        html += "<td class=\"ui-table-cell\" style=\"max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\" title=\"" + escapeHtml(e.message) + "\">" + escapeHtml(e.message) + "</td>";
-        html += "<td class=\"ui-table-cell\" style=\"max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8em;color:var(--text-color-secondary,#6b7280)\" title=\"" + escapeHtml(e.request_data || "") + "\">" + escapeHtml(e.request_data || "-") + "</td>";
+        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.ip || "-") + "</code></td>";
+        html += "<td class=\"ui-table-cell max-w-[300px] truncate\" title=\"" + escapeHtml(e.message) + "\">" + escapeHtml(e.message) + "</td>";
+        html += "<td class=\"ui-table-cell max-w-[250px] truncate text-[0.8rem] text-text-secondary\" title=\"" + escapeHtml(e.request_data || "") + "\">" + escapeHtml(e.request_data || "-") + "</td>";
         html += "</tr>";
       });
 
@@ -608,13 +558,13 @@ switch ($activeTab) {
 
       var totalPages = Math.ceil(data.total / data.perPage) - 1;
       if (totalPages > 0) {
-        html += "<div style=\"text-align:center;margin-top:16px;display:flex;justify-content:center;gap:8px;align-items:center\">";
+        html += "<div class=\"mt-4 flex items-center justify-center gap-2 text-center\">";
         if (data.page > 0) {
-          html += "<button class=\"ui-btn ui-btn--secondary ui-btn--sm\" onclick=\"window._apiErrorsLoadPage(" + (data.page - 1) + ")\"><i class=\"fas fa-chevron-left\"></i> Previous</button>";
+          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-surface-offset px-3 py-1.5 text-sm font-semibold text-text transition-colors hover:bg-surface-offset-hover\" onclick=\"window._apiErrorsLoadPage(" + (data.page - 1) + ")\"><i class=\"fas fa-chevron-left\"></i> Previous</button>";
         }
-        html += "<span style=\"font-size:0.85em;color:var(--text-color-secondary,#6b7280)\">Page " + (data.page + 1) + " of " + (totalPages + 1) + "</span>";
+        html += "<span class=\"text-[0.85rem] text-text-secondary\">Page " + (data.page + 1) + " of " + (totalPages + 1) + "</span>";
         if (data.page < totalPages) {
-          html += "<button class=\"ui-btn ui-btn--secondary ui-btn--sm\" onclick=\"window._apiErrorsLoadPage(" + (data.page + 1) + ")\">Next <i class=\"fas fa-chevron-right\"></i></button>";
+          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-surface-offset px-3 py-1.5 text-sm font-semibold text-text transition-colors hover:bg-surface-offset-hover\" onclick=\"window._apiErrorsLoadPage(" + (data.page + 1) + ")\">Next <i class=\"fas fa-chevron-right\"></i></button>";
         }
         html += "</div>";
       }
@@ -622,7 +572,7 @@ switch ($activeTab) {
       container.innerHTML = html;
     })
     .catch(function(err) {
-      container.innerHTML = "<div style=\"text-align:center;padding:40px 20px;color:#dc2626\"><i class=\"fas fa-exclamation-triangle\" style=\"font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block\"></i>Error loading data: " + escapeHtml(err.message) + "</div>";
+      container.innerHTML = "<div class=\"px-5 py-10 text-center text-red-600\"><i class=\"fas fa-exclamation-triangle mb-3 block text-4xl opacity-30\"></i>Error loading data: " + escapeHtml(err.message) + "</div>";
     });
   }
 
@@ -645,24 +595,24 @@ switch ($activeTab) {
 
   case 'migrate':
     $html = '
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-  <p style="color:var(--text-color-secondary,#6b7280);margin:0">' . __('migrate_desc') . '</p>
+<div class="mb-4 flex items-center justify-between gap-4">
+  <p class="m-0 text-text-secondary">' . __('migrate_desc') . '</p>
   ' . ui_button(__('admin_sync_indexes'), 'primary', 'md', ['icon' => 'fas fa-sync', 'attrs' => ['onclick' => "openModal('modal-sync-indexes')"]]) . '
 </div>';
 
     if (!empty($migrateOutput)) {
-      $html .= '<div class="migrate-output">';
+      $html .= '<div class="my-4 max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-lg bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]">';
       foreach ($migrateOutput as $line) {
-        $cls = 'ok';
-        if (strpos($line, 'ERROR') === 0) $cls = 'error';
-        elseif (strpos($line, 'FAIL') === 0) $cls = 'fail';
+        $cls = 'text-[#a6e3a1]';
+        if (strpos($line, 'ERROR') === 0) $cls = 'text-[#f38ba8]';
+        elseif (strpos($line, 'FAIL') === 0) $cls = 'text-[#fab387]';
         $html .= '<div class="' . $cls . '">' . htmlspecialchars($line) . '</div>';
       }
       $html .= '</div>';
     }
 
     if (empty($migrations)) {
-      $html .= '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-database" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . 'No migration files found.' . '</div>';
+      $html .= ui_empty_state('No migration files found.', ['icon' => 'fas fa-database']);
     } else {
       $html .= '
 <div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
@@ -691,17 +641,17 @@ switch ($activeTab) {
 
       if ($pendingMigrateCount > 0) {
         $html .= '
-        <form method="POST" action="/admin.php?tab=migrate" style="margin-top:16px">
+        <form method="POST" action="/admin.php?tab=migrate" class="mt-4">
           ' . csrf_field() . '
           <input type="hidden" name="run" value="1">
           ' . ui_button('Run pending migrations (' . $pendingMigrateCount . ')', 'primary', 'md', ['icon' => 'fas fa-play', 'type' => 'submit']) . '
         </form>';
       } else {
-        $html .= '<div style="margin-top:16px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-check-circle" style="color:#10b981;margin-right:8px"></i>' . 'All migrations have been applied.' . '</div>';
+        $html .= '<div class="mt-4 text-text-secondary"><i class="fas fa-check-circle mr-2 text-emerald-500"></i>' . 'All migrations have been applied.' . '</div>';
       }
     }
 
-    $html .= '<div id="sync-indexes-output" class="migrate-output" style="display:none"></div>';
+    $html .= '<div id="sync-indexes-output" class="my-4 hidden max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-lg bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]"></div>';
 
     $html .= '</div>';
     echo $html;

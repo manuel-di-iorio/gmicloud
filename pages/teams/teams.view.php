@@ -1,6 +1,6 @@
 <div class="internal-page">
   <?php if (!empty($teams)) { ?>
-    <div class="internal-actions internal-actions--right">
+    <div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
       <?= ui_button(__('teams_create_button'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-team.php']) ?>
     </div>
     <div class="ui-table-container">
@@ -40,13 +40,10 @@
       </table>
     </div>
   <?php } else { ?>
-    <div class="internal-empty">
-      <i class="fas fa-users" style="font-size:2em;margin-bottom:8px"></i>
-      <h4><?= __('teams_empty_title') ?></h4>
-      <p><?= __('teams_empty_desc') ?></p>
-      <div style="display:flex;justify-content:center">
-        <?= ui_button(__('teams_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-team.php', 'class' => 'internal-empty-btn']) ?>
-      </div>
-    </div>
+    <?= ui_empty_state(__('teams_empty_title'), [
+      'icon' => 'fas fa-users',
+      'description' => __('teams_empty_desc'),
+      'action' => ui_button(__('teams_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-team.php']),
+    ]) ?>
   <?php } ?>
 </div>

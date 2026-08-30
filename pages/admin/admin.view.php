@@ -1,187 +1,3 @@
-<style>
-.admin-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.admin-stat-card {
-  background: var(--bg-color-card, #fff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: box-shadow 0.2s, border-color 0.2s;
-}
-
-.admin-stat-card:hover {
-  border-color: var(--glass-border-hover, rgba(99,102,241,0.3));
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.admin-stat-card__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  flex-shrink: 0;
-}
-
-.admin-stat-card__icon--primary { background: rgba(99,102,241,0.1); color: #6366f1; }
-.admin-stat-card__icon--success { background: rgba(16,185,129,0.1); color: #10b981; }
-.admin-stat-card__icon--info { background: rgba(59,130,246,0.1); color: #3b82f6; }
-.admin-stat-card__icon--purple { background: rgba(168,85,247,0.1); color: #a855f7; }
-.admin-stat-card__icon--warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
-.admin-stat-card__icon--pink { background: rgba(236,72,153,0.1); color: #ec4899; }
-
-.admin-stat-card__value {
-  font-size: 1.5em;
-  font-weight: 800;
-  color: var(--text-color-headings, #333);
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-
-.admin-stat-card__label {
-  font-size: 0.82em;
-  color: var(--text-color-secondary, #6b7280);
-}
-
-.chart-container {
-  position: relative;
-  width: 100%;
-  max-height: 300px;
-}
-
-.chart-container canvas {
-  max-height: 300px;
-}
-
-.chart-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-  .chart-grid .chart-container {
-    flex: 1;
-    min-height: 200px;
-    max-height: none;
-  }
-
-  .chart-grid .chart-container canvas {
-    max-height: none;
-  }
-
-@media (max-width: 768px) {
-  .chart-grid {
-    grid-template-columns: 1fr;
-  }
-  .admin-stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-}
-
-.search-form {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.search-form .ui-input { height: 38px; }
-.search-form .ui-btn { height: 38px; }
-
-@media (max-width: 1400px) {
-  .search-form form { flex-wrap: wrap; }
-  .search-form form .ui-input { max-width: 180px; }
-  .search-form form .ui-btn { min-width: 80px; }
-  .pending-filter-btn { min-width: 80px; }
-}
-
-.pending-filter-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 38px;
-  padding: 0 14px;
-  border-radius: 8px;
-  font-size: 0.85em;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s;
-  white-space: nowrap;
-  box-sizing: border-box;
-}
-
-.pending-filter-btn--active {
-  background: rgba(245,158,11,0.15);
-  color: #f59e0b;
-  border: 1px solid rgba(245,158,11,0.3);
-}
-
-.pending-filter-btn--inactive {
-  background: var(--bg-color-offset, #f3f4f6);
-  color: var(--text-color-secondary, #6b7280);
-  border: 1px solid var(--border-color, #e5e7eb);
-}
-
-.pending-filter-btn--inactive:hover {
-  background: var(--bg-color-card, #fff);
-  color: var(--text-color, #374151);
-}
-
-.migrate-output {
-  background: #1e1e2e;
-  color: #cdd6f4;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 0.85em;
-  padding: 16px;
-  border-radius: 8px;
-  max-height: 400px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-.migrate-output .ok { color: #a6e3a1; }
-.migrate-output .error { color: #f38ba8; }
-.migrate-output .fail { color: #fab387; }
-
-.admin-score-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  color: var(--table-action-icon-color, #555);
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s, transform 0.15s;
-}
-
-.admin-score-action:hover {
-  background: var(--table-action-icon-hover-bg, rgba(99,102,241,0.08));
-  color: var(--primary-color, #6366f1);
-  transform: translateY(-1px);
-}
-
-.admin-score-action--danger:hover {
-  color: #dc2626;
-  background: rgba(220,38,38,0.08);
-}
-</style>
-
 <?php
 // Render the active tab's content
 ob_start();
@@ -309,7 +125,7 @@ function openModal(id, onOpen, data) {
   var btn = overlay.querySelector('.ui-destructive');
   if (btn) {
     btn.innerHTML = btn.getAttribute('data-original-html') || btn.innerHTML;
-    btn.classList.remove('is-armed');
+    btn.classList.remove('is-armed', 'animate-confirm-pulse');
   }
   if (typeof onOpen === 'function') onOpen(data);
 }
@@ -352,28 +168,28 @@ function syncIndexesConfirm() {
   var output = document.getElementById('sync-indexes-output');
   if (!output) return;
   output.style.display = 'block';
-  output.innerHTML = '<div class="ok">Running...</div>';
+  output.innerHTML = '<div class="text-[#a6e3a1]">Running...</div>';
 
   fetch('/sync-indexes.php', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var html = '';
       if (data.errors && data.errors.length) {
-        data.errors.forEach(function(e) { html += '<div class="error">ERROR ' + e + '</div>'; });
+        data.errors.forEach(function(e) { html += '<div class="text-[#f38ba8]">ERROR ' + e + '</div>'; });
       }
       if (data.created && data.created.length) {
-        data.created.forEach(function(c) { html += '<div class="ok">CREATED ' + c + '</div>'; });
+        data.created.forEach(function(c) { html += '<div class="text-[#a6e3a1]">CREATED ' + c + '</div>'; });
       }
       if (data.skipped && data.skipped.length) {
-        data.skipped.forEach(function(s) { html += '<div style="color:#a6adc8">SKIP ' + s + '</div>'; });
+        data.skipped.forEach(function(s) { html += '<div class="text-[#a6adc8]">SKIP ' + s + '</div>'; });
       }
       if ((!data.created || !data.created.length) && (!data.errors || !data.errors.length)) {
-        html = '<div class="ok">All indexes already exist.</div>';
+        html = '<div class="text-[#a6e3a1]">All indexes already exist.</div>';
       }
       output.innerHTML = html;
     })
     .catch(function(err) {
-      output.innerHTML = '<div class="error">ERROR ' + err.message + '</div>';
+      output.innerHTML = '<div class="text-[#f38ba8]">ERROR ' + err.message + '</div>';
     });
 }
 

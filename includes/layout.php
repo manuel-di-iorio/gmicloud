@@ -53,26 +53,15 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
     <link rel="stylesheet" href="/assets/css/documentation.css?v=<?= asset_version('assets/css/documentation.css') ?>">
     <?php endif; ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/assets/ui-kit/Button/button.css?v=<?= asset_version('assets/ui-kit/Button/button.css') ?>">
     <?php if (!$isIndexPage): ?>
-    <link rel="stylesheet" href="/assets/ui-kit/Modal/modal.css?v=<?= asset_version('assets/ui-kit/Modal/modal.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/Tabs/tabs.css?v=<?= asset_version('assets/ui-kit/Tabs/tabs.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/Skeleton/skeleton.css?v=<?= asset_version('assets/ui-kit/Skeleton/skeleton.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/Table/table.css?v=<?= asset_version('assets/ui-kit/Table/table.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/Paginator/paginator.css?v=<?= asset_version('assets/ui-kit/Paginator/paginator.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/ActionsMenu/actions-menu.css?v=<?= asset_version('assets/ui-kit/ActionsMenu/actions-menu.css') ?>">
     <link rel="stylesheet" href="/assets/ui-kit/Toast/toast.css?v=<?= asset_version('assets/ui-kit/Toast/toast.css') ?>">
-    <link rel="stylesheet" href="/assets/ui-kit/Spinner/spinner.css?v=<?= asset_version('assets/ui-kit/Spinner/spinner.css') ?>">
     <link rel="stylesheet" href="/assets/ui-kit/Tutorial/tutorial.css?v=<?= asset_version('assets/ui-kit/Tutorial/tutorial.css') ?>">
     <link rel="stylesheet" href="/assets/css/navbar.css?v=<?= asset_version('assets/css/navbar.css') ?>">
     <link rel="stylesheet" href="/assets/css/internal-pages.css?v=<?= asset_version('assets/css/internal-pages.css') ?>">
     <?php endif; ?>
-    <link rel="stylesheet" href="/assets/css/cookie-banner.css?v=<?= asset_version('assets/css/cookie-banner.css') ?>">
-    <link rel="stylesheet" href="/assets/css/layout.css?v=<?= asset_version('assets/css/layout.css') ?>">
     <?php if (!$isIndexPage): ?>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <?php endif; ?>
-    <?php if (!$isIndexPage): ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -253,38 +242,66 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
             backgroundImage: {
               cta: 'var(--gradient-cta)',
             },
+            keyframes: {
+              cookieBannerIn: {
+                from: { transform: 'translateY(100%)', opacity: '0' },
+                to: { transform: 'translateY(0)', opacity: '1' },
+              },
+              skeletonShimmer: {
+                from: { backgroundPosition: '-200% 0' },
+                to: { backgroundPosition: '200% 0' },
+              },
+              modalIn: {
+                from: { opacity: '0', transform: 'translateY(24px) scale(.97)' },
+                to: { opacity: '1', transform: 'translateY(0) scale(1)' },
+              },
+              confirmPulse: {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.06)' },
+              },
+              tabsIn: {
+                from: { opacity: '0', transform: 'translateY(6px)' },
+                to: { opacity: '1', transform: 'translateY(0)' },
+              },
+            },
+            animation: {
+              'cookie-banner-in': 'cookieBannerIn 0.5s ease-out forwards',
+              'skeleton-shimmer': 'skeletonShimmer 1.8s ease-in-out infinite',
+              'modal-in': 'modalIn .3s cubic-bezier(.16,1,.3,1)',
+              'confirm-pulse': 'confirmPulse 1s ease-in-out infinite',
+              'tabs-in': 'tabsIn 0.25s ease',
+            },
           },
         },
       }
     </script>
-    <?php endif; ?>
   </head>
 
   <body<?= $theme === 'dark' ? ' class="dark"' : '' ?>>
     <?= ui_toast_container() ?>
-    <div id="cookie-banner" style="display: none;">
-        <div class="cookie-banner-content">
+    <div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[90000] hidden translate-y-full items-center justify-between gap-5 border-0 border-t-[3px] border-solid border-primary-color bg-cookie-banner-bg px-5 py-5 text-center text-cookie-banner-text opacity-0 shadow-[0_-2px_15px_rgba(0,0,0,0.2)] animate-cookie-banner-in sm:px-[30px] [&_a]:font-medium [&_a]:text-cookie-banner-link [&_a]:underline hover:[&_a]:text-cookie-banner-link-hover [&_p]:m-0 [&_p]:text-[0.95rem] [&_p]:leading-relaxed">
+      <div class="flex grow items-center justify-center gap-[15px]">
           <div>
             <p><?= __("cookie_banner_text") ?> <a href="cookie.php"><?= __("cookie_banner_link") ?></a></p>
           </div>
         </div>
-        <button id="accept-cookie-banner" class="btn-glow" style="background-color:var(--primary-color,#3498db);color:white;border:none;border-radius:5px;padding:10px 25px;cursor:pointer;font-weight:600;margin-left:20px;transition:background-color 0.3s ease,transform 0.2s ease;white-space:nowrap;flex-shrink:0;"><?= __("cookie_banner_accept") ?></button>
+        <button id="accept-cookie-banner" class="ml-5 shrink-0 cursor-pointer whitespace-nowrap rounded-md border-0 bg-primary-color px-6 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-primary-color-dark"><?= __("cookie_banner_accept") ?></button>
     </div>
     <?php if ($config["maintenance"]) { ?>
-      <div style="background-color:#f59e0b;color:#000;text-align:center;padding:8px 16px;margin:0;border-radius:0;">
-        <i class="fas fa-tools" style="margin-right:8px;"></i><?= htmlspecialchars($config["maintenanceMessage"]) ?>
+      <div class="m-0 bg-amber-500 px-4 py-2 text-center text-black">
+        <i class="fas fa-tools mr-2"></i><?= htmlspecialchars($config["maintenanceMessage"]) ?>
       </div>
     <?php } ?>
     <?php if (!$isIndexPage) { // Conditionally include navbar
       require_once(__DIR__ . "/../includes/navbar.php"); 
     } ?>
 
-    <main class="PageContent" <?php if ($isIndexPage || !empty($hidePageHeader)) { echo 'style="margin-left: 0 !important; padding: 0 !important;"'; } ?>>
+    <main class="PageContent mt-0 flex-[1_0_auto] px-4 transition-[margin-left] duration-300 lg:ml-[260px] lg:px-20 [&_h1]:mt-6 [&_.ui-page-header_h1]:!m-0 [&_.ui-table-container]:mb-5 [&_.ui-table-container]:overflow-x-auto [&_.ui-table]:w-full [&_.ui-table]:border-collapse [&_.ui-table]:overflow-hidden [&_.ui-table]:rounded-lg [&_.ui-table]:text-[0.95em] [&_.ui-table]:shadow-[0_2px_15px_rgba(0,0,0,0.1)] [&_.ui-table-header]:bg-table-header-bg [&_.ui-table-header]:font-semibold [&_.ui-table-header]:uppercase [&_.ui-table-header]:tracking-[0.03em] [&_.ui-table-header]:text-table-header-text [&_.ui-table-header_a]:text-inherit [&_.ui-table-header_a]:no-underline hover:[&_.ui-table-header_a]:underline [&_.ui-table-header-cell]:border-0 [&_.ui-table-header-cell]:border-b [&_.ui-table-header-cell]:border-solid [&_.ui-table-header-cell]:border-table-border [&_.ui-table-header-cell]:px-3 [&_.ui-table-header-cell]:py-2.5 [&_.ui-table-header-cell]:text-left [&_.ui-table-header-cell:last-child]:text-right [&_.ui-table-body]:bg-surface-card [&_.ui-table-row:nth-child(even)]:bg-table-row-even [&_.ui-table-row:hover]:bg-table-row-hover [&_.ui-table-cell]:border-0 [&_.ui-table-cell]:border-b [&_.ui-table-cell]:border-solid [&_.ui-table-cell]:border-table-border [&_.ui-table-cell]:px-3 [&_.ui-table-cell]:py-2.5 [&_.ui-table-cell]:text-table-cell-text [&_.ui-table-cell:last-child]:whitespace-nowrap [&_.ui-table-cell:last-child]:text-right [&_.ui-table-empty-row]:text-center [&_.ui-table-empty-row]:italic [&_.ui-table-empty-row]:text-text-secondary<?= $isIndexPage || !empty($hidePageHeader) ? ' !ml-0 !p-0' : '' ?>">
       <!-- Header -->
       <?php if (!$isIndexPage && empty($hidePageHeader)) { ?>
-        <header id="portfolio" style="padding-bottom:0">
+        <header id="portfolio" class="pb-0">
           <!-- Small logo shown on small screens -->
-          <a href="./index.php"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="shape-circle LogoSmall float-right m-4 hidden" id="logo-small" width="451" height="109" alt="Logo"></a>
+          <a href="./index.php"><img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" class="shape-circle LogoSmall float-right m-4 hidden w-[120px]" id="logo-small" width="451" height="109" alt="Logo"></a>
 
           <!-- Close sidebar button -->
           <span id="btn-sidebar-open" class="hidden text-[32px] cursor-pointer px-4 py-2" onclick="w3_open()"><i class="fas fa-bars"></i></span>
@@ -317,35 +334,6 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
       require_once(__DIR__ . "/footer.php");
     ?>
   </body>
-
-  <style>
-    .footer-logo { max-width: 120px; height: auto; margin-bottom: 12px; }
-    .footer-bottom { display: flex; align-items: center; justify-content: center; gap: 50px; flex-wrap: wrap; }
-    .footer-bottom p { margin: 0; }
-    .footer-theme-link { color: var(--text-color-secondary, #9ca3af); text-decoration: none; font-size: 0.82em; transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-    .footer-theme-link:hover { color: var(--text-color, #e5e7eb); }
-    .footer-lang { display: flex; align-items: center; gap: 8px; }
-    .footer-lang-link { color: var(--text-color-secondary, #9ca3af); text-decoration: none; font-size: 0.82em; transition: color 0.2s; }
-    .footer-lang-link:hover { color: var(--text-color, #e5e7eb); }
-    .footer-lang-link--active { color: #818cf8; font-weight: 600; }
-    .footer-lang-sep { color: var(--text-color-secondary, #9ca3af); font-size: 0.82em; opacity: 0.4; }
-    .nav-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 999px;
-      background: #ef4444;
-      color: #fff;
-      font-size: 0.7em;
-      font-weight: 700;
-      margin-left: 6px;
-      vertical-align: middle;
-      line-height: 1;
-    }
-  </style>
 
   <!-- JS -->
   <?php if (!$isIndexPage): ?>

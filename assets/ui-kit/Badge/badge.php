@@ -9,6 +9,7 @@ function ui_badge($label, $variant = 'default', $options = []) {
 
   $variants = [
     'default' => 'bg-gray-500/10 text-gray-500',
+    'primary' => 'bg-primary-color/10 text-primary-color',
     'success' => 'bg-emerald-500/10 text-emerald-500',
     'danger'  => 'bg-red-500/10 text-red-500',
     'warning' => 'bg-amber-500/10 text-amber-500',

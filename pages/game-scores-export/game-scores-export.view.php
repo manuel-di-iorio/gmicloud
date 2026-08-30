@@ -1,5 +1,5 @@
 <div class="internal-page">
-  <div class="internal-content" style="max-width: 640px;">
+  <div class="internal-content max-w-2xl">
     <!-- Export Options -->
     <div id="export-options">
       <?= ui_card('<div class="space-y-4">
@@ -11,10 +11,10 @@
               <option value="test">' . __('scores_env_test') . '</option>
             </select>
           </div>
-          <div id="export-summary" class="text-sm text-[var(--text-color-secondary)]" style="display:none">
+          <div id="export-summary" class="hidden text-sm text-[var(--text-color-secondary)]">
             <i class="fas fa-info-circle"></i> <span id="export-summary-text"></span>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_export_cancel'), 'secondary', 'md', ['href' => 'game-scores.php?id=' . $gameId . ($leaderboardId ? '&leaderboard_id=' . $leaderboardId : '')]) . '
             ' . ui_button(__('scores_export_start'), 'primary', 'md', ['icon' => 'fa fa-cloud-download-alt', 'attrs' => ['id' => 'btn-start-export', 'onclick' => 'startExport()']]) . '
           </div>
@@ -24,15 +24,15 @@
     </div>
 
     <!-- Export Progress -->
-    <div id="export-progress" style="display:none">
+    <div id="export-progress" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div id="export-progress-bar-container" class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div id="export-progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            <div id="export-progress-bar" class="h-2.5 w-0 rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
           <div id="export-progress-text" class="text-sm text-[var(--text-color-secondary)]">
             <i class="fas fa-spinner fa-spin"></i> ' . __('scores_export_progress_initializing') . '
           </div>
-          <div id="export-progress-details" class="text-xs text-[var(--text-color-secondary)]" style="display:none">
+          <div id="export-progress-details" class="hidden text-xs text-[var(--text-color-secondary)]">
             <span id="export-progress-count">0</span> / <span id="export-progress-total">0</span> ' . __('scores_export_progress_rows') . '
           </div>
         </div>', [
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Export Complete -->
-    <div id="export-complete" style="display:none">
+    <div id="export-complete" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-green-600">
             <i class="fas fa-check-circle text-2xl"></i>
@@ -50,7 +50,7 @@
           <div class="text-sm text-[var(--text-color-secondary)]">
             <span id="export-complete-count">0</span> ' . __('scores_export_complete_rows') . '
           </div>
-          <div id="export-complete-actions" style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div id="export-complete-actions" class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_export_back'), 'secondary', 'md', ['href' => 'game-scores.php?id=' . $gameId . ($leaderboardId ? '&leaderboard_id=' . $leaderboardId : '')]) . '
             ' . ui_button(__('scores_export_download'), 'primary', 'md', ['icon' => 'fa fa-download', 'attrs' => ['id' => 'btn-download-export']]) . '
           </div>
@@ -60,13 +60,13 @@
     </div>
 
     <!-- Export Error -->
-    <div id="export-error" style="display:none">
+    <div id="export-error" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-red-600">
             <i class="fas fa-exclamation-circle text-2xl"></i>
             <span id="export-error-text">' . __('scores_export_error_text') . '</span>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_export_retry'), 'primary', 'md', ['icon' => 'fa fa-redo', 'attrs' => ['onclick' => 'resetExport()']]) . '
           </div>
         </div>', [

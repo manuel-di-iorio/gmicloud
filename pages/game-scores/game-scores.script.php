@@ -133,7 +133,7 @@ function onViewScoreDataModalOpen({ playerName, data }) {
 document.getElementById("form-add-score").addEventListener("submit", function() {
   var btn = this.querySelector('button[type="submit"]');
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px"></i> ' + <?= json_encode(__('scores_script_sending')) ?>;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> ' + <?= json_encode(__('scores_script_sending')) ?>;
 });
 
 function resetInsertScoreForm() {

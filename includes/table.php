@@ -36,28 +36,6 @@
  */
 function render_table(array $data, array $columns, array $actions = [], array $options = []): void
 {
-    static $actionIconCssOutput = false;
-    if (!$actionIconCssOutput) {
-        $actionIconCssOutput = true;
-        echo '<style>
-    .actions-cell .btn-link {
-        color: var(--table-action-icon-color, #555);
-        font-size: 14px;
-        margin-right: 5px;
-        text-decoration: none;
-        transition: color 0.15s, transform 0.15s;
-        display: inline-block;
-        padding: 4px 6px;
-        border-radius: 4px;
-    }
-    .actions-cell .btn-link:hover {
-        color: var(--primary-color, #6366f1);
-        transform: scale(1.15);
-        background: var(--table-action-icon-hover-bg, transparent);
-    }
-</style>';
-    }
-
     // Default options
     $tableId = $options["table_id"] ?? 'genericTable' . rand(1000, 9999);
      $tableClass = $options["table_class"] ?? 'ui-table';
@@ -144,7 +122,7 @@ function render_table(array $data, array $columns, array $actions = [], array $o
     // --- Table Header ---
     echo '<thead class="ui-table-header"><tr>';
     if ($selectable) {
-        echo '<th class="ui-table-header-cell" style="width:40px;vertical-align:middle"><input type="checkbox" onclick="toggleSelectAll(this, \'selected_ids[]\')" style="vertical-align:middle"></th>';
+        echo '<th class="ui-table-header-cell w-10 align-middle"><input type="checkbox" class="align-middle" onclick="toggleSelectAll(this, \'selected_ids[]\')"></th>';
     }
     foreach ($columns as $column) {
         echo '<th class="ui-table-header-cell">';
@@ -190,13 +168,13 @@ function render_table(array $data, array $columns, array $actions = [], array $o
     echo '<tbody class="ui-table-body">';
     if (empty($pageData)) {
         $colspan = count($columns) + (!empty($actions) ? 1 : 0) + ($selectable ? 1 : 0);
-        echo '<tr class="ui-table-empty-row"><td colspan="' . $colspan . '" style="text-align:center">' . __('table_empty') . '</td></tr>';
+        echo '<tr class="ui-table-empty-row"><td colspan="' . $colspan . '" class="text-center">' . __('table_empty') . '</td></tr>';
     } else {
         foreach ($pageData as $row) {
             echo '<tr class="ui-table-row">';
             if ($selectable) {
                 $pkValue = $row[$primaryKey] ?? '';
-                echo '<td class="ui-table-cell" style="width:40px;vertical-align:middle"><input type="checkbox" name="selected_ids[]" value="' . htmlspecialchars($pkValue) . '" style="vertical-align:middle"></td>';
+                echo '<td class="ui-table-cell w-10 align-middle"><input type="checkbox" name="selected_ids[]" value="' . htmlspecialchars($pkValue) . '" class="align-middle"></td>';
             }
             foreach ($columns as $column) {
                 $cellValue = $row[$column["key"]] ?? '';
@@ -217,6 +195,9 @@ function render_table(array $data, array $columns, array $actions = [], array $o
 
                     if ($showAction) {
                         $actionClass = $action["class"] ?? 'table-action-icon';
+                        if ($actionClass === 'btn-link') {
+                            $actionClass = 'mr-1 inline-block rounded px-1.5 py-1 text-sm text-table-action-icon no-underline transition hover:scale-110 hover:bg-table-action-icon-hover-bg hover:text-primary-color';
+                        }
 
                         // Handle URL with placeholders
                         if (is_callable($action["url"])) {
@@ -250,13 +231,17 @@ function render_table(array $data, array $columns, array $actions = [], array $o
     // --- Pagination Controls ---
     // Show pagination controls only if there is more than one page (totalPages > 0 for 0-indexed)
     if ($paginationSettings && $totalPages > 0) { 
-        echo '<div class="ui-table-pagination" style="text-align:center;margin-top:16px">';
-        echo '<div class="pagination-bar">';
+        $paginationButtonClasses = 'inline-flex min-w-9 select-none items-center justify-center rounded-md border border-solid border-[var(--border-color)] bg-input-bg px-3 py-2 text-[0.9rem] text-text no-underline transition-colors hover:border-primary-color hover:bg-pagination-hover-bg';
+        $paginationActiveClasses = 'cursor-default !border-primary-color !bg-pagination-active-bg font-semibold !text-pagination-active-text';
+        $paginationDisabledClasses = 'cursor-not-allowed !border-transparent !bg-transparent !text-pagination-disabled-text opacity-60';
+
+        echo '<div class="ui-table-pagination mt-4 text-center">';
+        echo '<div class="inline-flex flex-wrap items-center gap-1">';
 
         // Previous button (for 0-indexed)
         if ($currentPage > 0) {
             $prevPageParams = http_build_query(array_merge($_GET, ['page' => $currentPage - 1]));
-            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $prevPageParams) . '" class="pagination-btn">&laquo; ' . __('table_prev') . '</a>';
+            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $prevPageParams) . '" class="' . $paginationButtonClasses . '">&laquo; ' . __('table_prev') . '</a>';
         }
 
         // Page numbers (for 0-indexed)
@@ -283,34 +268,34 @@ function render_table(array $data, array $columns, array $actions = [], array $o
         // Ellipsis for first page if needed (for 0-indexed)
         if ($startPage > 0) {
             $firstPageParams = http_build_query(array_merge($_GET, ['page' => 0]));
-            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $firstPageParams) . '" class="pagination-btn">0</a>';
+              echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $firstPageParams) . '" class="' . $paginationButtonClasses . '">0</a>';
             if ($startPage > 1) { 
-                 echo '<span class="pagination-btn pagination-disabled">...</span>';
+                  echo '<span class="' . $paginationButtonClasses . ' ' . $paginationDisabledClasses . '">...</span>';
             }
         }
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $pageParams = http_build_query(array_merge($_GET, ['page' => $i]));
             if ($i == $currentPage) {
-                echo '<button class="pagination-btn pagination-active"> ' . $i . '</button>';
+                echo '<button class="' . $paginationButtonClasses . ' ' . $paginationActiveClasses . '"> ' . $i . '</button>';
             } else {
-                echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $pageParams) . '" class="pagination-btn">' . $i . '</a>';
+                echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $pageParams) . '" class="' . $paginationButtonClasses . '">' . $i . '</a>';
             }
         }
         
         // Ellipsis for last page if needed (for 0-indexed)
         if ($endPage < $totalPages) {
             if ($endPage < $totalPages - 1 ) { 
-                echo '<span class="pagination-btn pagination-disabled">...</span>';
+                echo '<span class="' . $paginationButtonClasses . ' ' . $paginationDisabledClasses . '">...</span>';
             }
             $lastPageParams = http_build_query(array_merge($_GET, ['page' => $totalPages]));
-            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $lastPageParams) . '" class="pagination-btn">' . $totalPages . '</a>';
+            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $lastPageParams) . '" class="' . $paginationButtonClasses . '">' . $totalPages . '</a>';
         }
 
         // Next button (for 0-indexed)
         if ($currentPage < $totalPages) {
             $nextPageParams = http_build_query(array_merge($_GET, ['page' => $currentPage + 1]));
-            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $nextPageParams) . '" class="pagination-btn">' . __('table_next') . ' &raquo;</a>';
+            echo '<a href="' . htmlspecialchars($baseUrl . (strpos($baseUrl, '?') === false ? '?' : '&') . $nextPageParams) . '" class="' . $paginationButtonClasses . '">' . __('table_next') . ' &raquo;</a>';
         }
 
         echo '</div>';
@@ -331,28 +316,3 @@ function toggleSelectAll(source, name) {
   }
 }
 </script>
-<style>
-    .actions-cell a {
-        margin-right: 5px;
-        text-decoration: none;
-    }
-    .actions-cell a:last-child {
-        margin-right: 0;
-    }
-    .ui-table-pagination {
-        margin-top: 16px;
-    }
-    .pagination-arrow {
-        padding: 8px 16px;
-    }
-    .pagination-number {
-        padding: 8px 16px;
-    }
-    .pagination-active {
-        background-color: var(--pagination-active-bg, #4CAF50);
-        color: var(--pagination-active-text, white);
-    }
-    .pagination-ellipsis {
-        padding: 8px 16px;
-    }
-</style>

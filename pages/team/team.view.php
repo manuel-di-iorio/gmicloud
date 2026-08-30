@@ -1,9 +1,3 @@
-<style>
-.team-settings-card {
-  max-width: 500px;
-}
-</style>
-
 <?php
 $activeTab = $_GET["tab"] ?? "config";
 

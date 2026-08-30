@@ -10,11 +10,11 @@ function ui_button($label, $variant = 'primary', $size = 'md', $options = []) {
   $attrs = $options['attrs'] ?? [];
   $full = $options['full'] ?? false;
 
-  $base = 'ui-btn inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
+  $base = 'relative inline-flex cursor-pointer select-none items-center justify-center overflow-hidden rounded-lg border-0 font-semibold leading-[1.4] no-underline transition-all duration-200 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100';
 
   $variants = [
-    'primary'   => 'bg-blue-600 text-white hover:bg-blue-700 hover:text-white active:bg-blue-800 active:text-white focus:ring-blue-500',
-    'secondary' => 'bg-gray-200 text-gray-900 hover:bg-gray-300 hover:text-gray-900 active:bg-gray-400 active:text-gray-900 focus:ring-gray-400',
+    'primary'   => 'bg-button-bg text-button-text hover:bg-button-bg-hover hover:text-button-text active:bg-button-bg-hover active:text-button-text focus:ring-primary-color',
+    'secondary' => 'bg-surface-offset text-text hover:bg-surface-offset-hover hover:text-text active:bg-surface-offset-hover active:text-text focus:ring-gray-400',
     'danger'    => 'bg-red-600 text-white hover:bg-red-700 hover:text-white active:bg-red-800 active:text-white focus:ring-red-500',
     'ghost'     => 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-700 active:bg-gray-200 active:text-gray-700 focus:ring-gray-400',
     'success'   => 'bg-green-600 text-white hover:bg-green-700 hover:text-white active:bg-green-800 active:text-white focus:ring-green-500',

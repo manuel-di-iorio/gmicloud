@@ -31,13 +31,13 @@ function ui_toast($title, $options = []) {
   }
 
   if ($duration > 0) {
-    $html .= '<div class="ui-toast__progress" style="width:100%;transition-duration:' . intval($duration) . 'ms"></div>';
+    $html .= '<div class="ui-toast__progress w-full"></div>';
   }
 
   $html .= '</div>';
 
   if ($duration > 0) {
-    $html .= '<script>(function(){var t=document.getElementById("' . htmlspecialchars($id) . '");if(!t)return;requestAnimationFrame(function(){var p=t.querySelector(".ui-toast__progress");if(p)p.style.width="0%";});setTimeout(function(){uiToastDismiss("' . htmlspecialchars($id) . '");},' . intval($duration) . ');})();</script>';
+    $html .= '<script>(function(){var t=document.getElementById("' . htmlspecialchars($id) . '");if(!t)return;requestAnimationFrame(function(){var p=t.querySelector(".ui-toast__progress");if(p){p.style.transitionDuration="' . intval($duration) . 'ms";p.style.width="0%";}});setTimeout(function(){uiToastDismiss("' . htmlspecialchars($id) . '");},' . intval($duration) . ');})();</script>';
   }
 
   return $html;

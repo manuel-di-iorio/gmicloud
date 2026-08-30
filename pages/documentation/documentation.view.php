@@ -36,15 +36,15 @@
       <i class="fas fa-shield-alt"></i>
     </div>
     <div>
-      <p class="documentation-text" style="margin-bottom:0"><?= __('docs_security_text') ?></p>
+      <p class="documentation-text !mb-0"><?= __('docs_security_text') ?></p>
     </div>
   </div>
 
-  <div style="margin-top: 24px;">
-    <h6 class="documentation-example-title" style="margin-bottom: 12px"><i class="fas fa-lock" style="margin-right: 8px"></i><?= __('docs_security_how_title') ?></h6>
+  <div class="mt-6">
+    <h6 class="documentation-example-title mb-3"><i class="fas fa-lock mr-2"></i><?= __('docs_security_how_title') ?></h6>
     <p class="documentation-text"><?= __('docs_security_how_text') ?></p>
 
-    <div class="terminal-mockup" style="margin-top: 16px;">
+    <div class="terminal-mockup mt-4">
       <div class="terminal-header">
         <span class="terminal-title"><?= __('docs_security_example_title') ?></span>
       </div>
@@ -56,9 +56,9 @@
       </div>
     </div>
 
-    <div style="margin-top: 20px;">
-      <h6 class="documentation-example-title" style="margin-bottom: 12px"><i class="fas fa-check-circle" style="margin-right: 8px; color: #4ade80"></i><?= __('docs_security_protected_title') ?></h6>
-      <ul class="documentation-text" style="margin-left: 20px; line-height: 1.8;">
+    <div class="mt-5">
+      <h6 class="documentation-example-title mb-3"><i class="fas fa-check-circle mr-2 text-green-400"></i><?= __('docs_security_protected_title') ?></h6>
+      <ul class="documentation-text ml-5 !leading-[1.8]">
         <li><?= __('docs_security_protected_1') ?></li>
         <li><?= __('docs_security_protected_2') ?></li>
         <li><?= __('docs_security_protected_3') ?></li>
@@ -67,9 +67,9 @@
     </div>
   </div>
 
-  <div class="panel-info" style="margin-top: 24px; border-color: #f59e0b; display: block;">
-    <p style="margin-bottom: 8px;"><i class="fas fa-exclamation-triangle mr-2" style="color: #f59e0b"></i><strong><?= __('docs_security_limitation_title') ?></strong></p>
-    <p class="documentation-text" style="margin-bottom: 0;"><?= __('docs_security_limitation_text') ?></p>
+  <div class="panel-info mt-6 !block !border-amber-500">
+    <p class="mb-2"><i class="fas fa-exclamation-triangle mr-2 text-amber-500"></i><strong><?= __('docs_security_limitation_title') ?></strong></p>
+    <p class="documentation-text !mb-0"><?= __('docs_security_limitation_text') ?></p>
   </div>
   <?php
   $securityContent = ob_get_clean();
@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <div class="panel-info" style="margin-top: 20px">
+  <div class="panel-info mt-5">
     <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_errors_retry_info') ?></p>
   </div>
   <?php
@@ -105,12 +105,12 @@
   // RESOURCES TAB CONTENT
   ob_start();
   ?>
-  <div class="download-card" style="margin-bottom:24px">
+  <div class="download-card mb-6">
     <div class="download-icon">
       <i class="fas fa-file-download"></i>
     </div>
-    <h3 class="font-bold text-lg" style="margin: 0; color: var(--text-color-headings);"><?= __('docs_resources_library') ?></h3>
-    <p class="documentation-text" style="margin: 0; font-size: 0.9em;"><?= __('docs_resources_desc') ?></p>
+    <h3 class="m-0 text-lg font-bold text-[var(--text-color-headings)]"><?= __('docs_resources_library') ?></h3>
+    <p class="documentation-text !m-0 !text-[0.9em]"><?= __('docs_resources_desc') ?></p>
     <?= ui_button(__('docs_resources_download'), 'primary', 'md', ['icon' => 'fa fa-download', 'href' => '/sdk/GameMaker/sdk.yymps', 'attrs' => ['download' => ''], 'class' => 'ripple-btn']) ?>
   </div>
 
@@ -129,7 +129,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 16px;">
+      <div class="terminal-mockup mt-4">
         <div class="terminal-header">
           <span class="terminal-title">Async HTTP Event</span>
         </div>
@@ -141,9 +141,9 @@
         </div>
       </div>
 
-      <h6 class="documentation-example-title" style="margin-top:24px"><?= __('docs_sdk_methods_title') ?></h6>
+      <h6 class="documentation-example-title mt-6"><?= __('docs_sdk_methods_title') ?></h6>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">gmi_login()</span>
         </div>
@@ -152,7 +152,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">gmi_logout()</span>
         </div>
@@ -161,7 +161,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">gmi_scores_send()</span>
         </div>
@@ -170,7 +170,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">gmi_scores_get_list()</span>
         </div>
@@ -179,13 +179,13 @@
         </div>
       </div>
 
-      <p class="documentation-text" style="margin-top: 20px;"><?= __('docs_sdk_token_persist_desc') ?></p>
+      <p class="documentation-text mt-5"><?= __('docs_sdk_token_persist_desc') ?></p>
 
-      <hr style="margin: 32px 0 24px; border: none; border-top: 1px solid var(--text-color-secondary); opacity: 0.3;">
+      <hr class="mb-6 mt-8 border-0 border-t border-solid border-[var(--text-color-secondary)] opacity-30">
 
-      <h6 class="documentation-example-title" style="margin-top:0"><?= __('docs_sdk_globals_title') ?></h6>
+      <h6 class="documentation-example-title mt-0"><?= __('docs_sdk_globals_title') ?></h6>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">global.GMI_PLAYER_LOGGED</span>
         </div>
@@ -194,7 +194,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">global.GMI_PLAYER_USERNAME</span>
         </div>
@@ -203,7 +203,7 @@
         </div>
       </div>
 
-      <div class="terminal-mockup" style="margin-top: 12px;">
+      <div class="terminal-mockup mt-3">
         <div class="terminal-header">
           <span class="terminal-title">global.GMI_PLAYER_ID</span>
         </div>
@@ -219,7 +219,7 @@
   // ENDPOINTS TAB CONTENT
   ob_start();
   ?>
-  <div class="panel-info" style="margin-bottom: 24px;">
+  <div class="panel-info mb-6">
     <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_api_advanced_banner') ?></p>
   </div>
 
@@ -234,7 +234,7 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -370,7 +370,7 @@
         <div class="api-endpoint-right">
           <h6 class="documentation-example-title"><?= __('docs_response') ?></h6>
 
-          <div style="font-size:0.82em; color:var(--text-color-secondary); line-height:1.5; margin: -8px 0 16px; padding: 0 4px;">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
             // <?= __('docs_comment_score_action') ?><br/>
             // <?= __('docs_comment_position') ?>
           </div>
@@ -402,7 +402,7 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -581,7 +581,7 @@
             </div>
           </div>
 
-          <div style="font-size:0.82em; color:var(--text-color-secondary); line-height:1.5; margin: -8px 0 16px; padding: 0 4px;">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
             // <?= __('docs_note1') ?><br/>
             // <?= __('docs_note2') ?><br/>
             // <?= __('docs_note_list_pagination') ?>
@@ -600,7 +600,7 @@
             </div>
           </div>
 
-          <div class="terminal-mockup" style="margin-top: 16px;">
+          <div class="terminal-mockup mt-4">
             <div class="terminal-header">
               <span class="terminal-title">Async HTTP Event</span>
             </div>
@@ -626,7 +626,7 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -690,7 +690,7 @@
         <div class="api-endpoint-right">
           <h6 class="documentation-example-title"><?= __('docs_response') ?></h6>
 
-          <div style="font-size:0.82em; color:var(--text-color-secondary); line-height:1.5; margin: -8px 0 16px; padding: 0 4px;">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
             // <?= __('docs_sync_response_comment') ?>
           </div>
 
@@ -713,8 +713,8 @@
   </div>
 
   <!-- Autenticazione Player -->
-  <div style="margin-top:40px">
-    <h6 class="documentation-example-title" style="font-size:1.1em; margin-bottom:8px"><i class="fas fa-key" style="margin-right:8px"></i><?= __('docs_auth_flow_title') ?></h6>
+  <div class="mt-10">
+    <h6 class="documentation-example-title mb-2 !text-[1.1em]"><i class="fas fa-key mr-2"></i><?= __('docs_auth_flow_title') ?></h6>
     <p class="documentation-text mb-4"><?= __('docs_auth_intro') ?></p>
   </div>
 
@@ -727,12 +727,12 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step1_title') ?></strong></p>
           <p class="documentation-text"><?= __('docs_auth_step1_desc') ?></p>
-          <div class="panel-info" style="margin-top:16px">
+          <div class="panel-info mt-4">
             <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_no_body') ?></p>
           </div>
         </div>
@@ -749,7 +749,7 @@
               <div class="code-block jsHigh">{<br/>&nbsp;&nbsp;"status": 200,<br/>&nbsp;&nbsp;"session_token": "a1b2c3d4... (64 caratteri hex)"<br/>}</div>
             </div>
           </div>
-          <h6 class="documentation-example-title" style="margin-top:16px">cURL</h6>
+          <h6 class="documentation-example-title mt-4">cURL</h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Shell</span>
@@ -775,12 +775,12 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step2_title') ?></strong></p>
           <p class="documentation-text"><?= __('docs_auth_step2_desc') ?></p>
-          <div class="api-params-title" style="margin-top:16px"><?= __('docs_params_query') ?></div>
+          <div class="api-params-title mt-4"><?= __('docs_params_query') ?></div>
           <div class="api-params-list">
             <div class="api-param-row">
               <div class="api-param-header">
@@ -791,7 +791,7 @@
               <div class="api-param-desc"><?= __('docs_auth_session_from_prev') ?></div>
             </div>
           </div>
-          <div class="panel-info" style="margin-top:16px">
+          <div class="panel-info mt-4">
             <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_redirect_info') ?></p>
           </div>
         </div>
@@ -822,12 +822,12 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step3_title') ?></strong></p>
           <p class="documentation-text"><?= __('docs_auth_step3_desc') ?></p>
-          <div class="api-params-title" style="margin-top:16px"><?= __('docs_params_query') ?></div>
+          <div class="api-params-title mt-4"><?= __('docs_params_query') ?></div>
           <div class="api-params-list">
             <div class="api-param-row">
               <div class="api-param-header">
@@ -838,7 +838,7 @@
               <div class="api-param-desc"><?= __('docs_auth_session_from_1') ?></div>
             </div>
           </div>
-          <div class="panel-info" style="margin-top:16px">
+          <div class="panel-info mt-4">
             <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_session_expire') ?></p>
           </div>
         </div>
@@ -856,7 +856,7 @@
             </div>
           </div>
 
-          <h6 class="documentation-example-title" style="margin-top:16px"><?= __('docs_auth_login_done') ?></h6>
+          <h6 class="documentation-example-title mt-4"><?= __('docs_auth_login_done') ?></h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Response (logged in)</span>
@@ -869,7 +869,7 @@
             </div>
           </div>
 
-          <h6 class="documentation-example-title" style="margin-top:16px">cURL</h6>
+          <h6 class="documentation-example-title mt-4">cURL</h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Shell</span>
@@ -895,12 +895,12 @@
       </div>
       <i class="fas fa-chevron-down accordion-icon"></i>
     </button>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step4_title') ?></strong></p>
           <p class="documentation-text"><?= __('docs_auth_step4_desc') ?></p>
-          <div class="api-params-title" style="margin-top:16px"><?= __('docs_params_query') ?></div>
+          <div class="api-params-title mt-4"><?= __('docs_params_query') ?></div>
           <div class="api-params-list">
             <div class="api-param-row">
               <div class="api-param-header">
@@ -919,7 +919,7 @@
               <div class="api-param-desc"><?= __('docs_auth_game_id_desc') ?></div>
             </div>
           </div>
-          <div class="panel-info" style="margin-top:16px">
+          <div class="panel-info mt-4">
             <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_token_persist_desc') ?></p>
           </div>
         </div>
@@ -937,7 +937,7 @@
             </div>
           </div>
 
-          <h6 class="documentation-example-title" style="margin-top:16px"><?= __('docs_auth_token_valid_ban') ?></h6>
+          <h6 class="documentation-example-title mt-4"><?= __('docs_auth_token_valid_ban') ?></h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Response (with game param)</span>
@@ -950,7 +950,7 @@
             </div>
           </div>
 
-          <h6 class="documentation-example-title" style="margin-top:16px"><?= __('docs_auth_token_invalid') ?></h6>
+          <h6 class="documentation-example-title mt-4"><?= __('docs_auth_token_invalid') ?></h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Response (invalid)</span>
@@ -963,7 +963,7 @@
             </div>
           </div>
 
-          <h6 class="documentation-example-title" style="margin-top:16px">cURL</h6>
+          <h6 class="documentation-example-title mt-4">cURL</h6>
           <div class="terminal-mockup">
             <div class="terminal-header">
               <span class="terminal-title">Shell</span>
@@ -980,7 +980,7 @@
     </div>
   </div>
 
-  <div class="panel-info" style="margin-top:16px">
+  <div class="panel-info mt-4">
     <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_note_player') ?></p>
   </div>
 
@@ -993,10 +993,10 @@
   <div class="documentation-section">
     <p class="documentation-text"><?= __('docs_offline_sync_intro') ?></p>
 
-    <h6 class="documentation-example-title" style="margin-top: 20px"><i class="fas fa-cogs" style="margin-right: 8px"></i><?= __('docs_offline_sync_how_title') ?></h6>
+    <h6 class="documentation-example-title mt-5"><i class="fas fa-cogs mr-2"></i><?= __('docs_offline_sync_how_title') ?></h6>
     <p class="documentation-text"><?= __('docs_offline_sync_how_text') ?></p>
 
-    <div class="terminal-mockup" style="margin-top: 16px;">
+    <div class="terminal-mockup mt-4">
       <div class="terminal-header">
         <span class="terminal-title"><?= __('docs_offline_sync_example_comment') ?></span>
       </div>
@@ -1008,10 +1008,10 @@
       </div>
     </div>
 
-    <h6 class="documentation-example-title" style="margin-top: 24px"><i class="fas fa-fingerprint" style="margin-right: 8px"></i><?= __('docs_offline_sync_idempotency_title') ?></h6>
+    <h6 class="documentation-example-title mt-6"><i class="fas fa-fingerprint mr-2"></i><?= __('docs_offline_sync_idempotency_title') ?></h6>
     <p class="documentation-text"><?= __('docs_offline_sync_idempotency_text') ?></p>
 
-    <div class="panel-info" style="margin-top: 16px">
+    <div class="panel-info mt-4">
       <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_offline_sync_note') ?></p>
     </div>
   </div>
@@ -1061,12 +1061,12 @@
       var content = this.nextElementSibling;
       var icon = this.querySelector('.accordion-icon');
 
-      if (content.style.display !== "none") {
-        content.style.display = "none";
+      if (!content.classList.contains("hidden")) {
+        content.classList.add("hidden");
         icon.classList.remove("fa-chevron-up");
         icon.classList.add("fa-chevron-down");
       } else {
-        content.style.display = "block";
+        content.classList.remove("hidden");
         icon.classList.remove("fa-chevron-down");
         icon.classList.add("fa-chevron-up");
       }

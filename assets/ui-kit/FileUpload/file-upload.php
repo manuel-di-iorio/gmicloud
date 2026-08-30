@@ -48,9 +48,9 @@ function ui_file_upload($name, $options = []) {
 
   $html .= '</div>';
 
-  $html .= '<input type="file" id="' . $idAttr . '-input" name="' . $nameAttr . '" accept="' . htmlspecialchars($accept) . '" style="display:none"' . $disabledAttr . '>';
+  $html .= '<input type="file" id="' . $idAttr . '-input" name="' . $nameAttr . '" accept="' . htmlspecialchars($accept) . '" class="hidden"' . $disabledAttr . '>';
 
-  $html .= '<div id="' . $idAttr . '-file-info" style="display:none" class="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mt-2">';
+  $html .= '<div id="' . $idAttr . '-file-info" class="hidden items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mt-2">';
   $html .= '<i class="fas fa-file text-blue-600 text-xl"></i>';
   $html .= '<div class="flex-1 min-w-0">';
   $html .= '<p id="' . $idAttr . '-file-name" class="font-medium text-[var(--text-color)] truncate"></p>';

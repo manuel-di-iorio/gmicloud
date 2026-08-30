@@ -80,18 +80,16 @@ switch ($activeTab) {
     } else {
       $hasFilter = ($playerSearch && $playerSearch !== '') || $showBanned;
       if ($hasFilter) { ?>
-        <div class="internal-empty">
-          <i class="fas fa-search"></i>
-          <h4><?= __('game_players_empty_filter_title') ?></h4>
-          <p><?= __('game_players_empty_filter_desc') ?></p>
-          <?= ui_button(__('game_players_empty_filter_btn'), 'primary', 'md', ['attrs' => ['onclick' => "window.location.href='game.php?id=$gameId&tab=players'"]]) ?>
-        </div>
+        <?= ui_empty_state(__('game_players_empty_filter_title'), [
+          'icon' => 'fas fa-search',
+          'description' => __('game_players_empty_filter_desc'),
+          'action' => ui_button(__('game_players_empty_filter_btn'), 'primary', 'md', ['attrs' => ['onclick' => "window.location.href='game.php?id=$gameId&tab=players'"]]),
+        ]) ?>
       <?php } else { ?>
-        <div class="internal-empty">
-          <i class="fas fa-users"></i>
-          <h4><?= __('game_players_empty_title') ?></h4>
-          <p><?= __('game_players_empty_desc') ?></p>
-        </div>
+        <?= ui_empty_state(__('game_players_empty_title'), [
+          'icon' => 'fas fa-users',
+          'description' => __('game_players_empty_desc'),
+        ]) ?>
       <?php }
     }
 
@@ -186,7 +184,7 @@ function performPlayerAction() {
     $leaderboards = Leaderboard::listByGame($gameId, ['name' => $lbNameFilter]);
 
     echo '<div class="internal-page">';
-    echo '<div class="internal-actions internal-actions--right">';
+    echo '<div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">';
     echo ui_button(__('leaderboards_create_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]);
     echo '</div>';
 
@@ -287,19 +285,17 @@ function performPlayerAction() {
     } else {
       $hasFilter = ($lbNameFilter && $lbNameFilter !== '');
       if ($hasFilter) { ?>
-        <div class="internal-empty">
-          <i class="fas fa-search"></i>
-          <h4><?= __('leaderboards_empty_filter_title') ?></h4>
-          <p><?= __('leaderboards_empty_filter_desc') ?></p>
-          <?= ui_button(__('leaderboards_empty_filter_btn'), 'primary', 'md', ['attrs' => ['onclick' => "window.location.href='game.php?id=$gameId&tab=leaderboards'"]]) ?>
-        </div>
+        <?= ui_empty_state(__('leaderboards_empty_filter_title'), [
+          'icon' => 'fas fa-search',
+          'description' => __('leaderboards_empty_filter_desc'),
+          'action' => ui_button(__('leaderboards_empty_filter_btn'), 'primary', 'md', ['attrs' => ['onclick' => "window.location.href='game.php?id=$gameId&tab=leaderboards'"]]),
+        ]) ?>
       <?php } else { ?>
-        <div class="internal-empty">
-          <i class="fas fa-trophy"></i>
-          <h4><?= __('leaderboards_empty_title') ?></h4>
-          <p><?= __('leaderboards_empty_desc') ?></p>
-          <?= ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]) ?>
-        </div>
+        <?= ui_empty_state(__('leaderboards_empty_title'), [
+          'icon' => 'fas fa-trophy',
+          'description' => __('leaderboards_empty_desc'),
+          'action' => ui_button(__('leaderboards_empty_btn'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-leaderboard.php?game_id=' . $gameId]),
+        ]) ?>
       <?php }
     }
     echo '</div>';
@@ -395,47 +391,22 @@ function deleteLeaderboard() {
       $gameCountryCounts[] = (int)$row["count"];
     }
 
-    echo '
-<div class="game-stats-grid">
-  <div class="game-stat-card">
-    <div class="game-stat-card__icon game-stat-card__icon--primary"><i class="fas fa-star"></i></div>
-    <div>
-      <div class="game-stat-card__value">' . number_format($gameTotalScores) . '</div>
-      <div class="game-stat-card__label">' . __('game_stat_scores') . '</div>
-    </div>
-  </div>
-  <div class="game-stat-card">
-    <div class="game-stat-card__icon game-stat-card__icon--success"><i class="fas fa-users"></i></div>
-    <div>
-      <div class="game-stat-card__value">' . number_format($gameUniquePlayers) . '</div>
-      <div class="game-stat-card__label">' . __('game_stat_players') . '</div>
-    </div>
-  </div>
-  <div class="game-stat-card">
-    <div class="game-stat-card__icon game-stat-card__icon--info"><i class="fas fa-globe"></i></div>
-    <div>
-      <div class="game-stat-card__value">' . $gameCountryCount . '</div>
-      <div class="game-stat-card__label">' . __('game_stat_countries') . '</div>
-    </div>
-  </div>
-  <div class="game-stat-card">
-    <div class="game-stat-card__icon game-stat-card__icon--purple"><i class="fas fa-trophy"></i></div>
-    <div>
-      <div class="game-stat-card__value">' . $gameLeaderboardCount . '</div>
-      <div class="game-stat-card__label">' . __('game_stat_leaderboards') . '</div>
-    </div>
-  </div>
-</div>';
+    echo '<div class="mb-6 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 md:grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">' .
+      ui_stat_card(number_format($gameTotalScores), __('game_stat_scores'), ['icon' => 'fas fa-star']) .
+      ui_stat_card(number_format($gameUniquePlayers), __('game_stat_players'), ['icon' => 'fas fa-users', 'variant' => 'success']) .
+      ui_stat_card($gameCountryCount, __('game_stat_countries'), ['icon' => 'fas fa-globe', 'variant' => 'info']) .
+      ui_stat_card($gameLeaderboardCount, __('game_stat_leaderboards'), ['icon' => 'fas fa-trophy', 'variant' => 'purple']) .
+    '</div>';
 
     if ($gameTotalScores > 0) {
       echo '
-<div class="chart-grid">
+<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-line text-primary-color mr-2"></i>' . __('game_chart_30days') . '
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartGameScoresOverTime"></canvas>
       </div>
     </div>
@@ -445,7 +416,7 @@ function deleteLeaderboard() {
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-bar text-primary-color mr-2"></i>' . __('game_chart_by_lb') . '
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartGameScoresByLb"></canvas>
       </div>
     </div>
@@ -454,13 +425,13 @@ function deleteLeaderboard() {
 
       if (count($gameCountryLabels) > 0) {
         echo '
-<div style="margin-top:20px">
+<div class="mt-5">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-globe text-primary-color mr-2"></i>' . __('game_chart_countries') . '
       </div>
-      <div class="chart-container flex-1 min-h-[200px]" style="max-height:350px">
+      <div class="relative min-h-[200px] max-h-[350px] w-full flex-1">
         <canvas id="chartGameCountries"></canvas>
       </div>
     </div>
@@ -468,7 +439,7 @@ function deleteLeaderboard() {
 </div>';
       }
     } else {
-      echo '<div style="text-align:center;padding:40px 20px;color:var(--text-color-secondary,#6b7280)"><i class="fas fa-chart-bar" style="font-size:2.5em;opacity:0.3;margin-bottom:12px;display:block"></i>' . __('game_analytics_empty') . '</div>';
+      echo ui_empty_state(__('game_analytics_empty'), ['icon' => 'fas fa-chart-bar']);
     }
 
     // Chart init script

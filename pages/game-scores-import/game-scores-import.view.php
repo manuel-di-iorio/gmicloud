@@ -1,5 +1,5 @@
 <div class="internal-page">
-  <div class="internal-content" style="max-width: 640px;">
+  <div class="internal-content max-w-2xl">
     <!-- Upload Step -->
     <div id="import-upload">
       <?= ui_card(ui_file_upload('file', [
@@ -7,7 +7,7 @@
         'formats' => __('formats_csv'),
         'info' => __('scores_import_format_info'),
         'required' => true,
-      ]) . '<div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+      ]) . '<div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_cancel'), 'secondary', 'md', ['href' => 'game-scores.php?id=' . $gameId . ($leaderboardId ? '&leaderboard_id=' . $leaderboardId : '')]) . '
             ' . ui_button(__('scores_import_next'), 'primary', 'md', ['icon' => 'fa fa-arrow-right', 'attrs' => ['id' => 'btn-import-next', 'disabled' => '', 'onclick' => 'parseCsv()']]) . '
           </div>', [
@@ -37,14 +37,14 @@
     </div>
 
     <!-- Parsing Step -->
-    <div id="import-parsing" style="display:none">
+    <div id="import-parsing" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-blue-600">
             <i class="fas fa-spinner fa-spin text-2xl"></i>
             <span>' . __('scores_import_parsing_text') . '</span>
           </div>
           <div id="import-parsing-bar-container" class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div id="import-parsing-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            <div id="import-parsing-bar" class="h-2.5 w-0 rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
         </div>', [
         'title' => __('scores_import_parsing_title'),
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Preview Step -->
-    <div id="import-preview" style="display:none">
+    <div id="import-preview" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div id="import-preview-summary" class="grid grid-cols-3 gap-4">
             <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -68,7 +68,7 @@
               <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_preview_total') . '</div>
             </div>
           </div>
-          <div id="import-preview-table-wrapper" style="display:none">
+          <div id="import-preview-table-wrapper" class="hidden">
             <p class="text-sm font-semibold text-[var(--text-color)] mb-2">' . __('scores_import_preview_sample') . '</p>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
@@ -85,11 +85,11 @@
               </table>
             </div>
           </div>
-          <div id="import-preview-errors-wrapper" style="display:none">
+          <div id="import-preview-errors-wrapper" class="hidden">
             <p class="text-sm font-semibold text-red-600 mb-2"><i class="fas fa-exclamation-triangle"></i> ' . __('scores_import_preview_error_list') . '</p>
             <div id="import-preview-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-3"></div>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_back'), 'secondary', 'md', ['attrs' => ['onclick' => 'goToUpload()']]) . '
             ' . ui_button(__('scores_import_confirm'), 'primary', 'md', ['icon' => 'fa fa-cloud-upload-alt', 'attrs' => ['id' => 'btn-import-confirm', 'onclick' => 'executeImport()']]) . '
           </div>
@@ -99,14 +99,14 @@
     </div>
 
     <!-- Importing Step -->
-    <div id="import-executing" style="display:none">
+    <div id="import-executing" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-blue-600">
             <i class="fas fa-spinner fa-spin text-2xl"></i>
             <span id="import-executing-text">' . __('scores_import_executing_text') . '</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div id="import-executing-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 30%"></div>
+            <div id="import-executing-bar" class="h-2.5 w-[30%] rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
         </div>', [
         'title' => __('scores_import_executing_title'),
@@ -114,7 +114,7 @@
     </div>
 
     <!-- Import Complete -->
-    <div id="import-complete" style="display:none">
+    <div id="import-complete" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-green-600">
             <i class="fas fa-check-circle text-2xl"></i>
@@ -130,11 +130,11 @@
               <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_complete_skipped') . '</div>
             </div>
           </div>
-          <div id="import-complete-errors-wrapper" style="display:none">
+          <div id="import-complete-errors-wrapper" class="hidden">
             <p class="text-sm font-semibold text-red-600 mb-2"><i class="fas fa-exclamation-triangle"></i> ' . __('scores_import_complete_error_list') . '</p>
             <div id="import-complete-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-3"></div>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_complete_back'), 'primary', 'md', ['href' => 'game-scores.php?id=' . $gameId . ($leaderboardId ? '&leaderboard_id=' . $leaderboardId : '')]) . '
           </div>
         </div>', [
@@ -143,13 +143,13 @@
     </div>
 
     <!-- Import Error -->
-    <div id="import-error" style="display:none">
+    <div id="import-error" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div class="flex items-center gap-3 text-red-600">
             <i class="fas fa-exclamation-circle text-2xl"></i>
             <span id="import-error-text">' . __('scores_import_error_text') . '</span>
           </div>
-          <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:8px">
+          <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_retry'), 'primary', 'md', ['icon' => 'fa fa-redo', 'attrs' => ['onclick' => 'resetImport()']]) . '
           </div>
         </div>', [

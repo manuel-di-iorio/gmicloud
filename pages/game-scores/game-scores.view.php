@@ -1,10 +1,10 @@
 <div class="internal-page">
   <?php if (!empty($lb['is_private'])) { ?>
-    <div class="private-badge"><i class="fas fa-lock"></i> <?= __('scores_private_badge') ?></div>
+    <?= ui_badge(__('scores_private_badge'), 'primary', ['icon' => 'fas fa-lock', 'class' => 'mb-4 border border-primary-color/15 px-3.5 py-1.5']) ?>
   <?php } ?>
-  <div class="internal-actions internal-actions--right">
+  <div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
     <?php if (!empty($scores)) { ?>
-      <a href="javascript:;" id="btn-delete-selected-wrapper" style="display:none">
+      <a href="javascript:;" id="btn-delete-selected-wrapper" class="hidden">
         <?= ui_button(__('scores_delete_selected'), 'danger', 'md', ['icon' => 'fa fa-trash', 'attrs' => ['onclick' => "openModal('modal-delete-selected-scores', onDeleteSelectedScoresModalOpen)"]]) ?>
       </a>
     <?php } ?>
@@ -197,19 +197,17 @@
     }
 
     if ($filtersApplied) { ?>
-      <div class="internal-empty">
-        <i class="fas fa-search"></i>
-        <h4><?= __('scores_empty_filter_title') ?></h4>
-        <p><?= __('scores_empty_filter_desc') ?></p>
-        <?= ui_button(__('scores_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $game['game_id'] . '&leaderboard_id=' . $leaderboardId]) ?>
-      </div>
+      <?= ui_empty_state(__('scores_empty_filter_title'), [
+        'icon' => 'fas fa-search',
+        'description' => __('scores_empty_filter_desc'),
+        'action' => ui_button(__('scores_empty_filter_btn'), 'primary', 'md', ['href' => htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $game['game_id'] . '&leaderboard_id=' . $leaderboardId]),
+      ]) ?>
     <?php } else { ?>
-      <div class="internal-empty">
-        <i class="fas fa-trophy"></i>
-        <h4><?= __('scores_empty_title') ?></h4>
-        <p><?= __('scores_empty_desc') ?></p>
-        <?= ui_button(__('scores_empty_btn'), 'primary', 'md', ['icon' => 'fa fa-arrow-circle-right', 'href' => 'documentation.php']) ?>
-      </div>
+      <?= ui_empty_state(__('scores_empty_title'), [
+        'icon' => 'fas fa-trophy',
+        'description' => __('scores_empty_desc'),
+        'action' => ui_button(__('scores_empty_btn'), 'primary', 'md', ['icon' => 'fa fa-arrow-circle-right', 'href' => 'documentation.php']),
+      ]) ?>
     <?php } } ?>
   </div>
 </div>
@@ -226,7 +224,7 @@
 
 <?= ui_modal('modal-insert-score', [
   'title' => __('scores_modal_add_title'),
-  'content' => '<form id="form-add-score" style="margin-bottom:0" method="POST" action="/game-scores-add.php?id=' . $game["game_id"] . '&leaderboard_id=' . $leaderboardId . '">' . csrf_field() . '
+  'content' => '<form id="form-add-score" class="mb-0" method="POST" action="/game-scores-add.php?id=' . $game["game_id"] . '&leaderboard_id=' . $leaderboardId . '">' . csrf_field() . '
     <input type="hidden" name="leaderboard_id" value="' . $leaderboardId . '">
     <div class="mb-4">
       <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_player') . '</label>
@@ -236,11 +234,11 @@
       <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_score') . '</label>
       <input id="input-insert-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
     </div>
-    <h5 class="accordion" onclick="toggleAccordion(this)" style="display:block;width:100%;text-align:left;background:var(--bg-color-offset,#f1f1f1);border:none;padding:8px 16px;cursor:pointer">
-      <span style="margin-right:16px">' . __('scores_modal_add_optional') . '</span>
+    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-offset px-4 py-2 text-left" onclick="toggleAccordion(this)">
+      <span class="mr-4">' . __('scores_modal_add_optional') . '</span>
       <small><i class="fas fa-arrow-circle-down"></i></small>
     </h5>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="mb-4">
         <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_tags') . ' <a href="/documentation.php" target="_blank" data-tippy-content="' . __('scores_modal_add_tags_help') . '"><i class="fas fa-question-circle"></i></a></label>
         <input id="input-insert-score__tags" name="tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
@@ -268,7 +266,7 @@
         <input id="input-insert-score__country" name="country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
       </div>
     </div>
-    <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:16px">
+    <div class="flex justify-end gap-2 pt-4">
       ' . ui_button(__('scores_modal_add_cancel'), 'secondary', 'md', ['attrs' => ['onclick' => "closeModal('modal-insert-score', resetInsertScoreForm)"]]) . '
       ' . ui_button(__('scores_modal_add_submit'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'type' => 'submit']) . '
     </div>
@@ -282,11 +280,11 @@
       <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_score') . '</label>
       <input id="input-edit-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
     </div>
-    <h5 class="accordion" onclick="toggleAccordion(this)" style="display:block;width:100%;text-align:left;background:var(--bg-color-offset,#f1f1f1);border:none;padding:8px 16px;cursor:pointer">
-      <span style="margin-right:16px">' . __('scores_modal_add_optional') . '</span>
+    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-offset px-4 py-2 text-left" onclick="toggleAccordion(this)">
+      <span class="mr-4">' . __('scores_modal_add_optional') . '</span>
       <small><i class="fas fa-arrow-circle-down"></i></small>
     </h5>
-    <div class="accordion-content" style="display:none">
+    <div class="accordion-content hidden">
       <div class="mb-4">
         <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_tags') . '</label>
         <input id="input-edit-score__tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
@@ -355,7 +353,7 @@
 <?= ui_modal('modal-view-score-data', [
   'title' => __('scores_modal_data_title'),
   'content' => '<p>' . __('scores_modal_data_body') . ' <strong><span id="modal-view-score-data__player-name"></span></strong></p>
-    <textarea id="modal-view-score-data__data" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed min-h-[80px] resize-y" style="min-height:120px"></textarea>',
+    <textarea id="modal-view-score-data__data" class="min-h-[120px] w-full resize-y rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2.5 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]"></textarea>',
   'footer' => ui_button(__('scores_modal_data_close'), 'secondary', 'md', ['attrs' => ['onclick' => "closeModal('modal-view-score-data')"]]),
   'footer_right' => true,
 ]) ?>

@@ -1,163 +1,20 @@
 <?php if ($loginError): ?>
 <script>uiToastError(<?= json_encode(__("error_login")) ?>, <?= json_encode($loginError) ?>);</script>
 <?php endif; ?>
-<style>
-  .home-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .home-stat-card {
-    background: var(--bg-color-card, #fff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: box-shadow 0.2s, border-color 0.2s;
-  }
-
-  .home-stat-card:hover {
-    border-color: var(--glass-border-hover, rgba(99,102,241,0.3));
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  }
-
-  .home-stat-card__icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3em;
-    flex-shrink: 0;
-  }
-
-  .home-stat-card__icon--primary { background: rgba(99,102,241,0.1); color: #6366f1; }
-  .home-stat-card__icon--success { background: rgba(16,185,129,0.1); color: #10b981; }
-  .home-stat-card__icon--warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
-  .home-stat-card__icon--info { background: rgba(59,130,246,0.1); color: #3b82f6; }
-  .home-stat-card__icon--pink { background: rgba(236,72,153,0.1); color: #ec4899; }
-  .home-stat-card__icon--purple { background: rgba(168,85,247,0.1); color: #a855f7; }
-
-  .home-stat-card__value {
-    font-size: 1.6em;
-    font-weight: 800;
-    color: var(--text-color-headings, #333);
-    line-height: 1.2;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .home-stat-card__label {
-    font-size: 0.82em;
-    color: var(--text-color-secondary, #6b7280);
-  }
-
-  .chart-container {
-    position: relative;
-    width: 100%;
-    max-height: 300px;
-  }
-
-  .chart-container canvas {
-    max-height: 300px;
-  }
-
-  .chart-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
-  }
-
-  .chart-grid .chart-container {
-    flex: 1;
-    min-height: 200px;
-    max-height: none;
-  }
-
-  .chart-grid .chart-container canvas {
-    max-height: none;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-color-secondary, #6b7280);
-  }
-
-  .empty-state i {
-    font-size: 3em;
-    margin-bottom: 16px;
-    opacity: 0.3;
-  }
-
-  .empty-state .ui-btn i {
-    font-size: 1em;
-    margin-bottom: 0;
-    opacity: 1;
-  }
-
-  .empty-state h3 {
-    font-size: 1.2em;
-    font-weight: 600;
-    color: var(--text-color-headings, #333);
-    margin-bottom: 8px;
-  }
-
-  @media (max-width: 768px) {
-    .chart-grid {
-      grid-template-columns: 1fr;
-    }
-    .home-stats-grid {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-  }
-</style>
-
 <?php if ($totalGames === 0) { ?>
-  <div class="empty-state">
-    <i class="fas fa-chart-pie"></i>
-    <h3><?= __('home_empty_title') ?></h3>
-    <p><?= __('home_empty_desc') ?></p>
-    <div style="margin-top:20px">
-      <?= ui_button(__('home_empty_cta'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']) ?>
-    </div>
-  </div>
+  <?= ui_empty_state(__('home_empty_title'), [
+    'icon' => 'fas fa-chart-pie',
+    'description' => __('home_empty_desc'),
+    'action' => ui_button(__('home_empty_cta'), 'primary', 'md', ['icon' => 'fas fa-plus-circle', 'href' => 'add-game.php']),
+    'spacious' => true,
+  ]) ?>
 <?php } else { ?>
 
-<div class="home-stats-grid">
-  <div class="home-stat-card">
-    <div class="home-stat-card__icon home-stat-card__icon--primary"><i class="fas fa-star"></i></div>
-    <div>
-      <div class="home-stat-card__value"><?= number_format($totalScores) ?></div>
-      <div class="home-stat-card__label"><?= __('home_stat_scores') ?></div>
-    </div>
-  </div>
-  <div class="home-stat-card">
-    <div class="home-stat-card__icon home-stat-card__icon--success"><i class="fas fa-users"></i></div>
-    <div>
-      <div class="home-stat-card__value"><?= number_format($totalPlayers) ?></div>
-      <div class="home-stat-card__label"><?= __('home_stat_players') ?></div>
-    </div>
-  </div>
-  <div class="home-stat-card">
-    <div class="home-stat-card__icon home-stat-card__icon--info"><i class="fas fa-gamepad"></i></div>
-    <div>
-      <div class="home-stat-card__value"><?= $totalGames ?></div>
-      <div class="home-stat-card__label"><?= __('home_stat_games') ?></div>
-    </div>
-  </div>
-  <div class="home-stat-card">
-    <div class="home-stat-card__icon home-stat-card__icon--warning"><i class="fas fa-calendar-day"></i></div>
-    <div>
-      <div class="home-stat-card__value"><?= number_format($scoresToday) ?></div>
-      <div class="home-stat-card__label"><?= __('home_stat_today') ?></div>
-    </div>
-  </div>
+<div class="mb-6 grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+  <?= ui_stat_card(number_format($totalScores), __('home_stat_scores'), ['icon' => 'fas fa-star']) ?>
+  <?= ui_stat_card(number_format($totalPlayers), __('home_stat_players'), ['icon' => 'fas fa-users', 'variant' => 'success']) ?>
+  <?= ui_stat_card($totalGames, __('home_stat_games'), ['icon' => 'fas fa-gamepad', 'variant' => 'info']) ?>
+  <?= ui_stat_card(number_format($scoresToday), __('home_stat_today'), ['icon' => 'fas fa-calendar-day', 'variant' => 'warning']) ?>
 </div>
 
 <?php
@@ -190,13 +47,13 @@ foreach ($countries as $row) {
 }
 ?>
 
-<div class="chart-grid">
+<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-line text-primary-color mr-2"></i><?= __('home_chart_30days') ?>
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartScoresOverTime"></canvas>
       </div>
     </div>
@@ -206,7 +63,7 @@ foreach ($countries as $row) {
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-chart-bar text-primary-color mr-2"></i><?= __('home_chart_by_game') ?>
       </div>
-      <div class="chart-container flex-1 min-h-[200px]">
+      <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartScoresByGame"></canvas>
       </div>
     </div>
@@ -214,13 +71,13 @@ foreach ($countries as $row) {
 </div>
 
 <?php if (count($countryLabels) > 0) { ?>
-<div style="margin-top:20px">
+<div class="mt-5">
   <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
         <i class="fas fa-globe text-primary-color mr-2"></i><?= __('home_chart_countries') ?>
       </div>
-      <div class="chart-container flex-1 min-h-[200px]" style="max-height:350px">
+      <div class="relative min-h-[200px] max-h-[350px] w-full flex-1">
         <canvas id="chartCountries"></canvas>
       </div>
     </div>

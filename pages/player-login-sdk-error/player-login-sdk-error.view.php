@@ -1,103 +1,13 @@
-<style>
-.sdk-login-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  height: 100vh;
-  padding: 40px 20px;
-  box-sizing: border-box;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(248, 113, 113, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(239, 68, 68, 0.05) 0%, transparent 50%),
-    var(--bg-color, #f7f7f7);
-  position: relative;
-  overflow: hidden;
-}
-.sdk-login-card {
-  background: var(--bg-color-card, #fff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: 20px;
-  padding: 64px 40px 24px;
-  text-align: center;
-  max-width: 500px;
-  width: 100%;
-  box-sizing: border-box;
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.04),
-    0 8px 32px rgba(0,0,0,0.06);
-  position: relative;
-  z-index: 1;
-  animation: sdk-card-in 0.5s ease-out;
-}
-@keyframes sdk-card-in {
-  from { opacity: 0; transform: translateY(24px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.sdk-error-ring {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto 28px;
-  border-radius: 50%;
-  background: rgba(239, 68, 68, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: sdk-error-pulse 2s ease-in-out infinite;
-}
-@keyframes sdk-error-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.15); }
-  50%      { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
-}
-.sdk-error-ring .sdk-error-icon {
-  font-size: 2.8em;
-  color: #ef4444;
-  animation: sdk-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes sdk-pop-in {
-  from { transform: scale(0) rotate(-10deg); }
-  to   { transform: scale(1) rotate(0deg); }
-}
-.sdk-login-card h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 10px;
-  color: var(--text-color-headings, #333);
-  letter-spacing: -0.01em;
-}
-.sdk-login-card .sdk-login-subtitle {
-  color: var(--text-color-secondary, #666);
-  margin: 0 0 36px;
-  font-size: 0.92em;
-  line-height: 1.6;
-}
-.sdk-login-brand {
-  position: fixed;
-  top: 28px;
-  left: 32px;
-  z-index: 10;
-}
-.sdk-login-brand img {
-  height: 40px;
-  opacity: 0.85;
-  transition: opacity 0.2s;
-}
-.sdk-login-brand img:hover {
-  opacity: 1;
-}
-</style>
-
-<div class="sdk-login-brand">
-  <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Platform Logo">
+<div class="fixed left-8 top-7 z-10">
+  <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.svg" alt="Platform Logo" class="h-10 opacity-[0.85] transition-opacity hover:opacity-100">
 </div>
 
-<div class="sdk-login-page">
-  <div class="sdk-login-card">
-    <div class="sdk-error-ring">
-      <i class="fas fa-times sdk-error-icon"></i>
+<div class="relative flex h-screen min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_20%_50%,rgba(239,68,68,0.08)_0%,transparent_50%),radial-gradient(ellipse_at_80%_20%,rgba(248,113,113,0.06)_0%,transparent_50%),radial-gradient(ellipse_at_50%_80%,rgba(239,68,68,0.05)_0%,transparent_50%),var(--bg-color)] px-5 py-10">
+  <div class="relative z-[1] w-full max-w-[500px] rounded-[20px] border border-solid border-[var(--border-color)] bg-[var(--bg-color-card)] px-10 pb-6 pt-16 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
+    <div class="mx-auto mb-7 flex h-[88px] w-[88px] animate-pulse items-center justify-center rounded-full bg-red-500/10">
+      <i class="fas fa-times text-5xl text-red-500"></i>
     </div>
-    <h2><?= __('error_login') ?></h2>
-    <p class="sdk-login-subtitle"><?= $loginError ?></p>
+    <h2 class="mb-2.5 mt-0 text-2xl font-bold text-[var(--text-color-headings)]"><?= __('error_login') ?></h2>
+    <p class="mb-9 mt-0 text-[0.92rem] leading-6 text-[var(--text-color-secondary)]"><?= htmlspecialchars($loginError) ?></p>
   </div>
 </div>

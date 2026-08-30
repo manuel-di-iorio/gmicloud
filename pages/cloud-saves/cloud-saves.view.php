@@ -1,7 +1,7 @@
 <div class="internal-page">
-  <div class="internal-empty" style="padding:80px 32px">
-    <i class="fas fa-cloud-upload-alt"></i>
-    <h4><?= __('cloud_saves_title') ?></h4>
-    <p><?= htmlspecialchars($pageDesc) ?><br><?= __('cloud_saves_desc') ?></p>
-  </div>
+  <?= ui_empty_state(__('cloud_saves_title'), [
+    'icon' => 'fas fa-cloud-upload-alt',
+    'description' => [$pageDesc, __('cloud_saves_desc')],
+    'spacious' => true,
+  ]) ?>
 </div>
