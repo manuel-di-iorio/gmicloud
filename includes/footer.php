@@ -28,6 +28,7 @@ $footerFlushClass = $footerMarginLeft !== '' ? ' !ml-0' : '';
         <li class="mb-2"><a href="/terms.php" class="text-[0.9em] text-[var(--footer-link-color)] no-underline transition-colors hover:text-[var(--footer-link-hover-color)] hover:underline"><?= __("footer_terms") ?></a></li>
         <li class="mb-2"><a href="/privacy.php" class="text-[0.9em] text-[var(--footer-link-color)] no-underline transition-colors hover:text-[var(--footer-link-hover-color)] hover:underline"><?= __("footer_privacy") ?></a></li>
         <li class="mb-2"><a href="/cookie.php" class="text-[0.9em] text-[var(--footer-link-color)] no-underline transition-colors hover:text-[var(--footer-link-hover-color)] hover:underline"><?= __("footer_cookie") ?></a></li>
+        <?php if (!empty($config["analytics"])) { ?><li class="mb-2"><a href="#" onclick="window.openCookiePreferences&&window.openCookiePreferences();return false;" class="text-[0.9em] text-[var(--footer-link-color)] no-underline transition-colors hover:text-[var(--footer-link-hover-color)] hover:underline"><?= __("footer_manage_consent") ?></a></li><?php } ?>
         <li class="mb-2"><a href="https://github.com/manuel-di-iorio/gmicloud/issues" class="text-[0.9em] text-[var(--footer-link-color)] no-underline transition-colors hover:text-[var(--footer-link-hover-color)] hover:underline" target="_blank" rel="noopener noreferrer"><?= __("footer_report_issue") ?></a></li>
       </ul>
     </div>

@@ -1,5 +1,8 @@
 <?php
 require_once(__DIR__ . "/../lib/csrf.php");
+require_once(__DIR__ . "/../lib/consent.php");
+$consentAnalytics = consent_has_analytics();
+$consentDecided = consent_has_decided();
 $pageURI = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $isIndexPage = basename($pageURI) === 'index.php' || $pageURI === '/'; // Check for index.php or root
 $gameNameShowBackIcon = strpos($pageURI, "/game-scores.php") === 0 || strpos($pageURI, "/game-scores-export.php") === 0 || strpos($pageURI, "/game-scores-import.php") === 0 || strpos($pageURI, "/game-bans.php") === 0 || 
@@ -16,15 +19,18 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
 <!DOCTYPE html>
 <html lang="<?= __("html_lang") ?>">
   <head>
-    <!-- Google Analytics -->
-    <?php if ($config["analytics"]) { ?>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $config["analyticsId"] ?>"></script>
+    <!-- Google Analytics: caricato SOLO dopo consenso analytics (GDPR/ePrivacy + Consent Mode v2) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', { ad_storage: 'denied', analytics_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    </script>
+    <?php if ($config["analytics"] && $consentAnalytics) { ?>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($config["analyticsId"]) ?>"></script>
+    <script>
       gtag('js', new Date());
-      <?php if (isset($user)) { ?>gtag('set', {'user_id': <?= $user["id"] ?>});<?php } ?>
-      gtag('config', '<?= $config["analyticsId"] ?>');
+      gtag('consent', 'update', { ad_storage: 'denied', analytics_storage: 'granted' });
+      gtag('config', '<?= htmlspecialchars($config["analyticsId"]) ?>', { anonymize_ip: true });
     </script>
     <?php } ?>
 
@@ -279,14 +285,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
 
   <body<?= $theme === 'dark' ? ' class="dark"' : '' ?>>
     <?= ui_toast_container() ?>
-    <div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[90000] hidden translate-y-full items-center justify-between gap-5 border-0 border-t-[3px] border-solid border-primary-color bg-cookie-banner-bg px-5 py-5 text-center text-cookie-banner-text opacity-0 shadow-[0_-2px_15px_rgba(0,0,0,0.2)] animate-cookie-banner-in sm:px-[30px] [&_a]:font-medium [&_a]:text-cookie-banner-link [&_a]:underline hover:[&_a]:text-cookie-banner-link-hover [&_p]:m-0 [&_p]:text-[0.95rem] [&_p]:leading-relaxed">
-      <div class="flex grow items-center justify-center gap-[15px]">
-          <div>
-            <p><?= __("cookie_banner_text") ?> <a href="cookie.php"><?= __("cookie_banner_link") ?></a></p>
-          </div>
-        </div>
-        <button id="accept-cookie-banner" class="ml-5 shrink-0 cursor-pointer whitespace-nowrap rounded-md border-0 bg-primary-color px-6 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-primary-color-dark"><?= __("cookie_banner_accept") ?></button>
-    </div>
+    <?php require_once(__DIR__ . "/cookie-banner.php"); ?>
     <?php if ($config["maintenance"]) { ?>
       <div class="m-0 bg-amber-500 px-4 py-2 text-center text-black">
         <i class="fas fa-tools mr-2"></i><?= htmlspecialchars($config["maintenanceMessage"]) ?>

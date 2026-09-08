@@ -344,24 +344,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   }, { passive: true });
 })();
 
-// ================================================================
-// COOKIE CONSENT
-// ================================================================
-window.addEventListener("load", () => {
-  const cookieBanner = document.getElementById('cookie-banner');
-  const acceptCookieBannerButton = document.getElementById('accept-cookie-banner');
-
-  if (localStorage.getItem('cookieConsentAccepted') === 'true') {
-    cookieBanner.classList.add('hidden');
-  } else {
-    cookieBanner.classList.remove('hidden');
-  }
-
-  acceptCookieBannerButton.addEventListener('click', () => {
-    cookieBanner.classList.add('hidden');
-    localStorage.setItem('cookieConsentAccepted', 'true');
-  });
-});
+// COOKIE CONSENT: gestito da assets/js/consent.js (cookie `cookie_consent`, GDPR/ePrivacy).
 
 // Tabs
 document.addEventListener('click', function (e) {
