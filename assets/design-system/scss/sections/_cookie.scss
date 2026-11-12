@@ -1,7 +1,53 @@
-.ds-cookie.hidden, .ds-cookie-modal.hidden { display: none !important; }
-.ds-cookie { position: fixed; inset-inline: 0; bottom: 0; z-index: 90000; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; background: var(--ds-color-surface); border-top: 1px solid var(--ds-color-border); padding: 1.25rem 1.875rem; }
-.ds-cookie p { margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--ds-color-content); }
-.ds-cookie a { font-weight: 500; color: var(--ds-color-content); text-underline-offset: 3px; }
-.ds-cookie__actions { display: flex; flex-shrink: 0; flex-wrap: wrap; gap: 0.5rem; margin-left: 1.25rem; }
-.ds-cookie-modal { position: fixed; inset: 0; z-index: 90001; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); padding: 1rem; }
-.ds-cookie-dialog { width: 100%; max-width: 560px; background: var(--ds-color-surface); border: 1px solid var(--ds-color-border); padding: 1.5rem; color: var(--ds-color-content); }
+.ds-cookie.hidden,
+.ds-cookie-modal.hidden {
+  display: none !important;
+}
+.ds-cookie {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 90000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: var(--ds-color-surface);
+  border-top: 1px solid var(--ds-color-border);
+  padding: 1.25rem 1.875rem;
+}
+.ds-cookie p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ds-color-content);
+}
+.ds-cookie a {
+  font-weight: 500;
+  color: var(--ds-color-content);
+  text-underline-offset: 3px;
+}
+.ds-cookie__actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: 1.25rem;
+}
+.ds-cookie-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+.ds-cookie-dialog {
+  width: 100%;
+  max-width: 560px;
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  padding: 1.5rem;
+  color: var(--ds-color-content);
+}

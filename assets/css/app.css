@@ -4297,7 +4297,8 @@ hr {
   height: 18px;
 }
 
-.ds-cookie.hidden, .ds-cookie-modal.hidden {
+.ds-cookie.hidden,
+.ds-cookie-modal.hidden {
   display: none !important;
 }
 
@@ -4403,7 +4404,7 @@ hr {
 }
 
 .ds-hero {
-  background: #0B1220;
+  background: #0b1220;
   color: #fff;
 }
 
@@ -4439,7 +4440,7 @@ hr {
 }
 @media (min-width: 1024px) {
   .ds-hero h1 {
-    font-size: 4.2rem;
+    font-size: 3.5rem;
   }
 }
 .ds-hero p {
@@ -4550,7 +4551,8 @@ hr {
   border-left: 2px solid transparent;
 }
 
-.ds-docs__nav a:hover, .ds-docs__nav a[aria-current=true] {
+.ds-docs__nav a:hover,
+.ds-docs__nav a[aria-current=true] {
   color: var(--ds-color-content);
   background: var(--ds-color-surface-muted);
   border-left-color: var(--ds-color-secondary);
@@ -4563,7 +4565,8 @@ hr {
   padding: 1.5rem;
 }
 
-.ds-docs__content h2, .ds-docs__content h3 {
+.ds-docs__content h2,
+.ds-docs__content h3 {
   color: var(--ds-color-content);
 }
 
@@ -4724,7 +4727,8 @@ hr {
   border-color: rgba(0, 122, 105, 0.3);
 }
 
-.api-endpoint-grid, .resources-grid {
+.api-endpoint-grid,
+.resources-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.75rem;
@@ -4733,17 +4737,22 @@ hr {
 }
 
 @media (min-width: 1024px) {
-  .api-endpoint-grid, .resources-grid {
+  .api-endpoint-grid,
+  .resources-grid {
     grid-template-columns: 1.15fr 0.85fr;
   }
 }
-.api-endpoint-left, .api-endpoint-right, .download-card, .terminal-mockup {
+.api-endpoint-left,
+.api-endpoint-right,
+.download-card,
+.terminal-mockup {
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
 }
 
-.api-endpoint-left, .api-endpoint-right {
+.api-endpoint-left,
+.api-endpoint-right {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -4891,31 +4900,53 @@ hr {
 .copy-code-btn.copied {
   background: rgba(0, 122, 105, 0.25);
   border-color: rgba(0, 122, 105, 0.5);
-  color: #7DD3C7;
+  color: #7dd3c7;
 }
 
-.terminal-mockup .jscolor, .terminal-mockup .phpcolor, .terminal-mockup .sqlcolor, .terminal-mockup .pythoncolor, .terminal-mockup .javacolor, .terminal-mockup .kotlincolor {
+.terminal-mockup .jscolor,
+.terminal-mockup .phpcolor,
+.terminal-mockup .sqlcolor,
+.terminal-mockup .pythoncolor,
+.terminal-mockup .javacolor,
+.terminal-mockup .kotlincolor {
   color: #cbd5e1 !important;
 }
 
-.terminal-mockup .jskeywordcolor, .terminal-mockup .phpkeywordcolor, .terminal-mockup .sqlkeywordcolor, .terminal-mockup .cssimportantcolor {
+.terminal-mockup .jskeywordcolor,
+.terminal-mockup .phpkeywordcolor,
+.terminal-mockup .sqlkeywordcolor,
+.terminal-mockup .cssimportantcolor {
   color: #ff79c6 !important;
   font-weight: 600 !important;
 }
 
-.terminal-mockup .jsstringcolor, .terminal-mockup .phpstringcolor, .terminal-mockup .sqlstringcolor, .terminal-mockup .attributevaluecolor, .terminal-mockup .csspropertyvaluecolor {
+.terminal-mockup .jsstringcolor,
+.terminal-mockup .phpstringcolor,
+.terminal-mockup .sqlstringcolor,
+.terminal-mockup .attributevaluecolor,
+.terminal-mockup .csspropertyvaluecolor {
   color: #50fa7b !important;
 }
 
-.terminal-mockup .jsnumbercolor, .terminal-mockup .phpnumbercolor, .terminal-mockup .sqlnumbercolor, .terminal-mockup .tagnamecolor {
+.terminal-mockup .jsnumbercolor,
+.terminal-mockup .phpnumbercolor,
+.terminal-mockup .sqlnumbercolor,
+.terminal-mockup .tagnamecolor {
   color: #bd93f9 !important;
 }
 
-.terminal-mockup .jspropertycolor, .terminal-mockup .phpglobalcolor, .terminal-mockup .csspropertycolor, .terminal-mockup .cssselectorcolor, .terminal-mockup .attributecolor {
+.terminal-mockup .jspropertycolor,
+.terminal-mockup .phpglobalcolor,
+.terminal-mockup .csspropertycolor,
+.terminal-mockup .cssselectorcolor,
+.terminal-mockup .attributecolor {
   color: #8be9fd !important;
 }
 
-.terminal-mockup .commentcolor, .terminal-mockup .doctypecolor, .terminal-mockup .tagcolor, .terminal-mockup .cssdelimitercolor {
+.terminal-mockup .commentcolor,
+.terminal-mockup .doctypecolor,
+.terminal-mockup .tagcolor,
+.terminal-mockup .cssdelimitercolor {
   color: #6272a4 !important;
 }
 
@@ -4923,7 +4954,8 @@ hr {
   color: #ff79c6 !important;
 }
 
-.terminal-mockup .jsregexpcolor, .terminal-mockup .jsstringtempcolor {
+.terminal-mockup .jsregexpcolor,
+.terminal-mockup .jsstringtempcolor {
   color: #f1fa8c !important;
 }
 
@@ -5032,7 +5064,9 @@ hr {
   border-bottom: 1px solid var(--ds-color-border);
 }
 
-.internal-page__header h2, .internal-page__header h3, .internal-page__header h1 {
+.internal-page__header h2,
+.internal-page__header h3,
+.internal-page__header h1 {
   margin: 0 0 0.25rem;
   font-weight: 700;
   color: var(--ds-color-content);
@@ -5139,7 +5173,8 @@ pre[class*=language-] {
   border-radius: 0;
 }
 
-code[class*=language-], pre[class*=language-] {
+code[class*=language-],
+pre[class*=language-] {
   color: #e5e7eb;
   background: none;
   font-family: Consolas, Monaco, "Andale Mono", monospace;
@@ -5154,7 +5189,7 @@ code[class*=language-], pre[class*=language-] {
 }
 
 pre[class*=language-] {
-  background: #2F2F2F;
+  background: #2f2f2f;
   border: 1px solid var(--ds-color-border);
   margin: 0.5em 0;
   overflow: auto;
@@ -5169,23 +5204,42 @@ pre[class*=language-] {
   white-space: normal;
 }
 
-.token.comment, .token.prolog, .token.doctype, .token.cdata {
-  color: #7DD3C7;
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #7dd3c7;
 }
 
 .token.punctuation {
   opacity: 0.7;
 }
 
-.token.tag, .token.boolean, .token.number, .token.deleted {
+.token.tag,
+.token.boolean,
+.token.number,
+.token.deleted {
   color: #f87171;
 }
 
-.token.keyword, .token.property, .token.selector, .token.constant, .token.symbol, .token.builtin {
-  color: #F9EE98;
+.token.keyword,
+.token.property,
+.token.selector,
+.token.constant,
+.token.symbol,
+.token.builtin {
+  color: #f9ee98;
 }
 
-.token.attr-name, .token.attr-value, .token.string, .token.char, .token.operator, .token.entity, .token.url, .token.variable, .token.inserted {
+.token.attr-name,
+.token.attr-value,
+.token.string,
+.token.char,
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable,
+.token.inserted {
   color: #b8b8b8;
 }
 
@@ -5193,6 +5247,7 @@ pre[class*=language-] {
   color: #ffac6f;
 }
 
-.token.regex, .token.important {
-  color: #E9C062;
+.token.regex,
+.token.important {
+  color: #e9c062;
 }
