@@ -107,10 +107,10 @@
   </div>
 </div>
 
-<div id="caratteristiche" class="ds-section" style="background:var(--ds-color-surface)">
+<div id="caratteristiche" class="ds-section">
   <div class="ds-container">
-    <h2 class="ds-section-title ds-section-title--left"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
-    <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_features_subtitle') ?></p>
+    <h2 class="ds-section-title"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
+    <p class="ds-section-subtitle"><?= __('index_features_subtitle') ?></p>
     <div class="ds-grid-4">
       <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-cogs"></i></div><h3><?= __('index_feature1_title') ?></h3><p><?= __('index_feature1_desc') ?></p></div>
       <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-expand-arrows-alt"></i></div><h3><?= __('index_feature2_title') ?></h3><p><?= __('index_feature2_desc') ?></p></div>
