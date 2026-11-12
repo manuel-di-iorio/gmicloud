@@ -89,7 +89,7 @@
       </div>
     </div>
     <div class="ds-hero__visual" style="flex:1">
-      <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122" style="border-radius: 10px">
+      <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
     </div>
   </div>
 </div>
@@ -99,10 +99,20 @@
     <h2 class="ds-section-title ds-section-title--left"><?= __('index_how_title') ?></h2>
     <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_how_subtitle') ?></p>
     <div class="ds-grid-4">
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-gamepad"></i></div><h3><?= __('index_step1_title') ?></h3><p><?= __('index_step1_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-puzzle-piece"></i></div><h3><?= __('index_step2_title') ?></h3><p><?= __('index_step2_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-cloud"></i></div><h3><?= __('index_step3_title') ?></h3><p><?= __('index_step3_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-chart-bar"></i></div><h3><?= __('index_step4_title') ?></h3><p><?= __('index_step4_desc') ?></p></div>
+      <?php
+      $howSteps = [
+        ['icon' => 'fas fa-gamepad', 'title' => __('index_step1_title'), 'desc' => __('index_step1_desc')],
+        ['icon' => 'fas fa-puzzle-piece', 'title' => __('index_step2_title'), 'desc' => __('index_step2_desc')],
+        ['icon' => 'fas fa-cloud', 'title' => __('index_step3_title'), 'desc' => __('index_step3_desc')],
+        ['icon' => 'fas fa-chart-bar', 'title' => __('index_step4_title'), 'desc' => __('index_step4_desc')],
+      ];
+      foreach ($howSteps as $step) {
+        echo ui_card(
+          '<h3>' . htmlspecialchars($step['title']) . '</h3><p>' . htmlspecialchars($step['desc']) . '</p>',
+          ['media' => '<div class="ds-card__media--icon"><i class="' . $step['icon'] . '" aria-hidden="true"></i></div>']
+        );
+      }
+      ?>
     </div>
   </div>
 </div>
@@ -112,14 +122,24 @@
     <h2 class="ds-section-title ds-section-title--left"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
     <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_features_subtitle') ?></p>
     <div class="ds-grid-4">
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-cogs"></i></div><h3><?= __('index_feature1_title') ?></h3><p><?= __('index_feature1_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-expand-arrows-alt"></i></div><h3><?= __('index_feature2_title') ?></h3><p><?= __('index_feature2_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-shield-alt"></i></div><h3><?= __('index_feature3_title') ?></h3><p><?= __('index_feature3_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-server"></i></div><h3><?= __('index_feature4_title') ?></h3><p><?= __('index_feature4_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-tachometer-alt"></i></div><h3><?= __('index_feature5_title') ?></h3><p><?= __('index_feature5_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-users"></i></div><h3><?= __('index_feature6_title') ?></h3><p><?= __('index_feature6_desc') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fab fa-github"></i></div><h3><?= __('index_feature7_title') ?></h3><p><?= __('index_feature7_desc1') ?> <a class="ds-link" href="https://github.com/manuel-di-iorio/gmicloud"><?= __('index_feature7_github') ?></a>. <?= __('index_feature7_desc2') ?></p></div>
-      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-rocket"></i></div><h3><?= __('index_feature8_title') ?></h3><p><?= __('index_feature8_desc') ?></p></div>
+      <?php
+      $featureCards = [
+        ['icon' => 'fas fa-cogs', 'title' => __('index_feature1_title'), 'desc' => __('index_feature1_desc')],
+        ['icon' => 'fas fa-expand-arrows-alt', 'title' => __('index_feature2_title'), 'desc' => __('index_feature2_desc')],
+        ['icon' => 'fas fa-shield-alt', 'title' => __('index_feature3_title'), 'desc' => __('index_feature3_desc')],
+        ['icon' => 'fas fa-server', 'title' => __('index_feature4_title'), 'desc' => __('index_feature4_desc')],
+        ['icon' => 'fas fa-tachometer-alt', 'title' => __('index_feature5_title'), 'desc' => __('index_feature5_desc')],
+        ['icon' => 'fas fa-users', 'title' => __('index_feature6_title'), 'desc' => __('index_feature6_desc')],
+        ['icon' => 'fab fa-github', 'title' => __('index_feature7_title'), 'desc' => __('index_feature7_desc1') . ' <a class="ds-link" href="https://github.com/manuel-di-iorio/gmicloud">' . __('index_feature7_github') . '</a>. ' . __('index_feature7_desc2')],
+        ['icon' => 'fas fa-rocket', 'title' => __('index_feature8_title'), 'desc' => __('index_feature8_desc')],
+      ];
+      foreach ($featureCards as $feature) {
+        echo ui_card(
+          '<h3>' . htmlspecialchars($feature['title']) . '</h3><p>' . $feature['desc'] . '</p>',
+          ['media' => '<div class="ds-card__media--icon"><i class="' . $feature['icon'] . '" aria-hidden="true"></i></div>']
+        );
+      }
+      ?>
     </div>
   </div>
 </div>
@@ -129,10 +149,20 @@
     <h2 class="ds-section-title ds-section-title--left"><?= __('index_services_title') ?></h2>
     <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_services_subtitle') ?></p>
     <div class="ds-grid-4">
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-trophy"></i></div><h3><?= __('index_service1_title') ?></h3><p><?= __('index_service1_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-chart-pie"></i></div><h3><?= __('index_service2_title') ?></h3><p><?= __('index_service2_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-user-shield"></i></div><h3><?= __('index_service3_title') ?></h3><p><?= __('index_service3_desc') ?></p></div>
-      <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-cloud-upload-alt"></i></div><h3><?= __('index_service4_title') ?></h3><p><?= __('index_service4_desc') ?></p></div>
+      <?php
+      $serviceCards = [
+        ['icon' => 'fas fa-trophy', 'title' => __('index_service1_title'), 'desc' => __('index_service1_desc')],
+        ['icon' => 'fas fa-chart-pie', 'title' => __('index_service2_title'), 'desc' => __('index_service2_desc')],
+        ['icon' => 'fas fa-user-shield', 'title' => __('index_service3_title'), 'desc' => __('index_service3_desc')],
+        ['icon' => 'fas fa-cloud-upload-alt', 'title' => __('index_service4_title'), 'desc' => __('index_service4_desc')],
+      ];
+      foreach ($serviceCards as $service) {
+        echo ui_card(
+          '<h3>' . htmlspecialchars($service['title']) . '</h3><p>' . htmlspecialchars($service['desc']) . '</p>',
+          ['media' => '<div class="ds-card__media--icon"><i class="' . $service['icon'] . '" aria-hidden="true"></i></div>']
+        );
+      }
+      ?>
     </div>
   </div>
 </div>

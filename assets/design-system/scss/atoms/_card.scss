@@ -14,10 +14,43 @@
 .ds-card--pad-md { --ds-card-pad: 1.25rem; padding: var(--ds-card-pad); }
 .ds-card--pad-lg { --ds-card-pad: 1.75rem; padding: var(--ds-card-pad); }
 
-.ds-card__body { padding: 1.25rem; }
+.ds-card__body { padding: 0.75rem; }
 .ds-card__body--sm { padding: 0.75rem; }
 .ds-card__body--md { padding: 1.25rem; }
 .ds-card__body--lg { padding: 1.75rem; }
+
+.ds-card__body h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ds-color-content);
+  margin: 0 0 0.5rem 0;
+}
+.ds-card__body p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ds-color-content-muted);
+}
+
+/* Top media — full-bleed visual like GMI Frontend cards (image flush, 16:9). */
+img.ds-card__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--ds-color-border);
+}
+.ds-card__media--icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  padding: 0.75rem;
+  background: var(--ds-color-surface-muted);
+  font-size: 2rem;
+  color: var(--ds-color-content-muted);
+  margin: 12px 12px 0 12px;
+}
 
 /* Header and title share the same full-bleed bar. */
 .ds-card__header,

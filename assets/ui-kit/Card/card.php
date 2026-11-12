@@ -29,12 +29,16 @@ function ui_card($content, $options = []) {
   $title = $options['title'] ?? null;
   $header = $options['header'] ?? null;
   $footer = $options['footer'] ?? null;
+  $media = $options['media'] ?? null;
   $id = isset($options['id']) ? ' id="' . htmlspecialchars($options['id']) . '"' : '';
 
   $padMap = ['sm' => 'ds-card__body--sm', 'md' => '', 'lg' => 'ds-card__body--lg'];
   $bodyPad = $padMap[$padding] ?? '';
 
   $html = '<div class="ds-card ' . htmlspecialchars($class, ENT_QUOTES, 'UTF-8') . '"' . $id . '>';
+  if ($media) {
+    $html .= $media;
+  }
   if ($header) {
     $html .= '<div class="ds-card__header">' . $header . '</div>';
   } elseif ($title) {

@@ -335,6 +335,8 @@
 .ds-faq__item.is-open .ds-faq__a-inner {
   padding: 0 1.25rem 1rem 1.25rem;
 }
+/* Landing card grids follow the GMI Frontend rhythm (24px gaps). */
+.ds-section .ds-grid-4 { gap: 1.5rem; }
 .ds-cta-card {
   background: var(--ds-color-surface);
   border: 1px solid var(--ds-color-border);
