@@ -1,8 +1,8 @@
 <div class="internal-page">
   <div class="<?= ui_card_classes(['class' => 'px-8 py-10 text-center']) ?>">
     <i class="fab fa-discord mb-4 text-5xl text-[#5865f2]" aria-hidden="true"></i>
-    <h4 class="mb-2 mt-0 font-semibold text-text-headings"><?= __('approval_title') ?></h4>
-    <p class="mx-auto mb-6 mt-0 max-w-[480px] text-text-secondary">
+    <h4 class="mb-2 mt-0 font-semibold text-content"><?= __('approval_title') ?></h4>
+    <p class="mx-auto mb-6 mt-0 max-w-[480px] text-content-muted">
       <?= __('approval_desc1') ?>
       <strong><?= $config["platformTitle"] ?></strong> <?= __('approval_desc2') ?>
     </p>

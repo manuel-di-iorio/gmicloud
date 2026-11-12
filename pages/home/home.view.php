@@ -48,20 +48,20 @@ foreach ($countries as $row) {
 ?>
 
 <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-line text-primary-color mr-2"></i><?= __('home_chart_30days') ?>
+        <i class="fas fa-chart-line text-secondary mr-2"></i><?= __('home_chart_30days') ?>
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartScoresOverTime"></canvas>
       </div>
     </div>
   </div>
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-bar text-primary-color mr-2"></i><?= __('home_chart_by_game') ?>
+        <i class="fas fa-chart-bar text-secondary mr-2"></i><?= __('home_chart_by_game') ?>
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartScoresByGame"></canvas>
@@ -72,10 +72,10 @@ foreach ($countries as $row) {
 
 <?php if (count($countryLabels) > 0) { ?>
 <div class="mt-5">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-globe text-primary-color mr-2"></i><?= __('home_chart_countries') ?>
+        <i class="fas fa-globe text-secondary mr-2"></i><?= __('home_chart_countries') ?>
       </div>
       <div class="relative min-h-[200px] max-h-[350px] w-full flex-1">
         <canvas id="chartCountries"></canvas>
@@ -87,9 +87,9 @@ foreach ($countries as $row) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var isDark = document.body.classList.contains('dark-theme') || <?= $theme === 'dark' ? 'true' : 'false' ?>;
-  var textColor = isDark ? '#cbd5e1' : '#64748b';
-  var gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  var isDark = false;
+  var textColor = '#6B7280';
+  var gridColor = 'rgba(0,0,0,0.06)';
 
   function createLineCtx(id, labels, data, label) {
     var el = document.getElementById(id);
@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
         datasets: [{
           label: label,
           data: data,
-          borderColor: '#6366f1',
-          backgroundColor: 'rgba(99,102,241,0.08)',
+          borderColor: '#1F2937',
+          backgroundColor: 'rgba(31,41,55,0.08)',
           borderWidth: 2,
           fill: true,
           tension: 0.3,
@@ -133,11 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
           label: label,
           data: data,
           backgroundColor: [
-            'rgba(99,102,241,0.7)', 'rgba(16,185,129,0.7)', 'rgba(245,158,11,0.7)',
+            'rgba(31,41,55,0.7)', 'rgba(16,185,129,0.7)', 'rgba(245,158,11,0.7)',
             'rgba(236,72,153,0.7)', 'rgba(59,130,246,0.7)', 'rgba(168,85,247,0.7)',
             'rgba(239,68,68,0.7)', 'rgba(34,211,238,0.7)'
           ],
-          borderColor: '#6366f1',
+          borderColor: '#1F2937',
           borderWidth: 1,
           borderRadius: 4,
         }]

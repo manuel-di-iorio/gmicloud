@@ -86,7 +86,6 @@
 
         $tableOptions = [
             "table_id" => "leaderboardsTable",
-            "table_class" => "ui-table",
             "primary_key" => "leaderboard_id",
             "base_url" => "leaderboards.php?game_id=" . $game["game_id"],
             "default_sort_column" => "name",

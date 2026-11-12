@@ -1,8 +1,10 @@
-<div class="internal-page pt-14 text-center">
-  <div class="<?= ui_card_classes(['class' => 'mx-auto max-w-[500px] px-10 py-14']) ?>">
-    <div class="bg-gradient-to-br from-indigo-500 to-pink-500 bg-clip-text text-7xl font-extrabold leading-none text-transparent">404</div>
-    <h3 class="mb-2 mt-4 font-semibold text-text-headings"><?= __('not_found_title') ?></h3>
-    <p class="mb-6 mt-0 text-text-secondary"><?= __('not_found_desc') ?></p>
-    <?= ui_button(__('not_found_button'), 'primary', 'md', ['icon' => 'fas fa-home', 'href' => '/']) ?>
+<div class="internal-page" style="text-align:center">
+  <div class="ds-card" style="max-width:500px;margin:0 auto">
+    <div class="ds-card__body" style="padding:2.5rem">
+      <div style="font-size:4.5rem;font-weight:800;line-height:1;color:var(--ds-color-content)">404</div>
+      <h3 style="margin:0.5rem 0;font-weight:600"><?= __('not_found_title') ?></h3>
+      <p class="ds-muted" style="margin:0 0 1.5rem 0"><?= __('not_found_desc') ?></p>
+      <?= ui_button(__('not_found_button'), 'primary', 'md', ['icon' => 'fas fa-home', 'href' => '/']) ?>
+    </div>
   </div>
 </div>

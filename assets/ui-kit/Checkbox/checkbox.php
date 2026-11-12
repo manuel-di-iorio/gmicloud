@@ -8,30 +8,18 @@ function ui_checkbox($name, $checked, $options = []) {
   $disabled = $options['disabled'] ?? false;
   $class = $options['class'] ?? '';
 
-  $checkedAttr = $checked ? ' checked' : '';
-  $disabledAttr = $disabled ? ' disabled' : '';
-
-  $html = '<div class="mb-4 ' . htmlspecialchars($class) . '">';
-  $html .= '<label class="flex items-start gap-2 cursor-pointer select-none">';
-  $html .= '<input type="checkbox" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '" class="mt-0.5 w-[18px] h-[18px] accent-[var(--primary-color)] cursor-pointer shrink-0"' . $checkedAttr . $disabledAttr . '>';
-
+  $html = '<div class="ds-field ' . htmlspecialchars($class) . '">';
+  $html .= '<label class="ds-checkbox">';
+  $html .= '<input type="checkbox" name="' . htmlspecialchars($name) . '" value="' . htmlspecialchars($value) . '"' . ($checked ? ' checked' : '') . ($disabled ? ' disabled' : '') . '>';
   if ($label || $description) {
-    $html .= '<div>';
-    if ($label) {
-      $html .= '<b>' . htmlspecialchars($label) . '</b>';
-    }
+    $html .= '<span><b>' . htmlspecialchars($label) . '</b>';
     if ($description) {
-      $html .= '<small class="block font-normal text-[var(--text-muted,#666)] text-[0.85em] leading-relaxed">';
-      if ($icon) {
-        $html .= '<i class="' . htmlspecialchars($icon) . '"></i> ';
-      }
+      $html .= '<br><small class="ds-hint">';
+      if ($icon) $html .= '<i class="' . htmlspecialchars($icon) . '"></i> ';
       $html .= htmlspecialchars($description) . '</small>';
     }
-    $html .= '</div>';
+    $html .= '</span>';
   }
-
-  $html .= '</label>';
-  $html .= '</div>';
-
+  $html .= '</label></div>';
   return $html;
 }

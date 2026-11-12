@@ -10,7 +10,7 @@ function ui_icon($name, $options = []) {
 
   $sizes = ['sm' => 'text-sm', 'md' => 'text-base', 'lg' => 'text-lg', 'xl' => 'text-2xl'];
   $colors = [
-    'primary'   => 'text-primary-color',
+    'primary'   => 'text-secondary',
     'secondary' => 'text-secondary',
     'success'   => 'text-emerald-500',
     'danger'    => 'text-red-500',

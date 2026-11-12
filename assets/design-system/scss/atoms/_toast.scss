@@ -1,0 +1,21 @@
+.ds-toast-container { position: fixed; inset-inline: 0; bottom: 1rem; z-index: 90000; display: flex; justify-content: center; padding: 0 1rem; pointer-events: none; }
+@media (min-width: 640px) { .ds-toast-container { left: auto; right: 1.5rem; justify-content: flex-end; padding: 0; } }
+.ds-toast { pointer-events: auto; display: flex; align-items: flex-start; gap: 0.75rem; width: 100%; max-width: 24rem; background: var(--ds-color-surface-solid); border: 1px solid var(--ds-color-border); border-left-width: 3px; padding: 0.875rem; }
+.ds-toast--success { border-left-color: var(--ds-color-success); }
+.ds-toast--error, .ds-toast--danger { border-left-color: var(--ds-color-error); }
+.ds-toast--warning { border-left-color: var(--ds-color-warning); }
+.ds-toast--info { border-left-color: var(--ds-color-secondary); }
+.ds-toast__icon { margin-top: 0.125rem; display: flex; width: 1.5rem; height: 1.5rem; flex-shrink: 0; align-items: center; justify-content: center; }
+.ds-toast--success .ds-toast__icon { background: rgba(0,122,105,0.1); color: var(--ds-color-success); }
+.ds-toast--error .ds-toast__icon, .ds-toast--danger .ds-toast__icon { background: rgba(220,38,38,0.1); color: var(--ds-color-error); }
+.ds-toast--warning .ds-toast__icon { background: rgba(223,123,0,0.1); color: var(--ds-color-warning); }
+.ds-toast--info .ds-toast__icon { background: var(--ds-color-surface-muted); color: var(--ds-color-content-muted); }
+.ds-toast__body { min-width: 0; flex: 1; }
+.ds-toast__title { font-size: 0.875rem; font-weight: 600; color: var(--ds-color-content); word-break: break-word; }
+.ds-toast__message { font-size: 0.875rem; color: var(--ds-color-content-muted); }
+.ds-toast__close { flex-shrink: 0; padding: 0.125rem; color: var(--ds-color-content-muted); background: transparent; border: 0; cursor: pointer; }
+.ds-toast__close:hover { color: var(--ds-color-content); }
+.ds-toast__progress { height: 2px; background: var(--ds-color-border); width: 100%; }
+/* legacy class aliases produced by old ui_toast() */
+.ui-toast-container { @extend .ds-toast-container; }
+.ui-toast { @extend .ds-toast; }

@@ -40,16 +40,16 @@ switch ($activeTab) {
           "key" => "user_id",
           "format_callback" => function ($value) {
             if ($value) {
-              return '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"><i class="fab fa-discord"></i> Discord</span>';
+              return '<span class="ds-badge ds-badge--accent"><i class="fab fa-discord"></i> Discord</span>';
             }
-            return '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-gray-800/30 dark:text-gray-400"><i class="fas fa-user"></i> Guest</span>';
+            return '<span class="ds-badge ds-badge--neutral"><i class="fas fa-user"></i> Guest</span>';
           }
         ],
         [
           "label" => __('game_players_col_banned'),
           "key" => "is_banned",
           "format_callback" => function ($value) {
-            return $value ? '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"><i class="fas fa-ban"></i> ' . __('game_players_badge_banned') . '</span>' : '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><i class="fas fa-check-circle"></i> ' . __('game_players_badge_active') . '</span>';
+            return $value ? '<span class="ds-badge ds-badge--danger"><i class="fas fa-ban"></i> ' . __('game_players_badge_banned') . '</span>' : '<span class="ds-badge ds-badge--success"><i class="fas fa-check-circle"></i> ' . __('game_players_badge_active') . '</span>';
           }
         ],
       ];
@@ -69,7 +69,6 @@ switch ($activeTab) {
       ];
 
       $tableOptions = [
-        "table_class" => "ui-table",
         "primary_key" => "player_id",
         "base_url" => $baseUrl,
         "default_sort_column" => "username",
@@ -274,7 +273,6 @@ function performPlayerAction() {
 
       $tableOptions = [
         "table_id" => "leaderboardsTable",
-        "table_class" => "ui-table",
         "primary_key" => "leaderboard_id",
         "base_url" => $lbBaseUrl,
         "default_sort_column" => "name",
@@ -401,20 +399,20 @@ function deleteLeaderboard() {
     if ($gameTotalScores > 0) {
       echo '
 <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-line text-primary-color mr-2"></i>' . __('game_chart_30days') . '
+        <i class="fas fa-chart-line text-secondary mr-2"></i>' . __('game_chart_30days') . '
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartGameScoresOverTime"></canvas>
       </div>
     </div>
   </div>
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-bar text-primary-color mr-2"></i>' . __('game_chart_by_lb') . '
+        <i class="fas fa-chart-bar text-secondary mr-2"></i>' . __('game_chart_by_lb') . '
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartGameScoresByLb"></canvas>
@@ -426,10 +424,10 @@ function deleteLeaderboard() {
       if (count($gameCountryLabels) > 0) {
         echo '
 <div class="mt-5">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-globe text-primary-color mr-2"></i>' . __('game_chart_countries') . '
+        <i class="fas fa-globe text-secondary mr-2"></i>' . __('game_chart_countries') . '
       </div>
       <div class="relative min-h-[200px] max-h-[350px] w-full flex-1">
         <canvas id="chartGameCountries"></canvas>
@@ -446,9 +444,9 @@ function deleteLeaderboard() {
     if ($gameTotalScores > 0) {
       echo '<script>
 (function () {
-  var isDark = document.body.classList.contains("dark-theme");
-  var textColor = isDark ? "#cbd5e1" : "#64748b";
-  var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  var isDark = false;
+  var textColor = "#6B7280";
+  var gridColor = "rgba(0,0,0,0.06)";
 
   function createLineCtx(id, labels, data, label) {
     var el = document.getElementById(id);
@@ -460,8 +458,8 @@ function deleteLeaderboard() {
         datasets: [{
           label: label,
           data: data,
-          borderColor: "#6366f1",
-          backgroundColor: "rgba(99,102,241,0.08)",
+          borderColor: "#1F2937",
+          backgroundColor: "rgba(31,41,55,0.08)",
           borderWidth: 2,
           fill: true,
           tension: 0.3,
@@ -492,11 +490,11 @@ function deleteLeaderboard() {
           label: label,
           data: data,
           backgroundColor: [
-            "rgba(99,102,241,0.7)", "rgba(16,185,129,0.7)", "rgba(245,158,11,0.7)",
+            "rgba(31,41,55,0.7)", "rgba(16,185,129,0.7)", "rgba(245,158,11,0.7)",
             "rgba(236,72,153,0.7)", "rgba(59,130,246,0.7)", "rgba(168,85,247,0.7)",
             "rgba(239,68,68,0.7)", "rgba(34,211,238,0.7)"
           ],
-          borderColor: "#6366f1",
+          borderColor: "#1F2937",
           borderWidth: 1,
           borderRadius: 4,
         }]

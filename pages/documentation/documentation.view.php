@@ -109,9 +109,9 @@
     <div class="download-icon">
       <i class="fas fa-file-download"></i>
     </div>
-    <h3 class="m-0 text-lg font-bold text-[var(--text-color-headings)]"><?= __('docs_resources_library') ?></h3>
+    <h3 class="m-0 text-lg font-bold text-[var(--ds-color-content)]"><?= __('docs_resources_library') ?></h3>
     <p class="documentation-text !m-0 !text-[0.9em]"><?= __('docs_resources_desc') ?></p>
-    <?= ui_button(__('docs_resources_download'), 'primary', 'md', ['icon' => 'fa fa-download', 'href' => '/sdk/GameMaker/sdk.yymps', 'attrs' => ['download' => ''], 'class' => 'ripple-btn']) ?>
+    <?= ui_button(__('docs_resources_download'), 'primary', 'md', ['icon' => 'fa fa-download', 'href' => '/sdk/GameMaker/sdk.yymps', 'attrs' => ['download' => ''], 'class' => '']) ?>
   </div>
 
   <div class="resources-grid">
@@ -181,7 +181,7 @@
 
       <p class="documentation-text mt-5"><?= __('docs_sdk_token_persist_desc') ?></p>
 
-      <hr class="mb-6 mt-8 border-0 border-t border-solid border-[var(--text-color-secondary)] opacity-30">
+      <hr class="mb-6 mt-8 border-0 border-t border-solid border-[var(--ds-color-content-muted)] opacity-30">
 
       <h6 class="documentation-example-title mt-0"><?= __('docs_sdk_globals_title') ?></h6>
 
@@ -370,7 +370,7 @@
         <div class="api-endpoint-right">
           <h6 class="documentation-example-title"><?= __('docs_response') ?></h6>
 
-          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--ds-color-content-muted)]">
             // <?= __('docs_comment_score_action') ?><br/>
             // <?= __('docs_comment_position') ?>
           </div>
@@ -581,7 +581,7 @@
             </div>
           </div>
 
-          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--ds-color-content-muted)]">
             // <?= __('docs_note1') ?><br/>
             // <?= __('docs_note2') ?><br/>
             // <?= __('docs_note_list_pagination') ?>
@@ -690,7 +690,7 @@
         <div class="api-endpoint-right">
           <h6 class="documentation-example-title"><?= __('docs_response') ?></h6>
 
-          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--text-color-secondary)]">
+          <div class="-mt-2 mb-4 px-1 text-[0.82em] leading-6 text-[var(--ds-color-content-muted)]">
             // <?= __('docs_sync_response_comment') ?>
           </div>
 

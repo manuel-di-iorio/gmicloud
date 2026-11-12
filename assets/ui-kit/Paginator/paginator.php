@@ -12,88 +12,47 @@ function ui_paginator($currentPage, $totalPages, $options = []) {
   $showFirstLast = $options['showFirstLast'] ?? true;
   $class = $options['class'] ?? '';
 
-  $btnBase = 'inline-flex items-center justify-center min-w-[36px] px-3 py-2 border border-solid border-border-color rounded-md bg-input-bg text-sm text-[var(--text-color)] no-underline cursor-pointer select-none transition-colors duration-150';
-  $btnHover = 'hover:bg-surface-offset hover:border-[var(--primary-color)]';
-  $btnActive = '!bg-[var(--primary-color)] !text-white !border-[var(--primary-color)] font-semibold';
-  $btnDisabled = '!bg-transparent !border-transparent !text-[var(--text-color-secondary)] cursor-not-allowed opacity-60';
-  $ellipsis = 'px-1 text-[var(--text-color-secondary)]';
+  $btn = 'ds-pagination__btn';
+  $html = '<nav class="ds-pagination ' . htmlspecialchars($class) . '"><div class="ds-pagination__list">';
 
-  $html = '<nav class="inline-flex items-center gap-1 flex-wrap ' . htmlspecialchars($class) . '">';
-
-  // First page
   if ($showFirstLast && $currentPage > 0) {
-    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', '0', $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '" title="' . htmlspecialchars($firstLabel) . '">' . $firstLabel . '</a>';
+    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', '0', $urlPattern)) . '" class="' . $btn . '">' . $firstLabel . '</a>';
   }
-
-  // Previous page
   if ($currentPage > 0) {
-    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $currentPage - 1, $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '" rel="prev">' . $prevLabel . '</a>';
+    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $currentPage - 1, $urlPattern)) . '" class="' . $btn . '" rel="prev">' . $prevLabel . '</a>';
   } else {
-    $html .= '<span class="' . $btnBase . ' ' . $btnDisabled . '">' . $prevLabel . '</span>';
+    $html .= '<span class="' . $btn . ' ds-pagination__btn--disabled">' . $prevLabel . '</span>';
   }
 
-  // Build visible page range (0-indexed)
   $half = floor(($maxButtons - 1) / 2);
   $start = max(1, $currentPage - $half);
   $end = min($totalPages - 1, $currentPage + $half);
-
-  // Adjust if we're near the edges to fill maxButtons slots
   $visibleCount = $end - $start + 1;
-  if ($visibleCount < $maxButtons && $start > 1) {
-    $start = max(1, $start - ($maxButtons - $visibleCount));
-    $end = min($totalPages - 1, $start + $maxButtons - 1);
-    $start = max(1, $end - $maxButtons + 1);
-  } elseif ($visibleCount < $maxButtons && $end < $totalPages - 1) {
-    $end = min($totalPages - 1, $end + ($maxButtons - $visibleCount));
-    $start = max(1, $end - $maxButtons + 1);
-  }
+  if ($visibleCount < $maxButtons && $start > 1) { $start = max(1, $start - ($maxButtons - $visibleCount)); $end = min($totalPages - 1, $start + $maxButtons - 1); $start = max(1, $end - $maxButtons + 1); }
+  elseif ($visibleCount < $maxButtons && $end < $totalPages - 1) { $end = min($totalPages - 1, $end + ($maxButtons - $visibleCount)); $start = max(1, $end - $maxButtons + 1); }
 
-  // Page 1 (if not already in range)
   if ($start > 0) {
-    if ($currentPage == 0) {
-      $html .= '<button class="' . $btnBase . ' ' . $btnActive . '">1</button>';
-    } else {
-      $html .= '<a href="' . htmlspecialchars(str_replace('{page}', '0', $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '">1</a>';
-    }
-    if ($start > 1) {
-      $html .= '<span class="' . $ellipsis . '">&hellip;</span>';
-    }
+    $html .= $currentPage == 0 ? '<button class="' . $btn . ' ds-pagination__btn--active">1</button>' : '<a href="' . htmlspecialchars(str_replace('{page}', '0', $urlPattern)) . '" class="' . $btn . '">1</a>';
+    if ($start > 1) $html .= '<span class="' . $btn . ' ds-pagination__btn--disabled">&hellip;</span>';
   }
-
-  // Middle pages
   for ($i = $start; $i <= $end; $i++) {
     $pageUrl = str_replace('{page}', $i, $urlPattern);
-    if ($i == $currentPage) {
-      $html .= '<button class="' . $btnBase . ' ' . $btnActive . '">' . ($i + 1) . '</button>';
-    } else {
-      $html .= '<a href="' . htmlspecialchars($pageUrl) . '" class="' . $btnBase . ' ' . $btnHover . '">' . ($i + 1) . '</a>';
-    }
+    $html .= ($i == $currentPage) ? '<button class="' . $btn . ' ds-pagination__btn--active">' . ($i + 1) . '</button>' : '<a href="' . htmlspecialchars($pageUrl) . '" class="' . $btn . '">' . ($i + 1) . '</a>';
   }
-
-  // Last page (if not already in range)
   if ($end < $totalPages - 1) {
-    if ($end < $totalPages - 2) {
-      $html .= '<span class="' . $ellipsis . '">&hellip;</span>';
-    }
-    if ($currentPage == $totalPages - 1) {
-      $html .= '<button class="' . $btnBase . ' ' . $btnActive . '">' . $totalPages . '</button>';
-    } else {
-      $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $totalPages - 1, $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '">' . $totalPages . '</a>';
-    }
+    if ($end < $totalPages - 2) $html .= '<span class="' . $btn . ' ds-pagination__btn--disabled">&hellip;</span>';
+    $html .= ($currentPage == $totalPages - 1) ? '<button class="' . $btn . ' ds-pagination__btn--active">' . $totalPages . '</button>' : '<a href="' . htmlspecialchars(str_replace('{page}', $totalPages - 1, $urlPattern)) . '" class="' . $btn . '">' . $totalPages . '</a>';
   }
 
-  // Next page
   if ($currentPage < $totalPages - 1) {
-    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $currentPage + 1, $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '" rel="next">' . $nextLabel . '</a>';
+    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $currentPage + 1, $urlPattern)) . '" class="' . $btn . '" rel="next">' . $nextLabel . '</a>';
   } else {
-    $html .= '<span class="' . $btnBase . ' ' . $btnDisabled . '">' . $nextLabel . '</span>';
+    $html .= '<span class="' . $btn . ' ds-pagination__btn--disabled">' . $nextLabel . '</span>';
   }
-
-  // Last page button
   if ($showFirstLast && $currentPage < $totalPages - 1) {
-    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $totalPages - 1, $urlPattern)) . '" class="' . $btnBase . ' ' . $btnHover . '" title="' . htmlspecialchars($lastLabel) . '">' . $lastLabel . '</a>';
+    $html .= '<a href="' . htmlspecialchars(str_replace('{page}', $totalPages - 1, $urlPattern)) . '" class="' . $btn . '">' . $lastLabel . '</a>';
   }
 
-  $html .= '</nav>';
+  $html .= '</div></nav>';
   return $html;
 }

@@ -1,0 +1,12 @@
+/* ds-alert — neutral surface with 3px left border */
+.ds-alert { display: flex; align-items: flex-start; gap: 0.75rem; background: var(--ds-color-surface); border: 1px solid var(--ds-color-border); border-left-width: 3px; padding: 1rem 1.5rem; font-size: 0.875rem; color: var(--ds-color-content); margin-bottom: 1.5rem; }
+.ds-alert--info { border-left-color: var(--ds-color-secondary); }
+.ds-alert--success { border-left-color: var(--ds-color-success); }
+.ds-alert--warning { border-left-color: var(--ds-color-warning); }
+.ds-alert--danger { border-left-color: var(--ds-color-error); }
+.ds-alert__icon { margin-top: 0.125rem; flex-shrink: 0; }
+.ds-alert--info .ds-alert__icon { color: var(--ds-color-secondary); }
+.ds-alert--success .ds-alert__icon { color: var(--ds-color-success); }
+.ds-alert--warning .ds-alert__icon { color: var(--ds-color-warning); }
+.ds-alert--danger .ds-alert__icon { color: var(--ds-color-error); }
+.ds-alert__title { font-weight: 600; margin-bottom: 0.25rem; }

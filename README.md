@@ -10,7 +10,7 @@ A server-side platform for managing game leaderboards, scores, and player data. 
 | Database | MySQL (mysqli, prepared statements) |
 | Auth | Discord OAuth2 (developers), separate player auth flow |
 | Session | AES-128-CBC encrypted cookies with HMAC-SHA256 signing |
-| Frontend CSS | Tailwind CSS (CDN) + custom CSS variables (dark/light theme) |
+| Frontend CSS | Compiled `assets/css/app.css` (Tailwind 3.4 + Sass design system, light only) |
 | Frontend JS | Vanilla JS, Chart.js, Tippy.js, Popper.js |
 | i18n | Custom JSON-based system with `__()` helper (EN, IT, ES, FR, DE) |
 | API | REST (JSON), rate-limited, hash-verified score submission (SHA-1 + secret) |
@@ -21,7 +21,9 @@ A server-side platform for managing game leaderboards, scores, and player data. 
 
 ```
 /
-├── assets/              Static files (CSS, JS, images, UI Kit)
+├── assets/              Static files (compiled CSS, JS, images, UI Kit)
+├── assets/design-system/  Design system sources (Tailwind entry + SCSS tokens/atoms/sections)
+├── scripts/build-css.mjs  CSS build (Tailwind → Sass → assets/css/app.css, committed)
 ├── includes/            Master layout and reusable template partials
 ├── lib/                 Core server libraries (DB, auth, CSRF, i18n, etc.)
 ├── models/              Database entity classes with schema definitions
@@ -45,7 +47,7 @@ The project follows a custom MVC-like pattern:
 3. **`/models/`** defines static entity classes with a `$schema` array describing table structure, indexes, foreign keys, and relations.
 4. **`/lib/`** provides shared services: database connection, session management, CSRF protection, rate limiting, encryption, i18n, and more.
 5. **`/includes/`** contains the master layout and reusable components (navbar, footer, table, filters).
-6. **`/assets/ui-kit/`** exposes 16+ reusable PHP UI components (Button, Input, Modal, Table, Tabs, Toast, etc.) each with its own render function, CSS, and JS.
+6. **`/assets/ui-kit/`** exposes 16+ reusable PHP UI components (Button, Input, Modal, Table, Tabs, Toast, etc.) each with its own render function (the `ds-*` styles come from the compiled design system).
 
 ### Request Flow
 
@@ -123,6 +125,25 @@ Core tables: `users`, `games`, `players`, `scores`, `bans`, `leaderboards`, `tea
 Translations are stored as JSON files in `/locales/`. The `getLang.php` library reads the locale from the user's cookie or browser preference and loads the corresponding file. Use the `__()` helper function to retrieve translated strings throughout the codebase.
 
 Supported languages: English, Italian, Spanish, French, German.
+
+## Design System
+
+The UI follows the GMI Frontend portal design system (light only, square corners, no shadows):
+
+- **Tokens**: `assets/design-system/scss/tokens.scss` (`--ds-*` variables, page `#E8EDF1`, surface `#FFFFFF`)
+- **Atoms**: `assets/design-system/scss/atoms/` — one `ds-*` class per component (`ds-btn`, `ds-alert`, `ds-badge`, `ds-card`, `ds-input`, `ds-table`, `ds-tabs`, `ds-modal`, `ds-toast`, …)
+- **PHP API unchanged**: `ui_button()`, `ui_alert()`, etc. keep their signatures; only the emitted HTML/CSS changed
+- **Preview**: open `/ui-kit.php` in the browser to see every atom rendered
+
+Rebuild the CSS after touching the design system (requires Node 20+):
+
+```bash
+npm ci
+npm run build:css   # writes assets/css/app.css (committed: the deploy is git-ftp)
+npm run watch:css   # rebuild on change (dev)
+```
+
+CI verifies reproducibility (`npm ci && npm run build:css` must not dirty `assets/css/app.css`).
 
 ## Development
 

@@ -55,7 +55,6 @@
     ];
 
     $tableOptions = [
-      "table_class" => "ui-table",
       "pagination" => [
         "current_page" => $_GET['page'] ?? 1,
         "items_per_page" => 25,

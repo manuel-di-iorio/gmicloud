@@ -9,44 +9,44 @@ $configContent = '
       <div class="' . ui_card_classes(['padding' => 'md']) . '">
         ' . ui_card_title(__('game_details_title'), ['icon' => 'fas fa-cog']) . '
 
-        ' . ($gameTeam ? '<div class="mb-4 p-3 rounded-lg border border-primary-color/20 bg-primary-color/5">
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-text-secondary">' . __('team_selector_label') . '</label>
+        ' . ($gameTeam ? '<div class="mb-4 p-3 rounded-sm border border-secondary/20 bg-secondary/5">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-content-muted">' . __('team_selector_label') . '</label>
           <div class="flex items-center justify-between">
-            <span class="flex items-center gap-2 font-semibold text-text-headings"><i class="fas fa-users text-primary-color"></i>' . htmlspecialchars($gameTeam["name"]) . '</span>
+            <span class="flex items-center gap-2 font-semibold text-content"><i class="fas fa-users text-secondary"></i>' . htmlspecialchars($gameTeam["name"]) . '</span>
             ' . ($isTeamAdmin ? ui_button(__('team_games_move'), 'secondary', 'sm', ['icon' => 'fas fa-exchange-alt', 'href' => 'team-move-game.php?id=' . $gameId]) : '') . '
           </div>
-        </div>' : '<div class="mb-4 p-3 rounded-lg border border-border-color bg-surface-offset">
-          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-text-secondary">' . __('team_selector_label') . '</label>
+        </div>' : '<div class="mb-4 p-3 rounded-sm border border-default bg-surface-muted">
+          <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-content-muted">' . __('team_selector_label') . '</label>
           <div class="flex items-center justify-between">
-            <span class="flex items-center gap-2 text-text-secondary"><i class="fas fa-user"></i>' . __('team_selector_personal') . '</span>
+            <span class="flex items-center gap-2 text-content-muted"><i class="fas fa-user"></i>' . __('team_selector_personal') . '</span>
             ' . ui_button(__('team_games_move'), 'secondary', 'sm', ['icon' => 'fas fa-exchange-alt', 'href' => 'team-move-game.php?id=' . $gameId]) . '
           </div>
         </div>') . '
 
-        <label class="mb-2.5 block font-semibold text-text-headings">' . __('game_details_id') . '</label>
+        <label class="mb-2.5 block font-semibold text-content">' . __('game_details_id') . '</label>
         <div class="relative mb-5">
-          <input id="input-gameid" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:!bg-surface-sidebar disabled:text-input-text-disabled disabled:cursor-not-allowed" value="' . $gameId . '" disabled>
+          <input id="input-gameid" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" value="' . $gameId . '" disabled>
         </div>
 
-        <label class="mb-2.5 mt-4 block font-semibold text-text-headings">' . __('game_details_secret') . '</label>
-        <div class="mb-3 text-sm text-text-secondary">' . __('game_details_secret_help') . '</div>
+        <label class="mb-2.5 mt-4 block font-semibold text-content">' . __('game_details_secret') . '</label>
+        <div class="mb-3 text-sm text-content-muted">' . __('game_details_secret_help') . '</div>
         <div class="relative mb-5">
-          <input id="input-secret" type="password" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" value="' . htmlspecialchars($game["client_secret"]) . '" disabled>
-          <i class="fas fa-sync absolute right-16 top-1/2 -translate-y-1/2 cursor-pointer p-2 text-text-secondary transition-colors hover:text-text" onclick="openModal(\'modal-regenerate-secret\')" data-tippy-content="' . __('game_details_secret_regenerate_tooltip') . '"></i>
-          <i class="fas fa-eye absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-2 text-text-secondary transition-colors hover:text-text" onclick="toggleSecretVisibility(this)" data-tippy-content="' . __('game_details_secret_toggle_tooltip') . '"></i>
+          <input id="input-secret" type="password" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" value="' . htmlspecialchars($game["client_secret"]) . '" disabled>
+          <i class="fas fa-sync absolute right-16 top-1/2 -translate-y-1/2 cursor-pointer p-2 text-content-muted transition-colors hover:text-content" onclick="openModal(\'modal-regenerate-secret\')" data-tippy-content="' . __('game_details_secret_regenerate_tooltip') . '"></i>
+          <i class="fas fa-eye absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer p-2 text-content-muted transition-colors hover:text-content" onclick="toggleSecretVisibility(this)" data-tippy-content="' . __('game_details_secret_toggle_tooltip') . '"></i>
         </div>
 
-        <div class="mt-4 border-0 border-t border-solid border-border-color pt-4">
-          <label class="mb-2.5 block font-semibold text-text-headings">' . __('game_rename_title') . '</label>
+        <div class="mt-4 border-0 border-t border-solid border-default pt-4">
+          <label class="mb-2.5 block font-semibold text-content">' . __('game_rename_title') . '</label>
           <div class="relative mb-5">
-            <input id="input-game-name" name="name" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" value="' . htmlspecialchars($game["name"]) . '" required>
+            <input id="input-game-name" name="name" type="text" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" value="' . htmlspecialchars($game["name"]) . '" required>
           </div>
 
           <label class="mt-3 flex cursor-pointer items-center gap-3">
-            <input type="checkbox" id="toggle-player-auth" class="w-4 h-4 rounded border-[var(--border-color)] text-[var(--primary-color)] focus:ring-[var(--primary-color)]" ' . ($game["require_player_auth"] ? 'checked' : '') . '>
+            <input type="checkbox" id="toggle-player-auth" class="w-4 h-4 rounded border-default text-[var(--ds-color-secondary)] focus:ring-[var(--ds-color-secondary)]" ' . ($game["require_player_auth"] ? 'checked' : '') . '>
             <div>
-              <span class="text-sm font-semibold text-[var(--text-color)]">' . __('game_require_player_auth') . '</span>
-              <p class="text-xs text-[var(--text-color-secondary)] mt-0.5">' . __('game_require_player_auth_desc') . '</p>
+              <span class="text-sm font-semibold text-[var(--ds-color-content)]">' . __('game_require_player_auth') . '</span>
+              <p class="text-xs text-[var(--ds-color-content-muted)] mt-0.5">' . __('game_require_player_auth_desc') . '</p>
             </div>
           </label>
           <div class="mt-3 flex items-center gap-2">
@@ -81,7 +81,7 @@ echo ui_tabs([
 <?= ui_modal('modal-regenerate-secret', [
   'title' => __('game_modal_secret_title'),
   'content' => '<p>' . __('game_modal_secret_body') . '</p>
-    <div class="mt-4 rounded-lg border-0 border-l-4 border-solid border-amber-500 bg-amber-500/10 p-4 text-amber-800 dark:text-amber-200">
+    <div class="mt-4 rounded-sm border-0 border-l-4 border-solid border-amber-500 bg-amber-500/10 p-4 text-amber-800">
       <p><i class="fas fa-exclamation-triangle mr-2"></i><strong>' . __('game_modal_secret_warning_label') . '</strong> ' . __('game_modal_secret_warning') . '</p>
       <p>' . __('game_modal_secret_irreversible') . '</p>
     </div>',

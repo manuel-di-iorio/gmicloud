@@ -13,15 +13,15 @@ switch ($activeTab) {
   <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="users">
     ' . ($pendingOnly ? '<input type="hidden" name="pending" value="1">' : '') . '
-    <input type="text" name="search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $searchValue . '">
+    <input type="text" name="search" class="h-10 w-full max-w-[220px] rounded-sm border border-solid border-default bg-surface-solid px-3.5 py-2 text-[0.95rem] leading-normal text-content transition-colors placeholder:text-content-muted focus:border-content/40 focus:outline-none" placeholder="' . 'Search by username...' . '" value="' . $searchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . (($search || $pendingOnly) ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=users']) : '') . '
-    <a href="/admin.php?tab=users' . ($pendingOnly ? '' : '&pending=1') . ($search ? '&search=' . urlencode($search) : '') . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-lg border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($pendingOnly ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-border-color bg-surface-offset text-text-secondary hover:bg-surface-card hover:text-text') . '">
+    <a href="/admin.php?tab=users' . ($pendingOnly ? '' : '&pending=1') . ($search ? '&search=' . urlencode($search) : '') . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-sm border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($pendingOnly ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-default bg-surface-muted text-content-muted hover:bg-surface hover:text-content') . '">
       <i class="fas fa-clock"></i> ' . 'Pending only' . '
       ' . ($unapprovedCount > 0 ? ui_badge((string)$unapprovedCount, 'warning', ['pill' => true]) : '') . '
     </a>
   </form>
-  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
+  <div class="whitespace-nowrap text-[0.85rem] text-content-muted">
     ' . 'Total users' . ': ' . $totalUsers . '
     ' . ($unapprovedCount > 0 && !$pendingOnly ? '<span class="ml-2 text-red-500">(' . $unapprovedCount . ' ' . 'pending approval' . ')</span>' : '') . '
   </div>
@@ -30,14 +30,14 @@ switch ($activeTab) {
     if (empty($users)) {
       $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-users']);
     } else {
-      $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
-        <th class="ui-table-header-cell">ID</th>
-        <th class="ui-table-header-cell">' . 'Username' . '</th>
-        <th class="ui-table-header-cell">' . 'Discord ID' . '</th>
-        <th class="ui-table-header-cell">' . 'Approved' . '</th>
-        <th class="ui-table-header-cell">' . 'Admin' . '</th>
-        <th class="ui-table-header-cell">' . 'Actions' . '</th>
-      </tr></thead><tbody class="ui-table-body">';
+      $html .= '<div class="ds-table-wrap"><table class="ds-table"><thead class="ds-table__head"><tr>
+        <th class="ds-table__th">ID</th>
+        <th class="ds-table__th">' . 'Username' . '</th>
+        <th class="ds-table__th">' . 'Discord ID' . '</th>
+        <th class="ds-table__th">' . 'Approved' . '</th>
+        <th class="ds-table__th">' . 'Admin' . '</th>
+        <th class="ds-table__th">' . 'Actions' . '</th>
+      </tr></thead><tbody class="ds-table__body">';
 
       foreach ($users as $u) {
         $isUserApproved = (int)$u["approved"] === 1;
@@ -50,17 +50,17 @@ switch ($activeTab) {
           $page > 0 ? ['page' => $page] : []
         ));
 
-        $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell">' . (int)$u["id"] . '</td>
-          <td class="ui-table-cell">' . htmlspecialchars($u["username"]) . '</td>
-          <td class="ui-table-cell"><code class="text-[0.85rem]">' . htmlspecialchars($u["auth_discord_id"]) . '</code></td>
-          <td class="ui-table-cell">' . ($isUserApproved
+        $html .= '<tr class="ds-table__row">
+          <td class="ds-table__cell">' . (int)$u["id"] . '</td>
+          <td class="ds-table__cell">' . htmlspecialchars($u["username"]) . '</td>
+          <td class="ds-table__cell"><code class="text-[0.85rem]">' . htmlspecialchars($u["auth_discord_id"]) . '</code></td>
+          <td class="ds-table__cell">' . ($isUserApproved
             ? ui_badge('Yes', 'success', ['icon' => 'fas fa-check-circle'])
             : ui_badge('No', 'danger', ['icon' => 'fas fa-times-circle'])) . '</td>
-          <td class="ui-table-cell">' . ($isUserAdmin
-            ? '<span class="text-indigo-500"><i class="fas fa-crown"></i></span>'
+          <td class="ds-table__cell">' . ($isUserAdmin
+            ? '<span class="text-secondary"><i class="fas fa-crown"></i></span>'
             : '') . '</td>
-          <td class="ui-table-cell actions-cell">
+          <td class="ds-table__cell ds-table__cell--actions">
             ' . ui_toggle($isUserApproved, '/admin-users-toggle.php', ['labelOn' => 'Disable user', 'labelOff' => 'Enable user', 'size' => 'md', 'method' => 'POST', 'postBody' => $togglePostBody]) . '
           </td>
         </tr>';
@@ -118,14 +118,14 @@ switch ($activeTab) {
 <div class="mb-4 flex flex-wrap items-center gap-2">
   <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="players">
-    <input type="text" name="players_search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $playersSearchValue . '">
+    <input type="text" name="players_search" class="h-10 w-full max-w-[220px] rounded-sm border border-solid border-default bg-surface-solid px-3.5 py-2 text-[0.95rem] leading-normal text-content transition-colors placeholder:text-content-muted focus:border-content/40 focus:outline-none" placeholder="' . 'Search by username...' . '" value="' . $playersSearchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . ($playersSearch ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=players']) : '') . '
-    <a href="' . htmlspecialchars($bannedFilterUrl) . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-lg border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($bannedFilterActive ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-border-color bg-surface-offset text-text-secondary hover:bg-surface-card hover:text-text') . '">
+    <a href="' . htmlspecialchars($bannedFilterUrl) . '" class="inline-flex h-[38px] min-w-20 items-center gap-1.5 whitespace-nowrap rounded-sm border border-solid px-3.5 text-[0.85rem] font-semibold no-underline transition-colors ' . ($bannedFilterActive ? 'border-amber-500/30 bg-amber-500/15 text-amber-500' : 'border-default bg-surface-muted text-content-muted hover:bg-surface hover:text-content') . '">
       <i class="fas fa-ban"></i> ' . 'Banned' . '
     </a>
   </form>
-  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
+  <div class="whitespace-nowrap text-[0.85rem] text-content-muted">
     ' . 'Total players' . ': ' . $totalPlayers . '
   </div>
 </div>';
@@ -133,14 +133,14 @@ switch ($activeTab) {
     if (empty($players)) {
       $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-user-friends']);
     } else {
-      $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
-        <th class="ui-table-header-cell">' . playerSortLink('ID', 'id', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . playerSortLink('Username', 'username', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . playerSortLink('Top score', 'top_score', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . playerSortLink('Game', 'game', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . 'Banned' . '</th>
-        <th class="ui-table-header-cell">' . 'Actions' . '</th>
-      </tr></thead><tbody class="ui-table-body">';
+      $html .= '<div class="ds-table-wrap"><table class="ds-table"><thead class="ds-table__head"><tr>
+        <th class="ds-table__th">' . playerSortLink('ID', 'id', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
+        <th class="ds-table__th">' . playerSortLink('Username', 'username', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
+        <th class="ds-table__th">' . playerSortLink('Top score', 'top_score', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
+        <th class="ds-table__th">' . playerSortLink('Game', 'game', $pCurrentSort, $pCurrentDir, $pSortUrlBase) . '</th>
+        <th class="ds-table__th">' . 'Banned' . '</th>
+        <th class="ds-table__th">' . 'Actions' . '</th>
+      </tr></thead><tbody class="ds-table__body">';
 
       foreach ($players as $p) {
         $isBanned = (int)($p["has_bans"] ?? 0) === 1;
@@ -153,15 +153,15 @@ switch ($activeTab) {
           $pBannedOnly ? ['players_banned' => '1'] : []
         ));
 
-        $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell">' . (int)$p["player_id"] . '</td>
-          <td class="ui-table-cell">' . htmlspecialchars($p["username"]) . '</td>
-          <td class="ui-table-cell">' . (isset($p["top_score"]) ? number_format((float)$p["top_score"], 2) : '<span class="text-text-secondary">-</span>') . '</td>
-          <td class="ui-table-cell">' . ($p["top_game"] ? htmlspecialchars($p["top_game"]) : '<span class="text-text-secondary">-</span>') . '</td>
-          <td class="ui-table-cell">' . ($isBanned
+        $html .= '<tr class="ds-table__row">
+          <td class="ds-table__cell">' . (int)$p["player_id"] . '</td>
+          <td class="ds-table__cell">' . htmlspecialchars($p["username"]) . '</td>
+          <td class="ds-table__cell">' . (isset($p["top_score"]) ? number_format((float)$p["top_score"], 2) : '<span class="text-content-muted">-</span>') . '</td>
+          <td class="ds-table__cell">' . ($p["top_game"] ? htmlspecialchars($p["top_game"]) : '<span class="text-content-muted">-</span>') . '</td>
+          <td class="ds-table__cell">' . ($isBanned
             ? ui_badge('Yes', 'danger', ['icon' => 'fas fa-ban'])
             : ui_badge('No', 'default', ['icon' => 'fas fa-check'])) . '</td>
-          <td class="ui-table-cell actions-cell">
+          <td class="ds-table__cell ds-table__cell--actions">
             ' . ui_toggle($isBanned, '/admin-players-toggle.php', ['labelOn' => 'Unban', 'labelOff' => 'Ban', 'size' => 'md', 'method' => 'POST', 'postBody' => $togglePostBody]) . '
           </td>
         </tr>';
@@ -212,11 +212,11 @@ switch ($activeTab) {
 <div class="mb-4 flex flex-wrap items-center gap-2">
   <form method="GET" action="/admin.php" class="flex flex-1 flex-wrap items-center gap-2">
     <input type="hidden" name="tab" value="scores">
-    <input type="text" name="scores_search" class="h-10 w-full max-w-[220px] rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]" placeholder="' . 'Search by username...' . '" value="' . $scoresSearchValue . '">
+    <input type="text" name="scores_search" class="h-10 w-full max-w-[220px] rounded-sm border border-solid border-default bg-surface-solid px-3.5 py-2 text-[0.95rem] leading-normal text-content transition-colors placeholder:text-content-muted focus:border-content/40 focus:outline-none" placeholder="' . 'Search by username...' . '" value="' . $scoresSearchValue . '">
     ' . ui_button('Apply filters', 'primary', 'md', ['icon' => 'fas fa-search', 'type' => 'submit']) . '
     ' . ($scoresSearch ? ui_button('Reset', 'secondary', 'md', ['icon' => 'fas fa-times', 'href' => '/admin.php?tab=scores']) : '') . '
   </form>
-  <div class="whitespace-nowrap text-[0.85rem] text-text-secondary">
+  <div class="whitespace-nowrap text-[0.85rem] text-content-muted">
     ' . 'Total scores' . ': ' . number_format($totalScores) . '
   </div>
 </div>';
@@ -224,13 +224,13 @@ switch ($activeTab) {
     if (empty($scores)) {
       $html .= ui_empty_state('No data available.', ['icon' => 'fas fa-star']);
     } else {
-      $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
-        <th class="ui-table-header-cell">' . scoreSortLink('Username', 'username', $currentSort, $currentDir, $sortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . scoreSortLink('Score', 'score', $currentSort, $currentDir, $sortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . scoreSortLink('Game', 'game', $currentSort, $currentDir, $sortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . scoreSortLink('Date', 'date', $currentSort, $currentDir, $sortUrlBase) . '</th>
-        <th class="ui-table-header-cell">' . 'Actions' . '</th>
-      </tr></thead><tbody class="ui-table-body">';
+      $html .= '<div class="ds-table-wrap"><table class="ds-table"><thead class="ds-table__head"><tr>
+        <th class="ds-table__th">' . scoreSortLink('Username', 'username', $currentSort, $currentDir, $sortUrlBase) . '</th>
+        <th class="ds-table__th">' . scoreSortLink('Score', 'score', $currentSort, $currentDir, $sortUrlBase) . '</th>
+        <th class="ds-table__th">' . scoreSortLink('Game', 'game', $currentSort, $currentDir, $sortUrlBase) . '</th>
+        <th class="ds-table__th">' . scoreSortLink('Date', 'date', $currentSort, $currentDir, $sortUrlBase) . '</th>
+        <th class="ds-table__th">' . 'Actions' . '</th>
+      </tr></thead><tbody class="ds-table__body">';
 
       foreach ($scores as $score) {
         $scoreId = (int)$score["score_id"];
@@ -252,12 +252,12 @@ switch ($activeTab) {
           $currentDir !== 'DESC' ? ['scores_dir' => $currentDir] : []
         ));
 
-        $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell">' . $playerName . '</td>
-          <td class="ui-table-cell">' . $scoreValue . '</td>
-          <td class="ui-table-cell">' . $gameName . '</td>
-          <td class="ui-table-cell">' . $dateValue . '</td>
-          <td class="ui-table-cell actions-cell">
+        $html .= '<tr class="ds-table__row">
+          <td class="ds-table__cell">' . $playerName . '</td>
+          <td class="ds-table__cell">' . $scoreValue . '</td>
+          <td class="ds-table__cell">' . $gameName . '</td>
+          <td class="ds-table__cell">' . $dateValue . '</td>
+          <td class="ds-table__cell ds-table__cell--actions">
             <a href="javascript:void(0)" class="admin-score-action admin-score-action--danger" data-admin-score-delete data-post-url="/admin-scores-delete.php" data-post-body="' . htmlspecialchars($deletePostBody) . '" data-player="' . $playerName . '" data-tippy-content="' . __('scores_action_delete') . '" aria-label="' . __('scores_action_delete') . '">
               <i class="fas fa-trash"></i>
             </a>
@@ -342,20 +342,20 @@ switch ($activeTab) {
 
       $html .= '
 <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-line text-primary-color mr-2"></i>' . 'Global scores last 30 days' . '
+        <i class="fas fa-chart-line text-secondary mr-2"></i>' . 'Global scores last 30 days' . '
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartAdminScoresOverTime"></canvas>
       </div>
     </div>
   </div>
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col h-[360px]">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col h-[360px]">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-chart-bar text-primary-color mr-2"></i>' . 'Total scores per game' . '
+        <i class="fas fa-chart-bar text-secondary mr-2"></i>' . 'Total scores per game' . '
       </div>
       <div class="relative min-h-[200px] w-full flex-1">
         <canvas id="chartAdminScoresByGame"></canvas>
@@ -368,11 +368,11 @@ switch ($activeTab) {
         $moreCountries = count($countryLabelsAll) - 30;
         $html .= '
 <div class="mt-5">
-  <div class="bg-surface-card border border-border-color rounded-xl shadow-sm overflow-hidden flex flex-col">
+  <div class="bg-surface border border-default rounded-sm overflow-hidden flex flex-col">
     <div class="p-5 flex-1 flex flex-col">
       <div class="font-semibold text-headings mb-3">
-        <i class="fas fa-globe text-primary-color mr-2"></i>' . 'Countries' . '
-        ' . ($moreCountries > 0 ? '<span class="ml-2 text-[0.8rem] font-normal text-text-secondary">(' . 'Top 30 - ' . $moreCountries . ' more' . ')</span>' : '') . '
+        <i class="fas fa-globe text-secondary mr-2"></i>' . 'Countries' . '
+        ' . ($moreCountries > 0 ? '<span class="ml-2 text-[0.8rem] font-normal text-content-muted">(' . 'Top 30 - ' . $moreCountries . ' more' . ')</span>' : '') . '
       </div>
       <div class="relative max-h-[350px] w-full">
         <canvas id="chartAdminCountries"></canvas>
@@ -391,9 +391,9 @@ switch ($activeTab) {
     if ($globalTotalScores > 0) {
       echo '<script>
 (function () {
-  var isDark = document.body.classList.contains("dark-theme");
-  var textColor = isDark ? "#cbd5e1" : "#64748b";
-  var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  var isDark = false;
+  var textColor = "#6B7280";
+  var gridColor = "rgba(0,0,0,0.06)";
 
   function createLineCtx(id, labels, data, label) {
     var el = document.getElementById(id);
@@ -405,8 +405,8 @@ switch ($activeTab) {
         datasets: [{
           label: label,
           data: data,
-          borderColor: "#6366f1",
-          backgroundColor: "rgba(99,102,241,0.08)",
+          borderColor: "#1F2937",
+          backgroundColor: "rgba(31,41,55,0.08)",
           borderWidth: 2,
           fill: true,
           tension: 0.3,
@@ -437,11 +437,10 @@ switch ($activeTab) {
           label: label,
           data: data,
           backgroundColor: [
-            "rgba(99,102,241,0.7)", "rgba(16,185,129,0.7)", "rgba(245,158,11,0.7)",
-            "rgba(236,72,153,0.7)", "rgba(59,130,246,0.7)", "rgba(168,85,247,0.7)",
-            "rgba(239,68,68,0.7)", "rgba(34,211,238,0.7)"
+            "rgba(31,41,55,0.7)", "rgba(0,122,105,0.7)", "rgba(223,123,0,0.7)", "rgba(222,154,70,0.7)",
+            "rgba(214,51,108,0.7)", "rgba(70,21,178,0.7)", "rgba(220,38,38,0.7)", "rgba(125,211,199,0.7)"
           ],
-          borderColor: "#6366f1",
+          borderColor: "#1F2937",
           borderWidth: 1,
           borderRadius: 4,
         }]
@@ -500,7 +499,7 @@ switch ($activeTab) {
   case 'api-errors':
     $csrfToken = csrf_token();
     $html = '<div id="api-errors-container">
-      <div class="px-5 py-10 text-center text-text-secondary">
+      <div class="px-5 py-10 text-center text-content-muted">
         <i class="fas fa-spinner fa-spin text-2xl opacity-50"></i>
       </div>
     </div>';
@@ -514,7 +513,7 @@ switch ($activeTab) {
   var csrfToken = "' . addslashes($csrfToken) . '";
 
   function loadPage(page) {
-    container.innerHTML = "<div class=\"px-5 py-10 text-center text-text-secondary\"><i class=\"fas fa-spinner fa-spin text-2xl opacity-50\"></i></div>";
+    container.innerHTML = "<div class=\"px-5 py-10 text-center text-content-muted\"><i class=\"fas fa-spinner fa-spin text-2xl opacity-50\"></i></div>";
 
     fetch("/api/internal/admin/api-errors.php?page=" + page + "&csrf_token=" + encodeURIComponent(csrfToken), {
       credentials: "same-origin"
@@ -522,35 +521,35 @@ switch ($activeTab) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (!data.errors || data.errors.length === 0) {
-        container.innerHTML = "<div class=\"px-5 py-10 text-center text-text-secondary\"><i class=\"fas fa-check-circle mb-3 block text-4xl opacity-30\"></i>No errors logged.</div>";
+        container.innerHTML = "<div class=\"px-5 py-10 text-center text-content-muted\"><i class=\"fas fa-check-circle mb-3 block text-4xl opacity-30\"></i>No errors logged.</div>";
         return;
       }
 
-      var html = "<div class=\"mb-3 text-[0.85rem] text-text-secondary\">Total: " + data.total + " errors</div>";
-      html += "<div class=\"ui-table-container\"><table class=\"ui-table\"><thead class=\"ui-table-header\"><tr>";
-      html += "<th class=\"ui-table-header-cell\">Date</th>";
-      html += "<th class=\"ui-table-header-cell\">Code</th>";
-      html += "<th class=\"ui-table-header-cell\">Status</th>";
-      html += "<th class=\"ui-table-header-cell\">Game</th>";
-      html += "<th class=\"ui-table-header-cell\">Endpoint</th>";
-      html += "<th class=\"ui-table-header-cell\">Method</th>";
-      html += "<th class=\"ui-table-header-cell\">IP</th>";
-      html += "<th class=\"ui-table-header-cell\">Message</th>";
-      html += "<th class=\"ui-table-header-cell\">Request Data</th>";
-      html += "</tr></thead><tbody class=\"ui-table-body\">";
+      var html = "<div class=\"mb-3 text-[0.85rem] text-content-muted\">Total: " + data.total + " errors</div>";
+      html += "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead class=\"ds-table__head\"><tr>";
+      html += "<th class=\"ds-table__th\">Date</th>";
+      html += "<th class=\"ds-table__th\">Code</th>";
+      html += "<th class=\"ds-table__th\">Status</th>";
+      html += "<th class=\"ds-table__th\">Game</th>";
+      html += "<th class=\"ds-table__th\">Endpoint</th>";
+      html += "<th class=\"ds-table__th\">Method</th>";
+      html += "<th class=\"ds-table__th\">IP</th>";
+      html += "<th class=\"ds-table__th\">Message</th>";
+      html += "<th class=\"ds-table__th\">Request Data</th>";
+      html += "</tr></thead><tbody class=\"ds-table__body\">";
 
       data.errors.forEach(function(e) {
-        var statusClass = e.status >= 500 ? "danger" : (e.status >= 400 ? "warning" : "default");
-        html += "<tr class=\"ui-table-row\">";
-        html += "<td class=\"ui-table-cell whitespace-nowrap text-[0.85rem]\">" + escapeHtml(e.created_at) + "</td>";
-        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.error_code) + "</code></td>";
-        html += "<td class=\"ui-table-cell\"><span class=\"ui-badge ui-badge--" + statusClass + "\">" + e.status + "</span></td>";
-        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + (e.game_id ? escapeHtml(e.game_id) : "-") + "</code></td>";
-        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.endpoint) + "</code></td>";
-        html += "<td class=\"ui-table-cell\">" + escapeHtml(e.method) + "</td>";
-        html += "<td class=\"ui-table-cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.ip || "-") + "</code></td>";
-        html += "<td class=\"ui-table-cell max-w-[300px] truncate\" title=\"" + escapeHtml(e.message) + "\">" + escapeHtml(e.message) + "</td>";
-        html += "<td class=\"ui-table-cell max-w-[250px] truncate text-[0.8rem] text-text-secondary\" title=\"" + escapeHtml(e.request_data || "") + "\">" + escapeHtml(e.request_data || "-") + "</td>";
+        var statusClass = e.status >= 500 ? "danger" : (e.status >= 400 ? "warning" : "neutral");
+        html += "<tr class=\"ds-table__row\">";
+        html += "<td class=\"ds-table__cell whitespace-nowrap text-[0.85rem]\">" + escapeHtml(e.created_at) + "</td>";
+        html += "<td class=\"ds-table__cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.error_code) + "</code></td>";
+        html += "<td class=\"ds-table__cell\"><span class=\"ds-badge ds-badge--" + statusClass + "\">" + e.status + "</span></td>";
+        html += "<td class=\"ds-table__cell\"><code class=\"text-[0.85rem]\">" + (e.game_id ? escapeHtml(e.game_id) : "-") + "</code></td>";
+        html += "<td class=\"ds-table__cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.endpoint) + "</code></td>";
+        html += "<td class=\"ds-table__cell\">" + escapeHtml(e.method) + "</td>";
+        html += "<td class=\"ds-table__cell\"><code class=\"text-[0.85rem]\">" + escapeHtml(e.ip || "-") + "</code></td>";
+        html += "<td class=\"ds-table__cell max-w-[300px] truncate\" title=\"" + escapeHtml(e.message) + "\">" + escapeHtml(e.message) + "</td>";
+        html += "<td class=\"ds-table__cell max-w-[250px] truncate text-[0.8rem] text-content-muted\" title=\"" + escapeHtml(e.request_data || "") + "\">" + escapeHtml(e.request_data || "-") + "</td>";
         html += "</tr>";
       });
 
@@ -560,11 +559,11 @@ switch ($activeTab) {
       if (totalPages > 0) {
         html += "<div class=\"mt-4 flex items-center justify-center gap-2 text-center\">";
         if (data.page > 0) {
-          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-surface-offset px-3 py-1.5 text-sm font-semibold text-text transition-colors hover:bg-surface-offset-hover\" onclick=\"window._apiErrorsLoadPage(" + (data.page - 1) + ")\"><i class=\"fas fa-chevron-left\"></i> Previous</button>";
+          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-sm border-0 bg-surface-muted px-3 py-1.5 text-sm font-semibold text-content transition-colors hover:bg-surface-muted\" onclick=\"window._apiErrorsLoadPage(" + (data.page - 1) + ")\"><i class=\"fas fa-chevron-left\"></i> Previous</button>";
         }
-        html += "<span class=\"text-[0.85rem] text-text-secondary\">Page " + (data.page + 1) + " of " + (totalPages + 1) + "</span>";
+        html += "<span class=\"text-[0.85rem] text-content-muted\">Page " + (data.page + 1) + " of " + (totalPages + 1) + "</span>";
         if (data.page < totalPages) {
-          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-surface-offset px-3 py-1.5 text-sm font-semibold text-text transition-colors hover:bg-surface-offset-hover\" onclick=\"window._apiErrorsLoadPage(" + (data.page + 1) + ")\">Next <i class=\"fas fa-chevron-right\"></i></button>";
+          html += "<button class=\"inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-sm border-0 bg-surface-muted px-3 py-1.5 text-sm font-semibold text-content transition-colors hover:bg-surface-muted\" onclick=\"window._apiErrorsLoadPage(" + (data.page + 1) + ")\">Next <i class=\"fas fa-chevron-right\"></i></button>";
         }
         html += "</div>";
       }
@@ -596,12 +595,12 @@ switch ($activeTab) {
   case 'migrate':
     $html = '
 <div class="mb-4 flex items-center justify-between gap-4">
-  <p class="m-0 text-text-secondary">' . __('migrate_desc') . '</p>
+  <p class="m-0 text-content-muted">' . __('migrate_desc') . '</p>
   ' . ui_button(__('admin_sync_indexes'), 'primary', 'md', ['icon' => 'fas fa-sync', 'attrs' => ['onclick' => "openModal('modal-sync-indexes')"]]) . '
 </div>';
 
     if (!empty($migrateOutput)) {
-      $html .= '<div class="my-4 max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-lg bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]">';
+      $html .= '<div class="my-4 max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-sm bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]">';
       foreach ($migrateOutput as $line) {
         $cls = 'text-[#a6e3a1]';
         if (strpos($line, 'ERROR') === 0) $cls = 'text-[#f38ba8]';
@@ -615,12 +614,12 @@ switch ($activeTab) {
       $html .= ui_empty_state('No migration files found.', ['icon' => 'fas fa-database']);
     } else {
       $html .= '
-<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
-  <th class="ui-table-header-cell">' . 'File' . '</th>
-  <th class="ui-table-header-cell">' . 'Description' . '</th>
-  <th class="ui-table-header-cell">' . 'Status' . '</th>
-  <th class="ui-table-header-cell">' . 'Date' . '</th>
-</tr></thead><tbody class="ui-table-body">';
+<div class="ds-table-wrap"><table class="ds-table"><thead class="ds-table__head"><tr>
+  <th class="ds-table__th">' . 'File' . '</th>
+  <th class="ds-table__th">' . 'Description' . '</th>
+  <th class="ds-table__th">' . 'Status' . '</th>
+  <th class="ds-table__th">' . 'Date' . '</th>
+</tr></thead><tbody class="ds-table__body">';
 
       foreach ($migrations as $m) {
         $statusLabel = $m['is_applied'] ? 'Applied' : 'Pending';
@@ -629,11 +628,11 @@ switch ($activeTab) {
           : ui_badge($statusLabel, 'warning', ['icon' => 'fas fa-clock']);
         $appliedDate = $m['is_applied'] ? htmlspecialchars($applied[$m['name']]) : '-';
 
-        $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell"><code>' . htmlspecialchars($m['name']) . '</code></td>
-          <td class="ui-table-cell">' . htmlspecialchars($m['description']) . '</td>
-          <td class="ui-table-cell">' . $statusBadge . '</td>
-          <td class="ui-table-cell">' . $appliedDate . '</td>
+        $html .= '<tr class="ds-table__row">
+          <td class="ds-table__cell"><code>' . htmlspecialchars($m['name']) . '</code></td>
+          <td class="ds-table__cell">' . htmlspecialchars($m['description']) . '</td>
+          <td class="ds-table__cell">' . $statusBadge . '</td>
+          <td class="ds-table__cell">' . $appliedDate . '</td>
         </tr>';
       }
 
@@ -647,11 +646,11 @@ switch ($activeTab) {
           ' . ui_button('Run pending migrations (' . $pendingMigrateCount . ')', 'primary', 'md', ['icon' => 'fas fa-play', 'type' => 'submit']) . '
         </form>';
       } else {
-        $html .= '<div class="mt-4 text-text-secondary"><i class="fas fa-check-circle mr-2 text-emerald-500"></i>' . 'All migrations have been applied.' . '</div>';
+        $html .= '<div class="mt-4 text-content-muted"><i class="fas fa-check-circle mr-2 text-emerald-500"></i>' . 'All migrations have been applied.' . '</div>';
       }
     }
 
-    $html .= '<div id="sync-indexes-output" class="my-4 hidden max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-lg bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]"></div>';
+    $html .= '<div id="sync-indexes-output" class="my-4 hidden max-h-[400px] overflow-y-auto whitespace-pre-wrap break-all rounded-sm bg-[#1e1e2e] p-4 font-mono text-[0.85rem] text-[#cdd6f4]"></div>';
 
     $html .= '</div>';
     echo $html;

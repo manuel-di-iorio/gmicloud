@@ -8,26 +8,25 @@ function ui_modal($id, $options = []) {
   $class = $options['class'] ?? '';
   $closeButton = $options['close_button'] ?? true;
 
-  $sizeWidths = ['sm' => 'max-w-[400px]', 'md' => 'max-w-[540px]', 'lg' => 'max-w-[700px]', 'xl' => 'max-w-[900px]'];
+  $sizes = ['sm' => 'ds-modal--sm', 'md' => 'ds-modal--md', 'lg' => 'ds-modal--lg', 'xl' => 'ds-modal--xl'];
+  $sizeClass = $sizes[$size] ?? $sizes['md'];
 
-  $widthClass = $sizeWidths[$size] ?? $sizeWidths['md'];
-
-  $html = '<div id="' . htmlspecialchars($id) . '" class="ui-modal-overlay fixed inset-0 z-[10000] hidden box-border flex items-center justify-center bg-black/50 p-6" onmousedown="if (event.target === this) this._dismissOnMouseup = true;" onmouseup="if (this._dismissOnMouseup && event.target === this) { this._dismissOnMouseup = false; closeModal(\'' . htmlspecialchars($id) . '\'); } else { this._dismissOnMouseup = false; }">';
-  $html .= '<div class="ui-modal flex max-h-[90vh] w-full ' . $widthClass . ' animate-modal-in flex-col overflow-hidden rounded-2xl bg-surface-card shadow-2xl ' . htmlspecialchars($class) . '">';
+  $html = '<div id="' . htmlspecialchars($id) . '" class="ds-modal-overlay hidden" onmousedown="if (event.target === this) this._dismissOnMouseup = true;" onmouseup="if (this._dismissOnMouseup && event.target === this) { this._dismissOnMouseup = false; closeModal(\'' . htmlspecialchars($id) . '\'); } else { this._dismissOnMouseup = false; }">';
+  $html .= '<div class="ds-modal ' . $sizeClass . ' ' . htmlspecialchars($class) . '" role="dialog" aria-modal="true">';
 
   if ($title) {
-    $html .= '<div class="flex items-center justify-between px-6 py-4 border-0 border-b border-solid border-border-color flex-shrink-0">';
-    $html .= '<h3 class="font-semibold text-[1.1rem] text-headings m-0">' . htmlspecialchars($title) . '</h3>';
+    $html .= '<div class="ds-modal__header">';
+    $html .= '<h3 class="ds-modal__title">' . htmlspecialchars($title) . '</h3>';
     if ($closeButton) {
-      $html .= '<button type="button" class="w-9 h-9 flex items-center justify-center border-none bg-transparent text-[1.6rem] text-[var(--text-color-secondary)] cursor-pointer rounded-lg transition-colors duration-150 hover:bg-surface-offset hover:text-[var(--text-color)] p-0 leading-none" onclick="closeModal(\'' . htmlspecialchars($id) . '\')">&times;</button>';
+      $html .= '<button type="button" class="ds-modal__close" onclick="closeModal(\'' . htmlspecialchars($id) . '\')" aria-label="Chiudi">&times;</button>';
     }
     $html .= '</div>';
   }
 
-  $html .= '<div class="p-6 overflow-y-auto overflow-x-hidden flex-1 text-[var(--text-color)]">' . $content . '</div>';
+  $html .= '<div class="ds-modal__body">' . $content . '</div>';
 
   if ($footer) {
-    $footerClasses = 'flex items-center gap-3 px-6 py-4 border-0 border-t border-solid border-border-color flex-shrink-0' . (!empty($options['footer_right']) ? ' justify-end' : '');
+    $footerClasses = 'ds-modal__footer' . (!empty($options['footer_right']) ? ' ds-modal__footer--right' : '');
     $html .= '<div class="' . $footerClasses . '">' . $footer . '</div>';
   }
 

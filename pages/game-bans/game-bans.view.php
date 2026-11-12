@@ -30,7 +30,6 @@
       ];
 
       $tableOptions = [
-        "table_class" => "ui-table",
         "primary_key" => "ban_id",
         "base_url" => "game-bans.php?id=" . $game["game_id"] . "&",
       ];

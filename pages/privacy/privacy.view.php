@@ -27,7 +27,7 @@
     </ul>
     
     <h2><?= __('privacy_section4_title') ?></h2>
-    <p><?= !empty($config["analytics"]) ? __('privacy_section4_text') : __('privacy_section4_text_tech') ?> <a class="text-[var(--primary-color)] hover:underline" href="cookie.php"><?= __('cookie_title') ?></a>.</p>
+    <p><?= !empty($config["analytics"]) ? __('privacy_section4_text') : __('privacy_section4_text_tech') ?> <a class="text-[var(--ds-color-secondary)] hover:underline" href="cookie.php"><?= __('cookie_title') ?></a>.</p>
 
     <h2><?= __('privacy_section5_title') ?></h2>
     <p><?= __('privacy_section5_text') ?></p>

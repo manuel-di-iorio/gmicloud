@@ -9,7 +9,7 @@ function uiToastEnsureContainer() {
     if (!uiToastContainer) {
       uiToastContainer = document.createElement('div');
       uiToastContainer.id = 'ui-toast-container';
-      uiToastContainer.className = 'ui-toast-container';
+      uiToastContainer.className = 'ds-toast-container ui-toast-container';
       document.body.appendChild(uiToastContainer);
     }
   }
@@ -36,23 +36,24 @@ function uiToast(options) {
 
   var el = document.createElement('div');
   el.id = id;
-  el.className = 'ui-toast ui-toast--' + variant;
+  var dsVariant = variant === 'error' ? 'error' : variant;
+  el.className = 'ds-toast ds-toast--' + dsVariant + ' ui-toast ui-toast--' + variant;
   el.setAttribute('role', 'alert');
 
-  var html = '<div class="ui-toast__icon"><i class="fas ' + iconClass + '"></i></div>';
-  html += '<div class="ui-toast__body">';
-  html += '<div class="ui-toast__title">' + title + '</div>';
+  var html = '<div class="ds-toast__icon ui-toast__icon"><i class="fas ' + iconClass + '"></i></div>';
+  html += '<div class="ds-toast__body ui-toast__body">';
+  html += '<div class="ds-toast__title ui-toast__title">' + title + '</div>';
   if (message) {
-    html += '<div class="ui-toast__message">' + message + '</div>';
+    html += '<div class="ds-toast__message ui-toast__message">' + message + '</div>';
   }
   html += '</div>';
 
   if (closable) {
-    html += '<button type="button" class="ui-toast__close" aria-label="Close">&times;</button>';
+    html += '<button type="button" class="ds-toast__close ui-toast__close" aria-label="Close">&times;</button>';
   }
 
   if (duration > 0) {
-    html += '<div class="ui-toast__progress w-full"></div>';
+    html += '<div class="ds-toast__progress ui-toast__progress w-full"></div>';
   }
 
   el.innerHTML = html;

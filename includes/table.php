@@ -22,7 +22,7 @@
  *                                               and returns true if the action should be displayed for that row.
  * @param array $options An associative array for table options:
  *                       - "table_id": (Optional) The ID attribute for the table element.
- *                       - "table_class": (Optional) CSS classes for the table element. Defaults to "ui-table".
+ *                       - "table_class": (Optional) Extra CSS classes for the table element. "ds-table" is always applied.
  *                       - "default_sort_column": (Optional) The key of the column to sort by default.
  *                       - "default_sort_direction": (Optional) "asc" or "desc". Defaults to "asc".
  *                       - "pagination": (Optional) An associative array for pagination settings:
@@ -38,7 +38,10 @@ function render_table(array $data, array $columns, array $actions = [], array $o
 {
     // Default options
     $tableId = $options["table_id"] ?? 'genericTable' . rand(1000, 9999);
-     $tableClass = $options["table_class"] ?? 'ui-table';
+    // "ds-table" is the design-system hook and must never be lost: the option
+    // only contributes extra classes on top of it.
+    $extraTableClass = trim(str_replace(['ds-table', 'ui-table'], '', (string) ($options["table_class"] ?? '')));
+    $tableClass = trim('ds-table ' . $extraTableClass);
     $defaultSortColumn = $options["default_sort_column"] ?? null;
     $defaultSortDirection = $options["default_sort_direction"] ?? 'asc';
     $paginationSettings = $options["pagination"] ?? null;
@@ -116,16 +119,16 @@ function render_table(array $data, array $columns, array $actions = [], array $o
     }
 
     // --- Start Table Output ---
-    echo '<div class="ui-table-container">';
+    echo '<div class="ds-table-wrap">';
     echo '<table id="' . $tableId . '" class="' . $tableClass . '">';
 
     // --- Table Header ---
-    echo '<thead class="ui-table-header"><tr>';
+    echo '<thead class="ds-table__head"><tr>';
     if ($selectable) {
-        echo '<th class="ui-table-header-cell w-10 align-middle"><input type="checkbox" class="align-middle" onclick="toggleSelectAll(this, \'selected_ids[]\')"></th>';
+        echo '<th class="ds-table__th ds-table__th--select w-10 align-middle"><input type="checkbox" class="align-middle" onclick="toggleSelectAll(this, \'selected_ids[]\')"></th>';
     }
     foreach ($columns as $column) {
-        echo '<th class="ui-table-header-cell">';
+        echo '<th class="ds-table__th">';
         if ($column["sortable"] ?? false) {
             $newDirection = ($sortColumn === $column["key"] && $sortDirection === 'asc') ? 'desc' : 'asc';
             
@@ -160,33 +163,33 @@ function render_table(array $data, array $columns, array $actions = [], array $o
         echo '</th>';
     }
     if (!empty($actions)) {
-        echo '<th class="ui-table-header-cell actions-header-cell">' . __('table_actions') . '</th>';
+        echo '<th class="ds-table__th ds-table__th--actions">' . __('table_actions') . '</th>';
     }
     echo '</tr></thead>';
 
     // --- Table Body ---
-    echo '<tbody class="ui-table-body">';
+    echo '<tbody class="ds-table__body">';
     if (empty($pageData)) {
         $colspan = count($columns) + (!empty($actions) ? 1 : 0) + ($selectable ? 1 : 0);
-        echo '<tr class="ui-table-empty-row"><td colspan="' . $colspan . '" class="text-center">' . __('table_empty') . '</td></tr>';
+        echo '<tr class="ds-table__row ds-table__row--empty"><td colspan="' . $colspan . '" class="ds-table__cell ds-table__cell--empty">' . __('table_empty') . '</td></tr>';
     } else {
         foreach ($pageData as $row) {
-            echo '<tr class="ui-table-row">';
+            echo '<tr class="ds-table__row">';
             if ($selectable) {
                 $pkValue = $row[$primaryKey] ?? '';
-                echo '<td class="ui-table-cell w-10 align-middle"><input type="checkbox" name="selected_ids[]" value="' . htmlspecialchars($pkValue) . '" class="align-middle"></td>';
+                echo '<td class="ds-table__cell ds-table__cell--select w-10 align-middle"><input type="checkbox" name="selected_ids[]" value="' . htmlspecialchars($pkValue) . '" class="align-middle"></td>';
             }
             foreach ($columns as $column) {
                 $cellValue = $row[$column["key"]] ?? '';
                 if (isset($column["format_callback"]) && is_callable($column["format_callback"])) {
                     $cellValue = call_user_func($column["format_callback"], $cellValue, $row);
                 }
-                echo '<td class="ui-table-cell">' . $cellValue . '</td>';
+                echo '<td class="ds-table__cell">' . $cellValue . '</td>';
             }
 
             // Actions column
             if (!empty($actions)) {
-                echo '<td class="ui-table-cell actions-cell">';
+                echo '<td class="ds-table__cell ds-table__cell--actions">';
                 foreach ($actions as $action) {
                     $showAction = true;
                     if (isset($action["condition_callback"]) && is_callable($action["condition_callback"])) {
@@ -194,9 +197,9 @@ function render_table(array $data, array $columns, array $actions = [], array $o
                     }
 
                     if ($showAction) {
-                        $actionClass = $action["class"] ?? 'table-action-icon';
+                        $actionClass = $action["class"] ?? 'ds-table-action';
                         if ($actionClass === 'btn-link') {
-                            $actionClass = 'mr-1 inline-block rounded px-1.5 py-1 text-sm text-table-action-icon no-underline transition hover:scale-110 hover:bg-table-action-icon-hover-bg hover:text-primary-color';
+                            $actionClass = 'ds-table-action';
                         }
 
                         // Handle URL with placeholders
@@ -226,17 +229,17 @@ function render_table(array $data, array $columns, array $actions = [], array $o
     }
     echo '</tbody>';
     echo '</table>';
-    echo '</div>'; // End ui-table-container
+    echo '</div>'; // End ds-table-wrap
 
     // --- Pagination Controls ---
     // Show pagination controls only if there is more than one page (totalPages > 0 for 0-indexed)
     if ($paginationSettings && $totalPages > 0) { 
-        $paginationButtonClasses = 'inline-flex min-w-9 select-none items-center justify-center rounded-md border border-solid border-[var(--border-color)] bg-input-bg px-3 py-2 text-[0.9rem] text-text no-underline transition-colors hover:border-primary-color hover:bg-pagination-hover-bg';
-        $paginationActiveClasses = 'cursor-default !border-primary-color !bg-pagination-active-bg font-semibold !text-pagination-active-text';
-        $paginationDisabledClasses = 'cursor-not-allowed !border-transparent !bg-transparent !text-pagination-disabled-text opacity-60';
+        $paginationButtonClasses = 'ds-pagination__btn';
+        $paginationActiveClasses = 'ds-pagination__btn--active';
+        $paginationDisabledClasses = 'ds-pagination__btn--disabled';
 
-        echo '<div class="ui-table-pagination mt-4 text-center">';
-        echo '<div class="inline-flex flex-wrap items-center gap-1">';
+        echo '<div class="ds-pagination">';
+        echo '<div class="ds-pagination__list">';
 
         // Previous button (for 0-indexed)
         if ($currentPage > 0) {
@@ -301,7 +304,6 @@ function render_table(array $data, array $columns, array $actions = [], array $o
         echo '</div>';
         echo '</div>';
     }
-    echo '</div>'; // Close ui-table-container
 }
 
 ?>

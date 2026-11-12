@@ -19,6 +19,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Verify design system build
+        run: |
+          npm ci
+          npm run build:css
+          git diff --exit-code -- assets/css/app.css || (echo 'assets/css/app.css is out of date: run npm run build:css and commit the result' && exit 1)
+
       - name: Deploy via git-ftp
         env:
           FTP_USER: ${{ secrets.FTP_USER }}
@@ -30,7 +41,7 @@ jobs:
           chmod +x git-ftp.sh
 
           # Exclude patterns
-          printf '%s\n' '.git*' '.github/' '.env' '.gitignore' '.vscode/' '.ftpquota' 'sdk/' > .git-ftp-ignore
+          printf '%s\n' '.git*' '.github/' '.env' '.gitignore' '.vscode/' '.ftpquota' 'sdk/' 'node_modules/' 'assets/design-system/' > .git-ftp-ignore
 
           FTP_URL="ftp://ftp.gmicloud.altervista.org/"
 

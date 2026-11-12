@@ -1,5 +1,4 @@
 <?php
 
-$theme = isset($_COOKIE["theme"]) ? $_COOKIE["theme"] : "dark";
-
-if ($theme !== "light" && $theme !== "dark") $theme = "dark";
+// GMI Cloud is light-only (GMI Frontend portal design system). Kept for compatibility.
+$theme = 'light';

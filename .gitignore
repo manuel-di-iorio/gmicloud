@@ -6,3 +6,6 @@ lib/config.backup.php
 
 # IDE
 .vscode/
+
+# NodeJS
+node_modules/

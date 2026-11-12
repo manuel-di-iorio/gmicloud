@@ -6,17 +6,10 @@ function ui_toggle($active, $url, $options = []) {
   $class = $options['class'] ?? '';
   $method = strtoupper($options['method'] ?? 'GET');
   $postBody = $options['postBody'] ?? null;
-
   $size = $options['size'] ?? 'md';
-  $sizes = [
-    'sm' => ['w-[30px] h-[17px]', 'w-[16px] h-[16px] top-[0.5px]', 'left-[1px]', 'translate-x-[13px]'],
-    'md' => ['w-[35px] h-[19px]', 'w-[18px] h-[18px] top-[0.5px]', 'left-[1px]', 'translate-x-[15px]'],
-    'lg' => ['w-[42px] h-[23px]', 'w-[22px] h-[22px] top-[0.5px]', 'left-[1px]', 'translate-x-[19px]'],
-  ];
-  list($wh, $knobSize, $knobPos, $translate) = $sizes[$size] ?? $sizes['md'];
-
-  $bg = $active ? 'bg-[var(--toggle-bg--checked,#2196F3)]' : 'bg-[var(--toggle-bg,#ccc)]';
-  $knobActive = $active ? $translate : 'translate-x-0';
+  $sizes = ['sm' => ['ds-toggle__track--sm', 13], 'md' => ['ds-toggle__track--md', 15], 'lg' => ['ds-toggle__track--lg', 19]];
+  [$trackSize] = [$sizes[$size][0] ?? $sizes['md'][0]];
+  $translate = $sizes[$size][1] ?? 15;
 
   if ($method === 'POST' && $postBody !== null) {
     $href = 'javascript:void(0)';
@@ -26,11 +19,9 @@ function ui_toggle($active, $url, $options = []) {
     $dataAttrs = '';
   }
 
-  $html = '<a href="' . $href . '" title="' . ($active ? htmlspecialchars($labelOn) : htmlspecialchars($labelOff)) . '" class="ui-toggle inline-flex items-center justify-center no-underline ' . htmlspecialchars($class) . '"' . $dataAttrs . '>';
-  $html .= '<span class="relative inline-block ' . $wh . ' ' . $bg . ' rounded-full transition-colors duration-[400ms]">';
-  $html .= '<span class="absolute ' . $knobSize . ' ' . $knobPos . ' rounded-full bg-white shadow-sm transition-transform duration-[400ms] ' . $knobActive . '"></span>';
-  $html .= '</span>';
-  $html .= '</a>';
-
+  $html = '<a href="' . $href . '" title="' . ($active ? htmlspecialchars($labelOn) : htmlspecialchars($labelOff)) . '" class="ds-toggle ui-toggle ' . htmlspecialchars($class) . '"' . $dataAttrs . '>';
+  $html .= '<span class="ds-toggle__track ' . $trackSize . ($active ? ' ds-toggle__track--on' : ' ds-toggle__track--off') . '">';
+  $html .= '<span class="ds-toggle__knob" style="width:' . ($size === 'sm' ? 16 : ($size === 'lg' ? 22 : 18)) . 'px;height:' . ($size === 'sm' ? 16 : ($size === 'lg' ? 22 : 18)) . 'px;transform:translateX(' . ($active ? $translate : 0) . 'px)"></span>';
+  $html .= '</span></a>';
   return $html;
 }

@@ -1,0 +1,17 @@
+/* Code theme — flat square variant derived from portal Twilight */
+.ds-code,
+pre[class*="language-"] { border-radius: 0; }
+code[class*="language-"], pre[class*="language-"] {
+  color: #e5e7eb; background: none; font-family: Consolas, Monaco, "Andale Mono", monospace;
+  text-align: left; white-space: pre; word-spacing: normal; word-break: normal; word-wrap: normal; line-height: 1.5;
+  tab-size: 4; hyphens: none;
+}
+pre[class*="language-"] { background: #2F2F2F; border: 1px solid var(--ds-color-border); margin: 0.5em 0; overflow: auto; padding: 1em; }
+:not(pre) > code[class*="language-"] { background: var(--ds-color-surface-muted); color: var(--ds-color-content); border: 1px solid var(--ds-color-border); padding: 0.15em 0.2em 0.05em; white-space: normal; }
+.token.comment, .token.prolog, .token.doctype, .token.cdata { color: #7DD3C7; }
+.token.punctuation { opacity: 0.7; }
+.token.tag, .token.boolean, .token.number, .token.deleted { color: #f87171; }
+.token.keyword, .token.property, .token.selector, .token.constant, .token.symbol, .token.builtin { color: #F9EE98; }
+.token.attr-name, .token.attr-value, .token.string, .token.char, .token.operator, .token.entity, .token.url, .token.variable, .token.inserted { color: #b8b8b8; }
+.token.function { color: #ffac6f; }
+.token.regex, .token.important { color: #E9C062; }

@@ -10,44 +10,34 @@ function ui_button($label, $variant = 'primary', $size = 'md', $options = []) {
   $attrs = $options['attrs'] ?? [];
   $full = $options['full'] ?? false;
 
-  $base = 'relative inline-flex cursor-pointer select-none items-center justify-center overflow-hidden rounded-lg border-0 font-semibold leading-[1.4] no-underline transition-all duration-200 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100';
-
-  $variants = [
-    'primary'   => 'bg-button-bg text-button-text hover:bg-button-bg-hover hover:text-button-text active:bg-button-bg-hover active:text-button-text focus:ring-primary-color',
-    'secondary' => 'bg-surface-offset text-text hover:bg-surface-offset-hover hover:text-text active:bg-surface-offset-hover active:text-text focus:ring-gray-400',
-    'danger'    => 'bg-red-600 text-white hover:bg-red-700 hover:text-white active:bg-red-800 active:text-white focus:ring-red-500',
-    'ghost'     => 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-700 active:bg-gray-200 active:text-gray-700 focus:ring-gray-400',
-    'success'   => 'bg-green-600 text-white hover:bg-green-700 hover:text-white active:bg-green-800 active:text-white focus:ring-green-500',
-    'warning'   => 'bg-amber-500 text-white hover:bg-amber-600 hover:text-white active:bg-amber-700 active:text-white focus:ring-amber-400',
+  $map = [
+    'primary' => 'ds-btn--primary', 'secondary' => 'ds-btn--secondary',
+    'accent' => 'ds-btn--accent', 'light' => 'ds-btn--light',
+    'outline-light' => 'ds-btn--outline-light', 'ghost' => 'ds-btn--ghost',
+    'ghost-light' => 'ds-btn--ghost-light', 'text' => 'ds-btn--text',
+    'danger' => 'ds-btn--danger', 'success' => 'ds-btn--success',
+    // legacy aliases
+    'warning' => 'ds-btn--accent',
   ];
+  $sizes = ['sm' => 'ds-btn--sm', 'md' => 'ds-btn--md', 'lg' => 'ds-btn--lg', 'icon' => 'ds-btn--icon'];
 
-  $sizes = [
-    'sm' => 'px-3 py-1.5 text-sm gap-1.5',
-    'md' => 'px-4 py-2 text-base gap-2',
-    'lg' => 'px-6 py-3 text-lg gap-2.5',
-  ];
+  $variantClass = $map[$variant] ?? $map['primary'];
+  $sizeClass = $sizes[$size] ?? $sizes['md'];
+  $classes = trim("ds-btn $variantClass $sizeClass" . ($full ? ' ds-btn--full' : '') . " $class");
 
-  $classes = trim("$base {$variants[$variant]} {$sizes[$size]} " . ($full ? 'w-full' : '') . " $class");
-
-  $loadingHtml = $loading ? '<svg class="animate-spin -ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> ' : '';
-
+  $loadingHtml = $loading ? '<span class="ds-spinner ds-spinner--sm" aria-hidden="true"></span> ' : '';
   $iconHtml = $icon ? "<i class=\"$icon\"></i> " : '';
   $iconRightHtml = $iconRight ? " <i class=\"$iconRight\"></i>" : '';
-
   $content = $loadingHtml . $iconHtml . '<span>' . htmlspecialchars($label) . '</span>' . $iconRightHtml;
 
   $attrStr = '';
   foreach ($attrs as $key => $value) {
     $attrStr .= ' ' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
   }
-
-  if ($disabled) {
-    $attrStr .= ' disabled';
-  }
+  if ($disabled) $attrStr .= ' disabled';
 
   if ($href && !$disabled) {
     return "<a href=\"" . htmlspecialchars($href) . "\" class=\"$classes\"$attrStr>$content</a>";
   }
-
   return "<button type=\"" . htmlspecialchars($type) . "\" class=\"$classes\"$attrStr>$content</button>";
 }

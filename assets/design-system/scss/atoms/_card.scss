@@ -1,0 +1,49 @@
+/* ds-card — white surface, 1px border, zero radius.
+   Padding is opt-in through the --pad-* modifiers so cards that host
+   tables or full-bleed content can stay flush. */
+.ds-card {
+  --ds-card-pad: 0px;
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-card);
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.ds-card--pad-sm { --ds-card-pad: 0.75rem; padding: var(--ds-card-pad); }
+.ds-card--pad-md { --ds-card-pad: 1.25rem; padding: var(--ds-card-pad); }
+.ds-card--pad-lg { --ds-card-pad: 1.75rem; padding: var(--ds-card-pad); }
+
+.ds-card__body { padding: 1.25rem; }
+.ds-card__body--sm { padding: 0.75rem; }
+.ds-card__body--md { padding: 1.25rem; }
+.ds-card__body--lg { padding: 1.75rem; }
+
+/* Header and title share the same full-bleed bar. */
+.ds-card__header,
+.ds-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ds-color-content);
+  background: var(--ds-color-surface-muted);
+  border-bottom: 1px solid var(--ds-color-border);
+}
+
+.ds-card__header { padding: 1rem 1.25rem; }
+
+/* Inside a padded card the title bleeds to the card edges. */
+.ds-card__title {
+  margin: calc(var(--ds-card-pad) * -1) calc(var(--ds-card-pad) * -1) 1.25rem;
+  padding: 0.875rem var(--ds-card-pad);
+}
+
+.ds-card__footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--ds-color-border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

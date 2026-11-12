@@ -4,14 +4,14 @@
     <div id="export-options">
       <?= ui_card('<div class="space-y-4">
           <div>
-            <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_export_option_env') . '</label>
-            <select id="export-env" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]">
+            <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_export_option_env') . '</label>
+            <select id="export-env" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content transition-colors duration-200 box-border focus:border-content/40 focus:outline-none">
               <option value="">' . __('scores_export_option_env_all') . '</option>
               <option value="production">' . __('scores_env_production') . '</option>
               <option value="test">' . __('scores_env_test') . '</option>
             </select>
           </div>
-          <div id="export-summary" class="hidden text-sm text-[var(--text-color-secondary)]">
+          <div id="export-summary" class="hidden text-sm text-[var(--ds-color-content-muted)]">
             <i class="fas fa-info-circle"></i> <span id="export-summary-text"></span>
           </div>
           <div class="flex justify-end gap-2 pt-2">
@@ -26,13 +26,13 @@
     <!-- Export Progress -->
     <div id="export-progress" class="hidden">
       <?= ui_card('<div class="space-y-4">
-          <div id="export-progress-bar-container" class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div id="export-progress-bar-container" class="w-full bg-gray-200 rounded-full h-2.5">
             <div id="export-progress-bar" class="h-2.5 w-0 rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
-          <div id="export-progress-text" class="text-sm text-[var(--text-color-secondary)]">
+          <div id="export-progress-text" class="text-sm text-[var(--ds-color-content-muted)]">
             <i class="fas fa-spinner fa-spin"></i> ' . __('scores_export_progress_initializing') . '
           </div>
-          <div id="export-progress-details" class="hidden text-xs text-[var(--text-color-secondary)]">
+          <div id="export-progress-details" class="hidden text-xs text-[var(--ds-color-content-muted)]">
             <span id="export-progress-count">0</span> / <span id="export-progress-total">0</span> ' . __('scores_export_progress_rows') . '
           </div>
         </div>', [
@@ -47,7 +47,7 @@
             <i class="fas fa-check-circle text-2xl"></i>
             <span id="export-complete-text">' . __('scores_export_complete_text') . '</span>
           </div>
-          <div class="text-sm text-[var(--text-color-secondary)]">
+          <div class="text-sm text-[var(--ds-color-content-muted)]">
             <span id="export-complete-count">0</span> ' . __('scores_export_complete_rows') . '
           </div>
           <div id="export-complete-actions" class="flex justify-end gap-2 pt-2">

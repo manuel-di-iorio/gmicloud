@@ -1,13 +1,13 @@
-<div class="fixed left-8 top-7 z-10">
-  <img src="/assets/images/logo<?= $theme === 'dark' ? 'White' : '' ?>.png" alt="Platform Logo" class="h-10 opacity-[0.85] transition-opacity hover:opacity-100">
+<div style="position:fixed;left:2rem;top:1.75rem;z-index:10">
+  <img src="/assets/images/logo.png" alt="Platform Logo" style="height:2.5rem;opacity:0.85">
 </div>
 
-<div class="relative flex h-screen min-h-screen items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_20%_50%,rgba(88,101,242,0.08)_0%,transparent_50%),radial-gradient(ellipse_at_80%_20%,rgba(129,140,248,0.06)_0%,transparent_50%),radial-gradient(ellipse_at_50%_80%,rgba(99,102,241,0.05)_0%,transparent_50%),var(--bg-color)] px-5 py-10">
-  <div class="relative z-[1] w-full max-w-[500px] rounded-[20px] border border-solid border-[var(--border-color)] bg-[var(--bg-color-card)] px-10 pb-6 pt-16 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
-    <div class="mx-auto mb-7 flex h-[88px] w-[88px] animate-pulse items-center justify-center rounded-full bg-emerald-500/10">
-      <i class="fas fa-check text-5xl text-emerald-500"></i>
+<div class="flex min-h-screen items-center justify-center px-5 py-10">
+  <div class="ds-card" style="width:100%;max-width:500px;text-align:center">
+    <div class="ds-card__body" style="padding:4rem 2.5rem 1.5rem 2.5rem">
+      <div class="ds-stat__icon" style="margin:0 auto 1.75rem auto;width:5.5rem;height:5.5rem;font-size:3rem;color:var(--ds-color-success)"><i class="fas fa-check"></i></div>
+      <h2 style="margin:0 0 0.625rem 0;font-size:1.5rem;font-weight:700"><?= __('player_sdk_login_success') ?></h2>
+      <p class="ds-muted" style="margin:0 0 2.25rem 0;font-size:0.92rem;line-height:1.6"><?= __('player_sdk_login_success_desc') ?></p>
     </div>
-    <h2 class="mb-2.5 mt-0 text-2xl font-bold text-[var(--text-color-headings)]"><?= __('player_sdk_login_success') ?></h2>
-    <p class="mb-9 mt-0 text-[0.92rem] leading-6 text-[var(--text-color-secondary)]"><?= __('player_sdk_login_success_desc') ?></p>
   </div>
 </div>

@@ -13,10 +13,10 @@
           </div>', [
         'title' => __('scores_import_upload_title'),
         'footer' => '<div class="space-y-3 w-full">
-          <p class="text-xs font-semibold text-[var(--text-color)] uppercase tracking-wide">' . __('scores_import_format_title') . '</p>
-          <div class="text-xs text-[var(--text-color-secondary)] space-y-1.5">
+          <p class="text-xs font-semibold text-[var(--ds-color-content)] uppercase tracking-wide">' . __('scores_import_format_title') . '</p>
+          <div class="text-xs text-[var(--ds-color-content-muted)] space-y-1.5">
             <p>' . __('scores_import_format_header') . '</p>
-            <div class="overflow-x-auto"><code class="block bg-[var(--bg-color-offset)] rounded px-3 py-2 text-[var(--text-color)]">username,score,ip_encrypted,country,created_at,sign,tags,leaderboard_id,data,env</code></div>
+            <div class="overflow-x-auto"><code class="block bg-[var(--ds-color-surface-muted)] rounded px-3 py-2 text-[var(--ds-color-content)]">username,score,ip_encrypted,country,created_at,sign,tags,leaderboard_id,data,env</code></div>
             <p class="mt-2">' . __('scores_import_format_cols') . '</p>
             <ul class="list-disc list-inside space-y-1 pl-1">
               <li><strong>username</strong>: ' . __('scores_import_format_col_username') . '</li>
@@ -43,7 +43,7 @@
             <i class="fas fa-spinner fa-spin text-2xl"></i>
             <span>' . __('scores_import_parsing_text') . '</span>
           </div>
-          <div id="import-parsing-bar-container" class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div id="import-parsing-bar-container" class="w-full bg-gray-200 rounded-full h-2.5">
             <div id="import-parsing-bar" class="h-2.5 w-0 rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
         </div>', [
@@ -55,30 +55,30 @@
     <div id="import-preview" class="hidden">
       <?= ui_card('<div class="space-y-4">
           <div id="import-preview-summary" class="grid grid-cols-3 gap-4">
-            <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div class="text-center p-3 bg-green-50 rounded-sm">
               <div id="import-preview-valid" class="text-2xl font-bold text-green-600">0</div>
-              <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_preview_valid') . '</div>
+              <div class="text-xs text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_valid') . '</div>
             </div>
-            <div class="text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+            <div class="text-center p-3 bg-red-50 rounded-sm">
               <div id="import-preview-errors" class="text-2xl font-bold text-red-600">0</div>
-              <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_preview_errors') . '</div>
+              <div class="text-xs text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_errors') . '</div>
             </div>
-            <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div class="text-center p-3 bg-blue-50 rounded-sm">
               <div id="import-preview-total" class="text-2xl font-bold text-blue-600">0</div>
-              <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_preview_total') . '</div>
+              <div class="text-xs text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_total') . '</div>
             </div>
           </div>
           <div id="import-preview-table-wrapper" class="hidden">
-            <p class="text-sm font-semibold text-[var(--text-color)] mb-2">' . __('scores_import_preview_sample') . '</p>
+            <p class="text-sm font-semibold text-[var(--ds-color-content)] mb-2">' . __('scores_import_preview_sample') . '</p>
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
-                  <tr class="border-b border-[var(--border-color)]">
-                    <th class="text-left py-2 px-3 text-[var(--text-color-secondary)]">#</th>
-                    <th class="text-left py-2 px-3 text-[var(--text-color-secondary)]">' . __('scores_import_preview_player') . '</th>
-                    <th class="text-left py-2 px-3 text-[var(--text-color-secondary)]">' . __('scores_import_preview_score') . '</th>
-                    <th class="text-left py-2 px-3 text-[var(--text-color-secondary)]">' . __('scores_import_preview_country') . '</th>
-                    <th class="text-left py-2 px-3 text-[var(--text-color-secondary)]">' . __('scores_import_preview_date') . '</th>
+                  <tr class="border-b border-default">
+                    <th class="text-left py-2 px-3 text-[var(--ds-color-content-muted)]">#</th>
+                    <th class="text-left py-2 px-3 text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_player') . '</th>
+                    <th class="text-left py-2 px-3 text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_score') . '</th>
+                    <th class="text-left py-2 px-3 text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_country') . '</th>
+                    <th class="text-left py-2 px-3 text-[var(--ds-color-content-muted)]">' . __('scores_import_preview_date') . '</th>
                   </tr>
                 </thead>
                 <tbody id="import-preview-table-body"></tbody>
@@ -87,7 +87,7 @@
           </div>
           <div id="import-preview-errors-wrapper" class="hidden">
             <p class="text-sm font-semibold text-red-600 mb-2"><i class="fas fa-exclamation-triangle"></i> ' . __('scores_import_preview_error_list') . '</p>
-            <div id="import-preview-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-3"></div>
+            <div id="import-preview-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 rounded-sm p-3"></div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_back'), 'secondary', 'md', ['attrs' => ['onclick' => 'goToUpload()']]) . '
@@ -105,7 +105,7 @@
             <i class="fas fa-spinner fa-spin text-2xl"></i>
             <span id="import-executing-text">' . __('scores_import_executing_text') . '</span>
           </div>
-          <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
             <div id="import-executing-bar" class="h-2.5 w-[30%] rounded-full bg-blue-600 transition-all duration-300"></div>
           </div>
         </div>', [
@@ -121,18 +121,18 @@
             <span>' . __('scores_import_complete_text') . '</span>
           </div>
           <div class="grid grid-cols-2 gap-4">
-            <div class="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div class="text-center p-3 bg-green-50 rounded-sm">
               <div id="import-complete-imported" class="text-2xl font-bold text-green-600">0</div>
-              <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_complete_imported') . '</div>
+              <div class="text-xs text-[var(--ds-color-content-muted)]">' . __('scores_import_complete_imported') . '</div>
             </div>
-            <div class="text-center p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <div class="text-center p-3 bg-yellow-50 rounded-sm">
               <div id="import-complete-skipped" class="text-2xl font-bold text-yellow-600">0</div>
-              <div class="text-xs text-[var(--text-color-secondary)]">' . __('scores_import_complete_skipped') . '</div>
+              <div class="text-xs text-[var(--ds-color-content-muted)]">' . __('scores_import_complete_skipped') . '</div>
             </div>
           </div>
           <div id="import-complete-errors-wrapper" class="hidden">
             <p class="text-sm font-semibold text-red-600 mb-2"><i class="fas fa-exclamation-triangle"></i> ' . __('scores_import_complete_error_list') . '</p>
-            <div id="import-complete-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg p-3"></div>
+            <div id="import-complete-errors-list" class="max-h-40 overflow-y-auto text-xs text-red-600 bg-red-50 rounded-sm p-3"></div>
           </div>
           <div class="flex justify-end gap-2 pt-2">
             ' . ui_button(__('scores_import_complete_back'), 'primary', 'md', ['href' => 'game-scores.php?id=' . $gameId . ($leaderboardId ? '&leaderboard_id=' . $leaderboardId : '')]) . '
@@ -223,12 +223,12 @@ function showPreview(data) {
     tbody.innerHTML = '';
     data.preview.forEach(function(row) {
       var tr = document.createElement('tr');
-      tr.className = 'border-b border-[var(--border-color)]';
-      tr.innerHTML = '<td class="py-2 px-3 text-[var(--text-color-secondary)]">' + row.row + '</td>' +
-        '<td class="py-2 px-3 text-[var(--text-color)]">' + escapeHtml(row.player) + '</td>' +
-        '<td class="py-2 px-3 text-[var(--text-color)]">' + escapeHtml(String(row.score)) + '</td>' +
-        '<td class="py-2 px-3 text-[var(--text-color-secondary)]">' + escapeHtml(row.country || '-') + '</td>' +
-        '<td class="py-2 px-3 text-[var(--text-color-secondary)]">' + escapeHtml(row.date || '-') + '</td>';
+      tr.className = 'border-b border-default';
+      tr.innerHTML = '<td class="py-2 px-3 text-[var(--ds-color-content-muted)]">' + row.row + '</td>' +
+        '<td class="py-2 px-3 text-[var(--ds-color-content)]">' + escapeHtml(row.player) + '</td>' +
+        '<td class="py-2 px-3 text-[var(--ds-color-content)]">' + escapeHtml(String(row.score)) + '</td>' +
+        '<td class="py-2 px-3 text-[var(--ds-color-content-muted)]">' + escapeHtml(row.country || '-') + '</td>' +
+        '<td class="py-2 px-3 text-[var(--ds-color-content-muted)]">' + escapeHtml(row.date || '-') + '</td>';
       tbody.appendChild(tr);
     });
   }

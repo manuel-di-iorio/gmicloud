@@ -1,0 +1,103 @@
+/**
+ * GMI Cloud design tokens — port 1:1 of GMI Frontend portal tokens (light only).
+ */
+:root {
+  --ds-color-primary: #E8EDF1;
+  --ds-color-primary-light: #F5F7F9;
+  --ds-color-secondary: #1F2937;
+  --ds-color-accent: #de9a46;
+  --ds-color-accent-warm: #AD5700;
+  --ds-color-accent-cool: #7DD3C7;
+  --ds-color-code-surface: #2F2F2F;
+
+  --ds-color-gold: #f59e0b;
+  --ds-color-gold-light: #FBC147;
+  --ds-color-silver: #94a3b8;
+  --ds-color-bronze: #f97316;
+
+  --ds-color-discord: #5865F2;
+
+  --ds-color-night-900: #070B13;
+  --ds-color-night-800: #0B1220;
+  --ds-color-night-700: #0D1524;
+  --ds-color-night-600: #101A2C;
+
+  --ds-trophy-gold-bg: #fbbf24;
+  --ds-trophy-gold-border: 1px solid #f59e0b;
+  --ds-trophy-gold-shadow: none;
+  --ds-trophy-color: #111827;
+  --ds-trophy-silver-bg: #cbd5e1;
+  --ds-trophy-silver-border: 1px solid #94a3b8;
+  --ds-trophy-silver-shadow: none;
+  --ds-trophy-bronze-bg: #fb923c;
+  --ds-trophy-bronze-border: 1px solid #f97316;
+  --ds-trophy-bronze-shadow: none;
+
+  --ds-color-success: #007A69;
+  --ds-color-success-light: #00A58E;
+  --ds-color-error: #dc2626;
+  --ds-color-warning: #DF7B00;
+  --ds-color-info: #1F2937;
+
+  --ds-color-category-tutorial: #00A58E;
+  --ds-color-category-news: #D6336C;
+  --ds-color-category-game-jam: #4615B2;
+  --ds-color-category-competition: #DF7B00;
+
+  --ds-rgb-primary: 232, 237, 241;
+  --ds-rgb-primary-light: 245, 247, 249;
+  --ds-rgb-secondary: 31, 41, 55;
+  --ds-rgb-accent: 222, 154, 70;
+  --ds-rgb-accent-warm: 173, 87, 0;
+  --ds-rgb-accent-cool: 125, 211, 199;
+  --ds-rgb-success: 0, 122, 105;
+  --ds-rgb-success-light: 0, 165, 142;
+  --ds-rgb-error: 220, 38, 38;
+  --ds-rgb-warning: 223, 123, 0;
+  --ds-rgb-info: 31, 41, 55;
+  --ds-rgb-gold: 245, 158, 11;
+  --ds-rgb-gold-light: 251, 193, 71;
+  --ds-rgb-silver: 148, 163, 184;
+  --ds-rgb-bronze: 249, 115, 22;
+  --ds-rgb-discord: 88, 101, 242;
+  --ds-rgb-night-900: 7, 11, 19;
+  --ds-rgb-night-800: 11, 18, 32;
+  --ds-rgb-night-700: 13, 21, 36;
+  --ds-rgb-night-600: 16, 26, 44;
+  --ds-rgb-surface: 255, 255, 255;
+  --ds-rgb-surface-muted: 245, 247, 249;
+  --ds-rgb-surface-solid: 255, 255, 255;
+  --ds-rgb-surface-elevated: 255, 255, 255;
+  --ds-rgb-content: 17, 24, 39;
+  --ds-rgb-content-muted: 107, 114, 128;
+
+  --ds-color-on-primary: #111827;
+  --ds-color-on-secondary: #ffffff;
+  --ds-color-content: #111827;
+  --ds-color-content-muted: #6B7280;
+
+  --ds-color-app-bg: #E8EDF1;
+  --ds-color-surface: #ffffff;
+  --ds-color-surface-solid: #ffffff;
+  --ds-color-surface-muted: #F5F7F9;
+  --ds-color-surface-elevated: #ffffff;
+
+  --ds-color-border: #E5E7EB;
+  --ds-color-border-glow: rgba(223, 123, 0, 0.25);
+
+  --ds-border-thin: 2px;
+  --ds-border-thick: 4px;
+
+  --ds-radius-sm: 0;
+  --ds-radius-card: 0;
+  --ds-radius-lg: 0;
+  --ds-radius-xl: 0;
+  --ds-radius-cta: 0;
+
+  --ds-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ds-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ds-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --defaultSpace: 24px;
+  --blogPostWidth: 70rem;
+}

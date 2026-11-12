@@ -3,24 +3,20 @@
 function ui_badge($label, $variant = 'default', $options = []) {
   $icon = $options['icon'] ?? null;
   $class = $options['class'] ?? '';
-  $pill = $options['pill'] ?? true;
 
-  $base = 'inline-flex items-center gap-1 text-[0.82em] font-semibold leading-none';
-
-  $variants = [
-    'default' => 'bg-gray-500/10 text-gray-500',
-    'primary' => 'bg-primary-color/10 text-primary-color',
-    'success' => 'bg-emerald-500/10 text-emerald-500',
-    'danger'  => 'bg-red-500/10 text-red-500',
-    'warning' => 'bg-amber-500/10 text-amber-500',
-    'info'    => 'bg-blue-500/10 text-blue-500',
+  $map = [
+    'default' => 'ds-badge--neutral', 'neutral' => 'ds-badge--neutral',
+    'primary' => 'ds-badge--accent', 'accent' => 'ds-badge--accent',
+    'success' => 'ds-badge--success', 'danger' => 'ds-badge--danger',
+    'warning' => 'ds-badge--warning', 'info' => 'ds-badge--neutral',
   ];
-
-  $shapeClass = $pill ? 'rounded-full px-2.5 py-[5px]' : '';
-
-  $variantClass = $variants[$variant] ?? $variants['default'];
-
+  $variantClass = $map[$variant] ?? $map['default'];
   $iconHtml = $icon ? '<i class="' . htmlspecialchars($icon) . '"></i> ' : '';
 
-  return '<span class="' . trim("$base $variantClass $shapeClass " . htmlspecialchars($class)) . '">' . $iconHtml . htmlspecialchars($label) . '</span>';
+  return '<span class="' . trim("ds-badge $variantClass " . htmlspecialchars($class)) . '">' . $iconHtml . htmlspecialchars($label) . '</span>';
+}
+
+function ui_category_label($label, $category = 'tutorial', array $options = []): string {
+  $class = $options['class'] ?? '';
+  return '<span class="ds-category-label ds-category-label--' . htmlspecialchars($category) . ' ' . htmlspecialchars($class) . '">' . htmlspecialchars($label) . '</span>';
 }

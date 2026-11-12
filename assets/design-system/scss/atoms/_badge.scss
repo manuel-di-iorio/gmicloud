@@ -1,0 +1,12 @@
+/* ds-badge — square, no pill */
+.ds-badge { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.82em; font-weight: 600; line-height: 1; padding: 0.3rem 0.5rem; border: 1px solid transparent; border-radius: var(--ds-radius-sm); }
+.ds-badge--neutral { background: var(--ds-color-surface-muted); border-color: var(--ds-color-border); color: var(--ds-color-content-muted); }
+.ds-badge--accent { background: rgba(222,154,70,0.12); border-color: rgba(222,154,70,0.4); color: var(--ds-color-accent-warm); }
+.ds-badge--success { background: rgba(0,122,105,0.1); border-color: rgba(0,122,105,0.3); color: var(--ds-color-success); }
+.ds-badge--warning { background: rgba(223,123,0,0.1); border-color: rgba(223,123,0,0.3); color: var(--ds-color-warning); }
+.ds-badge--danger { background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.3); color: var(--ds-color-error); }
+.ds-category-label { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.5rem; border: 1px solid var(--ds-color-border); background: var(--ds-color-surface-muted); color: var(--ds-color-content-muted); }
+.ds-category-label--tutorial { color: var(--ds-color-category-tutorial); border-color: rgba(0,165,142,0.4); }
+.ds-category-label--news { color: var(--ds-color-category-news); border-color: rgba(214,51,108,0.4); }
+.ds-category-label--game-jam { color: var(--ds-color-category-game-jam); border-color: rgba(70,21,178,0.4); }
+.ds-category-label--competition { color: var(--ds-color-category-competition); border-color: rgba(223,123,0,0.4); }

@@ -1,6 +1,4 @@
-<?php 
-$navbarLogoColor = $theme === "dark" ? "White" : ""; 
-$navbarThemeReversed = $theme === "dark" ? "light" : "dark";
+<?php
 
 $navbarItems = [
   ["label" => __("nav_dashboard"), "url" => isset($user) ? "/home.php" : "/", "icon" => "home", "showOnlyLogged" => false],
@@ -14,7 +12,7 @@ if ($isAdminUser) {
   $adminLabel = __("nav_admin");
   $pendingCount = User::countUnapproved();
   if ($pendingCount > 0) {
-    $adminLabel .= ' <span class="nav-badge">' . $pendingCount . '</span>';
+    $adminLabel .= ' <span class="ds-sidebar__badge">' . $pendingCount . '</span>';
   }
   $navbarItems[] = ["label" => $adminLabel, "url" => "/admin.php", "icon" => "cogs", "showOnlyLogged" => true, "allowHtml" => true];
 }
@@ -38,52 +36,47 @@ if ($selectedTeamId !== null && isset($user)) {
 }
 ?>
 
-<div class="NavbarOverlay" id="overlay" onclick="w3_close()"></div>
+<div class="ds-overlay" id="overlay" onclick="w3_close()"></div>
 
-<nav id="navbar">
-  <div class="LogoContainer">
+<nav id="navbar" class="ds-sidebar">
+  <div class="ds-sidebar__brand">
     <a href="./index.php" class="navbar-logo-link">
-      <img src="/assets/images/logo<?= $navbarLogoColor ?>.png" class="round Logo" alt="Logo Piattaforma">
+      <img src="/assets/images/logo.png" class="Logo" alt="Logo Piattaforma">
     </a>
   </div>
-  
-  <div class="navbar-menu">
+
+  <div class="ds-sidebar__menu">
     <?php if (isset($user) && count($userTeamsList) > 0) { ?>
-      <div style="padding:8px 16px;margin-top:8px;margin-bottom:8px">
-        <label style="font-size:0.72em;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-color-secondary,#6b7280);font-weight:600;display:block;margin-bottom:8px"><?= __('team_selector_label') ?></label>
-          <select onchange="document.cookie='selected_team_id='+(this.value==='0'?'':this.value)+';path=/;max-age=31536000;SameSite=Lax';location.reload();" class="w-full px-3 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.85rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none cursor-pointer">
-            <option value="0" <?= $selectedTeamId === null ? 'selected' : '' ?>><?= __('team_selector_personal') ?></option>
-            <?php foreach ($userTeamsList as $ut) { ?>
-              <option value="<?= $ut['team_id'] ?>" <?= (int)$selectedTeamId === (int)$ut['team_id'] ? 'selected' : '' ?>><?= htmlspecialchars($ut['name']) ?></option>
-            <?php } ?>
-          </select>
-        </div>
+      <div class="ds-team-select">
+        <label class="ds-label" style="display:block;margin-bottom:8px"><?= __('team_selector_label') ?></label>
+        <select onchange="document.cookie='selected_team_id='+(this.value==='0'?'':this.value)+';path=/;max-age=31536000;SameSite=Lax';location.reload();" class="ds-select" style="width:100%">
+          <option value="0" <?= $selectedTeamId === null ? 'selected' : '' ?>><?= __('team_selector_personal') ?></option>
+          <?php foreach ($userTeamsList as $ut) { ?>
+            <option value="<?= $ut['team_id'] ?>" <?= (int)$selectedTeamId === (int)$ut['team_id'] ? 'selected' : '' ?>><?= htmlspecialchars($ut['name']) ?></option>
+          <?php } ?>
+        </select>
+      </div>
     <?php } ?>
 
     <?php foreach ($navbarItems as $navbarItem) {
-
       if (!$navbarItem["showOnlyLogged"] || isset($user)) { ?>
-        <a href="<?= $navbarItem["url"] ?>"
-        class="navbar-item <?php if ($navbarItem["url"] === $pageURI) { echo "active-link"; } ?>">
+        <a href="<?= $navbarItem["url"] ?>" class="ds-sidebar__item <?php if ($navbarItem["url"] === $pageURI) { echo "ds-sidebar__item--active"; } ?>">
           <i class="fas fa-<?= $navbarItem["icon"] ?> fa-fw"></i>
           <span class="navbar-item-label"><?= isset($navbarItem["allowHtml"]) && $navbarItem["allowHtml"] ? $navbarItem["label"] : htmlspecialchars($navbarItem["label"]) ?></span>
         </a>
       <?php } ?>
-
     <?php } ?>
   </div>
 
-  <div class="UserBox">
-  
-  <?php if (isset($user)) { ?>      
-    <div class="user-info">
-      <span class="user-avatar"><?= strtoupper(mb_substr($user["username"], 0, 1)) ?></span>
-      <span class="username"><?= htmlspecialchars($user["username"]) ?></span>
+  <div class="ds-sidebar__user">
+  <?php if (isset($user)) { ?>
+    <div class="ds-sidebar__user-row">
+      <span class="ds-avatar"><?= strtoupper(mb_substr($user["username"], 0, 1)) ?></span>
+      <span class="username" style="font-weight:600"><?= htmlspecialchars($user["username"]) ?></span>
     </div>
-    <a href="logout.php" class="navbar-logout-icon" data-tippy-content="<?= __('nav_logout') ?>"><i class="fas fa-sign-out-alt"></i></a>
+    <a href="logout.php" class="ds-link" style="display:inline-block;margin-top:0.5rem" data-tippy-content="<?= __('nav_logout') ?>"><i class="fas fa-sign-out-alt"></i> <?= __('nav_logout') ?></a>
   <?php } else { ?>
-    <a href="login.php" class="navbar-login-btn"><?= __('nav_login') ?></a>
+    <a href="login.php" class="ds-btn ds-btn--primary ds-btn--md ds-btn--full"><?= __('nav_login') ?></a>
   <?php } ?>
-
   </div>
 </nav>

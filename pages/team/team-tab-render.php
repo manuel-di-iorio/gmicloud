@@ -14,9 +14,9 @@ switch ($activeTab) {
         ' . ui_card_title(__('team_settings_title'), ['icon' => 'fas fa-edit']) . '
         <form method="POST" action="/team-settings.php?id=' . $teamId . '">
           ' . csrf_field() . '
-          <label class="mb-2 block font-semibold text-text-headings">' . __('team_settings_name') . '</label>
+          <label class="mb-2 block font-semibold text-content">' . __('team_settings_name') . '</label>
           <div class="mb-5">
-            <input name="name" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" value="' . htmlspecialchars($team['name']) . '" required>
+            <input name="name" type="text" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" value="' . htmlspecialchars($team['name']) . '" required>
           </div>
           ' . ui_button(__('team_settings_save'), 'primary', 'md', ['icon' => 'fa fa-edit', 'type' => 'submit', 'class' => 'mt-2']) . '
         </form>
@@ -31,16 +31,16 @@ switch ($activeTab) {
     if ($isTeamAdmin) {
       $html .= '<div class="' . ui_card_classes(['padding' => 'md', 'class' => 'mb-5']) . '">
         ' . ui_card_title(__('team_members_add_title'), ['icon' => 'fas fa-user-plus']) . '
-        <p class="mb-4 mt-0 text-sm text-text-secondary">' . __('team_members_add_note', ['site' => $config['platformTitle']]) . '</p>
+        <p class="mb-4 mt-0 text-sm text-content-muted">' . __('team_members_add_note', ['site' => $config['platformTitle']]) . '</p>
         <form method="POST" action="/team-members.php?id=' . $teamId . '" class="flex flex-wrap items-end gap-3">
           ' . csrf_field() . '
           <div class="min-w-[200px] flex-1">
-            <label class="mb-2 block font-semibold text-text-headings">' . __('team_members_add_discord_id') . '</label>
-            <input name="discord_id" type="text" required class="h-[42px] w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" placeholder="' . __('team_members_add_discord_id') . '">
+            <label class="mb-2 block font-semibold text-content">' . __('team_members_add_discord_id') . '</label>
+            <input name="discord_id" type="text" required class="h-[42px] w-full px-3.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" placeholder="' . __('team_members_add_discord_id') . '">
           </div>
           <div class="min-w-[150px]">
-            <label class="mb-2 block font-semibold text-text-headings">' . __('team_members_add_role') . '</label>
-            <select name="role" class="h-[42px] w-full px-3.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]">
+            <label class="mb-2 block font-semibold text-content">' . __('team_members_add_role') . '</label>
+            <select name="role" class="h-[42px] w-full px-3.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content transition-colors duration-200 box-border focus:border-content/40 focus:outline-none">
               <option value="member">' . __('team_members_role_member') . '</option>
               <option value="admin">' . __('team_members_role_admin') . '</option>
             </select>
@@ -54,21 +54,21 @@ switch ($activeTab) {
     }
 
     if (!empty($members)) {
-      $html .= '<div class="ui-table-container"><table class="ui-table"><thead class="ui-table-header"><tr>
-        <th class="ui-table-header-cell">' . __('admin_col_username') . '</th>
-        <th class="ui-table-header-cell">' . __('teams_col_role') . '</th>';
+      $html .= '<div class="ds-table-wrap"><table class="ds-table"><thead class="ds-table__head"><tr>
+        <th class="ds-table__th">' . __('admin_col_username') . '</th>
+        <th class="ds-table__th">' . __('teams_col_role') . '</th>';
 
       if ($isTeamAdmin) {
-        $html .= '<th class="ui-table-header-cell">' . __('table_actions') . '</th>';
+        $html .= '<th class="ds-table__th ds-table__th--actions">' . __('table_actions') . '</th>';
       }
 
-      $html .= '</tr></thead><tbody class="ui-table-body">';
+      $html .= '</tr></thead><tbody class="ds-table__body">';
 
       foreach ($members as $m) {
         $isSelf = (int)$m['user_id'] === $userId;
-        $html .= '<tr class="ui-table-row">
-          <td class="ui-table-cell">' . htmlspecialchars($m['username']) . ($isSelf ? ' <span class="text-text-secondary">(tu)</span>' : '') . '</td>
-          <td class="ui-table-cell">';
+        $html .= '<tr class="ds-table__row">
+          <td class="ds-table__cell">' . htmlspecialchars($m['username']) . ($isSelf ? ' <span class="text-content-muted">(tu)</span>' : '') . '</td>
+          <td class="ds-table__cell">';
 
         if ($m['role'] === 'admin') {
           $html .= ui_badge(__('team_members_role_admin'), 'primary', ['icon' => 'fas fa-crown']);
@@ -79,7 +79,7 @@ switch ($activeTab) {
         $html .= '</td>';
 
         if ($isTeamAdmin) {
-          $html .= '<td class="ui-table-cell actions-cell">';
+          $html .= '<td class="ds-table__cell ds-table__cell--actions">';
           if (!$isSelf) {
             $postBody = http_build_query(['id' => $teamId, 'user_id' => $m['user_id'], 'csrf_token' => csrf_token()]);
             $html .= '<a href="javascript:void(0)" class="admin-score-action admin-score-action--danger" data-tippy-content="' . __('team_members_remove') . '" onclick="if(confirm(\'' . __('team_members_remove') . '?\'))fetch(\'/team-members-remove.php\',{method:\'POST\',headers:{\'Content-Type\':\'application/x-www-form-urlencoded\'},body:\'' . addslashes($postBody) . '\'}).then(function(){location.reload();})">
@@ -110,13 +110,13 @@ switch ($activeTab) {
       </div>';
     }
 
-    $html .= '<form method="GET" action="/team.php" class="bg-surface-card border border-solid border-border-color rounded-lg p-3 shadow-sm mb-4">
+    $html .= '<form method="GET" action="/team.php" class="bg-surface border border-solid border-default rounded-sm p-3 mb-4">
       <input type="hidden" name="id" value="' . $teamId . '">
       <input type="hidden" name="tab" value="games">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div>
-          <label class="font-semibold text-sm text-[var(--text-color)] block mb-1.5">' . __('games_filter_name') . '</label>
-          <input type="text" name="name" value="' . $nameValue . '" placeholder="' . __('games_filter_placeholder') . '" class="w-full px-3.5 py-2 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] h-10">
+          <label class="font-semibold text-sm text-[var(--ds-color-content)] block mb-1.5">' . __('games_filter_name') . '</label>
+          <input type="text" name="name" value="' . $nameValue . '" placeholder="' . __('games_filter_placeholder') . '" class="w-full px-3.5 py-2 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none h-10">
         </div>
         <div class="flex items-end gap-5">
           ' . ui_button(__('filter_apply'), 'primary', 'md', ['type' => 'submit']) . '
@@ -162,7 +162,6 @@ switch ($activeTab) {
       }
 
       $tableOptions = [
-        "table_class" => "ui-table",
         "base_url" => "team.php?id=$teamId&tab=games&",
         "primary_key" => "game_id"
       ];

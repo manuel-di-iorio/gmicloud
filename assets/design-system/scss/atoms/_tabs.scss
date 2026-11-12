@@ -1,0 +1,8 @@
+.ds-tabs { display: flex; flex-direction: column; }
+.ds-tabs__nav { display: flex; flex-wrap: wrap; gap: 0.125rem; border-bottom: 2px solid var(--ds-color-border); position: relative; }
+.ds-tabs__btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; margin-bottom: -2px; border: 0; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; font-size: 0.875rem; color: var(--ds-color-content-muted); transition: color var(--ds-transition-fast), border-color var(--ds-transition-fast); }
+.ds-tabs__btn:hover { color: var(--ds-color-content); }
+.ds-tabs__btn.is-active { border-bottom-color: var(--ds-color-secondary); font-weight: 600; color: var(--ds-color-secondary); }
+.ds-tabs__panels { padding-top: 1.25rem; }
+.ds-tabs__panel.is-active { animation: tabsIn 0.25s ease; }
+@keyframes tabsIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }

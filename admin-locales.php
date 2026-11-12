@@ -123,11 +123,11 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
     <h1 class="mb-5 text-3xl font-bold text-neutral-900">Controllo Locales</h1>
 
     <div class="mb-5 flex flex-wrap gap-5">
-      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+      <div class="rounded-sm bg-white px-6 py-4">
         <h3 class="mb-1 text-sm text-neutral-500">Totale chiavi (EN)</h3>
         <div class="text-[28px] font-bold"><?= count($enKeys) ?></div>
       </div>
-      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+      <div class="rounded-sm bg-white px-6 py-4">
         <h3 class="mb-1 text-sm text-neutral-500">Chiavi mancanti</h3>
         <?php
         $totalMissing = 0;
@@ -137,25 +137,25 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
         ?>
         <div class="text-[28px] font-bold <?= $totalMissing > 0 ? 'text-red-600' : 'text-green-600' ?>"><?= $totalMissing ?></div>
       </div>
-      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+      <div class="rounded-sm bg-white px-6 py-4">
         <h3 class="mb-1 text-sm text-neutral-500">Chiavi orfane</h3>
         <?php $totalOrphan = array_sum(array_map('count', $orphanKeys)); ?>
         <div class="text-[28px] font-bold <?= $totalOrphan > 0 ? 'text-orange-600' : 'text-green-600' ?>"><?= $totalOrphan ?></div>
       </div>
-      <div class="rounded-lg bg-white px-6 py-4 shadow-sm">
+      <div class="rounded-sm bg-white px-6 py-4">
         <h3 class="mb-1 text-sm text-neutral-500">Chiavi inutilizzate</h3>
         <div class="text-[28px] font-bold <?= count($unusedKeys) > 0 ? 'text-gray-500' : 'text-green-600' ?>"><?= count($unusedKeys) ?></div>
       </div>
     </div>
 
-    <div class="mb-5 flex flex-wrap gap-6 rounded-lg bg-white p-4 text-sm shadow-sm">
+    <div class="mb-5 flex flex-wrap gap-6 rounded-sm bg-white p-4 text-sm">
       <div class="flex items-center gap-1.5"><span class="w-5 text-center font-bold text-green-600">✓</span> Presente</div>
       <div class="flex items-center gap-1.5"><span class="status-missing w-5 text-center font-bold text-red-600">✗</span> Mancante (in EN ma non nel locale)</div>
       <div class="flex items-center gap-1.5"><span class="w-5 text-center font-bold text-orange-600">⚠</span> Orfana (nel locale ma non in EN)</div>
       <div class="flex items-center gap-1.5"><span class="status-unused w-5 text-center italic text-gray-400">●</span> Inutilizzata (non usata in codice)</div>
     </div>
 
-    <div class="mb-5 flex flex-wrap items-center gap-3 rounded-lg bg-white p-4 shadow-sm">
+    <div class="mb-5 flex flex-wrap items-center gap-3 rounded-sm bg-white p-4">
       <label class="text-sm text-neutral-500">Filtro:</label>
       <select id="filterType" class="rounded-md border border-solid border-neutral-300 px-3 py-2 text-sm">
         <option value="all">Tutte</option>
@@ -167,7 +167,7 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
       <button id="exportCsv" class="ml-auto cursor-pointer rounded-md border-0 bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">Esporta CSV</button>
     </div>
 
-    <table class="w-full overflow-hidden rounded-lg bg-white shadow-sm">
+    <table class="w-full overflow-hidden rounded-sm bg-white">
       <thead>
         <tr>
           <th class="sticky top-0 border-b-2 border-slate-200 bg-slate-50 px-4 py-3 text-left text-[13px] font-semibold text-slate-600">Chiave</th>
@@ -225,7 +225,7 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
       <?php foreach ($orphanKeys as $lang => $keys): ?>
         <div class="mb-5">
           <h3 class="mb-2 text-base font-semibold text-slate-600"><?= strtoupper($lang) ?> (<?= count($keys) ?> chiavi)</h3>
-          <div class="rounded-lg bg-white p-4 shadow-sm">
+          <div class="rounded-sm bg-white p-4">
             <?php foreach ($keys as $key): ?>
               <code class="mb-0.5 mr-1 inline-block rounded bg-red-50 px-2 py-0.5 text-[13px] text-red-600"><?= htmlspecialchars($key) ?></code>
             <?php endforeach; ?>
@@ -238,7 +238,7 @@ foreach ($orphanKeys as &$keys) { sort($keys); }
     <?php if (!empty($unusedKeys)): ?>
     <div class="mt-[30px]">
       <h2 class="mb-4 text-xl font-bold text-neutral-900">Chiavi inutilizzate (<?= count($unusedKeys) ?>)</h2>
-      <div class="rounded-lg bg-white p-4 shadow-sm">
+      <div class="rounded-sm bg-white p-4">
         <?php foreach ($unusedKeys as $key): ?>
           <code class="mb-0.5 mr-1 inline-block rounded bg-red-50 px-2 py-0.5 text-[13px] text-red-600"><?= htmlspecialchars($key) ?></code>
         <?php endforeach; ?>

@@ -7,16 +7,16 @@
     <?= csrf_field() ?>
     <?= ui_card_title(__('add_game_title'), ['icon' => 'fas fa-gamepad']) ?>
     <div class="mb-4">
-      <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]" for="name"><?= __('add_game_name_label') ?></label>
-      <input class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" name="name" id="name" type="text" maxlength="64" required placeholder="<?= __('add_game_name_placeholder') ?>">
+      <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]" for="name"><?= __('add_game_name_label') ?></label>
+      <input class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" name="name" id="name" type="text" maxlength="64" required placeholder="<?= __('add_game_name_placeholder') ?>">
     </div>
 
     <div class="mb-4">
       <label class="flex items-center gap-2 cursor-pointer">
-        <input class="w-4 h-4 rounded border-[var(--border-color)] text-[var(--primary-color)] focus:ring-[var(--primary-color)]" type="checkbox" name="require_player_auth" id="require_player_auth" value="1">
-        <span class="text-sm text-[var(--text-color)]"><?= __('add_game_require_player_auth') ?></span>
+        <input class="w-4 h-4 rounded border-default text-[var(--ds-color-secondary)] focus:ring-[var(--ds-color-secondary)]" type="checkbox" name="require_player_auth" id="require_player_auth" value="1">
+        <span class="text-sm text-[var(--ds-color-content)]"><?= __('add_game_require_player_auth') ?></span>
       </label>
-      <p class="mt-1 text-xs text-[var(--text-color-secondary)]"><?= __('add_game_require_player_auth_desc') ?></p>
+      <p class="mt-1 text-xs text-[var(--ds-color-content-muted)]"><?= __('add_game_require_player_auth_desc') ?></p>
     </div>
 
     <!-- ReCaptcha div -->

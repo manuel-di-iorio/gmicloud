@@ -220,10 +220,10 @@ document.addEventListener('click', function (e) {
   adminToggleUrl = toggle.getAttribute('data-post-url');
   adminToggleBody = toggle.getAttribute('data-post-body');
 
-  var tableHeader = toggle.closest('.ui-table').querySelector('.ui-table-header');
+  var tableHeader = toggle.closest('.ds-table').querySelector('.ds-table__head');
   if (tableHeader && tableHeader.textContent.indexOf(_t.admin_col_banned) !== -1) {
     var row = toggle.closest('tr');
-    var cells = row.querySelectorAll('.ui-table-cell');
+    var cells = row.querySelectorAll('.ds-table__cell');
     var playerName = cells.length > 1 ? cells[1].textContent.trim() : '';
     var gameName = cells.length > 3 ? cells[3].textContent.trim() : '';
     var isBanning = toggle.style.color === 'rgb(156, 163, 175)' || toggle.getAttribute('title') === _t.admin_ban;
@@ -235,7 +235,7 @@ document.addEventListener('click', function (e) {
     openModal('modal-admin-player-ban');
   } else {
     var row = toggle.closest('tr');
-    var cells = row.querySelectorAll('.ui-table-cell');
+    var cells = row.querySelectorAll('.ds-table__cell');
     var userName = cells.length > 1 ? cells[1].textContent.trim() : '';
     var isEnabling = toggle.style.color === 'rgb(156, 163, 175)';
     var actionLabel = isEnabling ? _t.admin_enable_infinitive : _t.admin_disable_infinitive;

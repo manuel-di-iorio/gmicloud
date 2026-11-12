@@ -1,0 +1,10 @@
+/** Utility overrides Tailwind cannot express. */
+.bg-surface-muted { background-color: rgba(var(--ds-rgb-surface-muted), 0.8); }
+.bg-surface-elevated { background-color: rgba(var(--ds-rgb-surface-elevated), 0.8); }
+
+/* Portal label: small uppercase muted label used above headings/inputs. */
+.ds-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ds-color-content-muted); font-weight: 600; }
+.ds-muted { color: var(--ds-color-content-muted); }
+.ds-prose { max-width: 70rem; }
+.ds-prose a { color: var(--ds-color-secondary); text-underline-offset: 3px; }
+.ds-prose a:hover { color: var(--ds-color-content); }

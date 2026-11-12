@@ -1,6 +1,6 @@
 <div class="internal-page">
   <?php if (!empty($lb['is_private'])) { ?>
-    <?= ui_badge(__('scores_private_badge'), 'primary', ['icon' => 'fas fa-lock', 'class' => 'mb-4 border border-primary-color/15 px-3.5 py-1.5']) ?>
+    <?= ui_badge(__('scores_private_badge'), 'primary', ['icon' => 'fas fa-lock', 'class' => 'mb-4 border border-secondary/15 px-3.5 py-1.5']) ?>
   <?php } ?>
   <div class="mb-6 flex flex-wrap items-center justify-end gap-2 md:gap-2.5">
     <?php if (!empty($scores)) { ?>
@@ -172,7 +172,6 @@
     ];
 
     $tableOptions = [
-      "table_class" => "ui-table",
       "pagination" => [
         "current_page" => $page,
         "items_per_page" => 100,
@@ -227,43 +226,43 @@
   'content' => '<form id="form-add-score" class="mb-0" method="POST" action="/game-scores-add.php?id=' . $game["game_id"] . '&leaderboard_id=' . $leaderboardId . '">' . csrf_field() . '
     <input type="hidden" name="leaderboard_id" value="' . $leaderboardId . '">
     <div class="mb-4">
-      <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_player') . '</label>
-      <input id="input-insert-score__player" name="player" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
+      <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_player') . '</label>
+      <input id="input-insert-score__player" name="player" type="text" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" required>
     </div>
     <div class="mb-4">
-      <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_score') . '</label>
-      <input id="input-insert-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
+      <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_score') . '</label>
+      <input id="input-insert-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" required>
     </div>
-    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-offset px-4 py-2 text-left" onclick="toggleAccordion(this)">
+    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-muted px-4 py-2 text-left" onclick="toggleAccordion(this)">
       <span class="mr-4">' . __('scores_modal_add_optional') . '</span>
       <small><i class="fas fa-arrow-circle-down"></i></small>
     </h5>
     <div class="accordion-content hidden">
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_tags') . ' <a href="/documentation.php" target="_blank" data-tippy-content="' . __('scores_modal_add_tags_help') . '"><i class="fas fa-question-circle"></i></a></label>
-        <input id="input-insert-score__tags" name="tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_tags') . ' <a href="/documentation.php" target="_blank" data-tippy-content="' . __('scores_modal_add_tags_help') . '"><i class="fas fa-question-circle"></i></a></label>
+        <input id="input-insert-score__tags" name="tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed">
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_data') . '</label>
-        <textarea id="input-insert-score__data" name="data" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed min-h-[80px] resize-y"></textarea>
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_data') . '</label>
+        <textarea id="input-insert-score__data" name="data" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed min-h-[80px] resize-y"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_mode') . ' <a href="/documentation.php" target="_blank" data-tippy-content="' . __('scores_modal_add_mode_help') . '"><i class="fas fa-question-circle"></i></a></label>
-        <select class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" name="insertMode" required>
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_mode') . ' <a href="/documentation.php" target="_blank" data-tippy-content="' . __('scores_modal_add_mode_help') . '"><i class="fas fa-question-circle"></i></a></label>
+        <select class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" name="insertMode" required>
           <option value="higher" selected>' . __('scores_modal_add_mode_higher') . '</option>
           <option value="lower">' . __('scores_modal_add_mode_lower') . '</option>
         </select>
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_env') . '</label>
-        <select class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" name="env">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_env') . '</label>
+        <select class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" name="env">
           <option value="production">' . __('scores_env_production') . '</option>
           <option value="test">' . __('scores_env_test') . '</option>
         </select>
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_add_country') . '</label>
-        <input id="input-insert-score__country" name="country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_add_country') . '</label>
+        <input id="input-insert-score__country" name="country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed">
       </div>
     </div>
     <div class="flex justify-end gap-2 pt-4">
@@ -277,29 +276,29 @@
   'title' => __('scores_modal_edit_title'),
   'content' =>
     '<div class="mb-4">
-      <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_score') . '</label>
-      <input id="input-edit-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed" required>
+      <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_edit_score') . '</label>
+      <input id="input-edit-score__score" name="score" type="number" step="any" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed" required>
     </div>
-    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-offset px-4 py-2 text-left" onclick="toggleAccordion(this)">
+    <h5 class="accordion block w-full cursor-pointer border-0 bg-surface-muted px-4 py-2 text-left" onclick="toggleAccordion(this)">
       <span class="mr-4">' . __('scores_modal_add_optional') . '</span>
       <small><i class="fas fa-arrow-circle-down"></i></small>
     </h5>
     <div class="accordion-content hidden">
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_tags') . '</label>
-        <input id="input-edit-score__tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_edit_tags') . '</label>
+        <input id="input-edit-score__tags" type="text" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed">
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_data') . '</label>
-        <textarea id="input-edit-score__data" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed min-h-[80px] resize-y"></textarea>
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_edit_data') . '</label>
+        <textarea id="input-edit-score__data" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed min-h-[80px] resize-y"></textarea>
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_country') . '</label>
-        <input id="input-edit-score__country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_edit_country') . '</label>
+        <input id="input-edit-score__country" type="text" maxlength="100" placeholder="' . __('scores_modal_add_country_placeholder') . '" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed">
       </div>
       <div class="mb-4">
-        <label class="block font-semibold mb-1.5 text-sm text-[var(--text-color)]">' . __('scores_modal_edit_env') . '</label>
-        <select id="input-edit-score__env" class="w-full px-3.5 py-2.5 border border-solid border-[var(--border-color)] rounded-lg text-[0.95rem] leading-normal bg-input-bg text-input-text placeholder:text-[var(--text-color-secondary)] transition-colors duration-200 box-border focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)] disabled:bg-input-bg-disabled disabled:text-input-text-disabled disabled:cursor-not-allowed">
+        <label class="block font-semibold mb-1.5 text-sm text-[var(--ds-color-content)]">' . __('scores_modal_edit_env') . '</label>
+        <select id="input-edit-score__env" class="w-full px-3.5 py-2.5 border border-solid border-default rounded-sm text-[0.95rem] leading-normal bg-surface-solid text-content placeholder:text-content-muted transition-colors duration-200 box-border focus:border-content/40 focus:outline-none disabled:bg-surface-muted disabled:text-content-muted disabled:cursor-not-allowed">
           <option value="production">' . __('scores_env_production') . '</option>
           <option value="test">' . __('scores_env_test') . '</option>
         </select>
@@ -353,7 +352,7 @@
 <?= ui_modal('modal-view-score-data', [
   'title' => __('scores_modal_data_title'),
   'content' => '<p>' . __('scores_modal_data_body') . ' <strong><span id="modal-view-score-data__player-name"></span></strong></p>
-    <textarea id="modal-view-score-data__data" class="min-h-[120px] w-full resize-y rounded-lg border border-solid border-[var(--border-color)] bg-input-bg px-3.5 py-2.5 text-[0.95rem] leading-normal text-input-text transition-colors placeholder:text-[var(--text-color-secondary)] focus:border-[var(--primary-color)] focus:outline-none focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]"></textarea>',
+    <textarea id="modal-view-score-data__data" class="min-h-[120px] w-full resize-y rounded-sm border border-solid border-default bg-surface-solid px-3.5 py-2.5 text-[0.95rem] leading-normal text-content transition-colors placeholder:text-content-muted focus:border-content/40 focus:outline-none"></textarea>',
   'footer' => ui_button(__('scores_modal_data_close'), 'secondary', 'md', ['attrs' => ['onclick' => "closeModal('modal-view-score-data')"]]),
   'footer_right' => true,
 ]) ?>
