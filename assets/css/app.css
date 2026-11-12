@@ -1948,6 +1948,11 @@ video {
 }
 @media (min-width: 768px) {
 
+  .md\:mx-0 {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1962,6 +1967,10 @@ video {
 
   .md\:gap-2\.5 {
     gap: 0.625rem;
+  }
+
+  .md\:text-left {
+    text-align: left;
   }
 }
 @media (min-width: 1024px) {
@@ -4681,6 +4690,7 @@ hr {
   border: 1px solid var(--ds-color-border);
   background: var(--ds-color-surface);
   margin-bottom: 0.75rem;
+  overflow: hidden;
 }
 
 .ds-faq__q {
@@ -4699,16 +4709,38 @@ hr {
   text-align: left;
 }
 
+.ds-faq__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 300ms ease;
+}
+
+.ds-faq__item.is-open .ds-faq__icon {
+  transform: rotate(45deg);
+}
+
 .ds-faq__a {
-  display: none;
-  padding: 0 1.25rem 1rem 1.25rem;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease;
+}
+
+.ds-faq__a-inner {
+  overflow: hidden;
+  padding: 0 1.25rem;
   color: var(--ds-color-content-muted);
   font-size: 0.95rem;
   line-height: 1.6;
+  transition: padding 300ms ease;
 }
 
 .ds-faq__item.is-open .ds-faq__a {
-  display: block;
+  grid-template-rows: 1fr;
+}
+
+.ds-faq__item.is-open .ds-faq__a-inner {
+  padding: 0 1.25rem 1rem 1.25rem;
 }
 
 .ds-cta-card {

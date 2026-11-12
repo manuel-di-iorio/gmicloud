@@ -112,14 +112,14 @@
     <h2 class="ds-section-title ds-section-title--left"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
     <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_features_subtitle') ?></p>
     <div class="ds-grid-4">
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-cogs"></i></div><h3><?= __('index_feature1_title') ?></h3><p><?= __('index_feature1_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-expand-arrows-alt"></i></div><h3><?= __('index_feature2_title') ?></h3><p><?= __('index_feature2_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-shield-alt"></i></div><h3><?= __('index_feature3_title') ?></h3><p><?= __('index_feature3_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-server"></i></div><h3><?= __('index_feature4_title') ?></h3><p><?= __('index_feature4_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-tachometer-alt"></i></div><h3><?= __('index_feature5_title') ?></h3><p><?= __('index_feature5_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-users"></i></div><h3><?= __('index_feature6_title') ?></h3><p><?= __('index_feature6_desc') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fab fa-github"></i></div><h3><?= __('index_feature7_title') ?></h3><p><?= __('index_feature7_desc1') ?> <a class="ds-link" href="https://github.com/manuel-di-iorio/gmicloud"><?= __('index_feature7_github') ?></a>. <?= __('index_feature7_desc2') ?></p></div>
-      <div class="ds-editorial-card" style="text-align:left"><div class="ds-editorial-icon" style="margin-left:0"><i class="fas fa-rocket"></i></div><h3><?= __('index_feature8_title') ?></h3><p><?= __('index_feature8_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-cogs"></i></div><h3><?= __('index_feature1_title') ?></h3><p><?= __('index_feature1_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-expand-arrows-alt"></i></div><h3><?= __('index_feature2_title') ?></h3><p><?= __('index_feature2_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-shield-alt"></i></div><h3><?= __('index_feature3_title') ?></h3><p><?= __('index_feature3_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-server"></i></div><h3><?= __('index_feature4_title') ?></h3><p><?= __('index_feature4_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-tachometer-alt"></i></div><h3><?= __('index_feature5_title') ?></h3><p><?= __('index_feature5_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-users"></i></div><h3><?= __('index_feature6_title') ?></h3><p><?= __('index_feature6_desc') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fab fa-github"></i></div><h3><?= __('index_feature7_title') ?></h3><p><?= __('index_feature7_desc1') ?> <a class="ds-link" href="https://github.com/manuel-di-iorio/gmicloud"><?= __('index_feature7_github') ?></a>. <?= __('index_feature7_desc2') ?></p></div>
+      <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-rocket"></i></div><h3><?= __('index_feature8_title') ?></h3><p><?= __('index_feature8_desc') ?></p></div>
     </div>
   </div>
 </div>
@@ -163,10 +163,10 @@
     <div>
       <h2 class="ds-section-title ds-section-title--left"><?= __('index_faq_title1') ?> <?= __('index_faq_title2') ?></h2>
       <div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq1_q') ?></span><span><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><?= __('index_faq1_a') ?></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq2_q') ?></span><span><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><?= __('index_faq2_a') ?></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq3_q') ?></span><span><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><?= __('index_faq3_a') ?></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq4_q') ?></span><span><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><?= __('index_faq4_a') ?></div></div>
+        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq1_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq1_a') ?></div></div></div>
+        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq2_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq2_a') ?></div></div></div>
+        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq3_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq3_a') ?></div></div></div>
+        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq4_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq4_a') ?></div></div></div>
       </div>
     </div>
     <div class="ds-cta-card">
