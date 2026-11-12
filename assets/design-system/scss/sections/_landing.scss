@@ -13,7 +13,8 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0 1.25rem;
+  height: 76px;
   position: relative;
 }
 .ds-landing-header__logo {
@@ -25,7 +26,7 @@
   text-decoration: none;
 }
 .ds-landing-header__logo img {
-  height: 2.25rem;
+  height: 2.4rem;
   width: auto;
 }
 .ds-landing-header__nav-desktop {
@@ -190,7 +191,7 @@
   overflow: hidden;
 }
 .ds-landing-header__mobile-nav.is-open {
-  height: calc(100dvh - 80px);
+  height: calc(100dvh - 76px);
   opacity: 1;
   visibility: visible;
   overflow-y: auto;

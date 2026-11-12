@@ -1,7 +1,7 @@
 <header class="ds-landing-header" role="banner">
   <div class="ds-landing-header__inner">
     <a href="./index.php" title="GMI Cloud - Home" class="ds-landing-header__logo">
-      <img src="/assets/images/logo.png" alt="GMI Cloud" width="451" height="109">
+      <img src="/assets/images/logo.png" alt="GMI Cloud">
     </a>
 
     <!-- Desktop navigation -->
