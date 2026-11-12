@@ -4614,7 +4614,7 @@ hr {
 }
 
 .ds-hero {
-  background: #0b1220;
+  background: linear-gradient(135deg, #0B1220 0%, #1F2937 100%);
   color: #fff;
 }
 
