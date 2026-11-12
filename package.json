@@ -5,7 +5,8 @@
   "description": "GMI Cloud - design system build",
   "scripts": {
     "build:css": "node scripts/build-css.mjs",
-    "watch:css": "node scripts/build-css.mjs --watch"
+    "watch:css": "node scripts/build-css.mjs --watch",
+    "prepare": "node scripts/install-hooks.mjs"
   },
   "dependencies": {},
   "devDependencies": {

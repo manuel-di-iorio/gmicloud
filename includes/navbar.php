@@ -72,9 +72,11 @@ if ($selectedTeamId !== null && isset($user)) {
   <?php if (isset($user)) { ?>
     <div class="ds-sidebar__user-row">
       <span class="ds-avatar"><?= strtoupper(mb_substr($user["username"], 0, 1)) ?></span>
-      <span class="username" style="font-weight:600"><?= htmlspecialchars($user["username"]) ?></span>
+      <div class="ds-sidebar__user-meta">
+        <span class="ds-sidebar__user-name"><?= htmlspecialchars($user["username"]) ?></span>
+      </div>
     </div>
-    <a href="logout.php" class="ds-link" style="display:inline-block;margin-top:0.5rem" data-tippy-content="<?= __('nav_logout') ?>"><i class="fas fa-sign-out-alt"></i> <?= __('nav_logout') ?></a>
+    <a href="logout.php" class="ds-sidebar__logout" data-tippy-content="<?= __('nav_logout') ?>"><i class="fas fa-sign-out-alt"></i> <?= __('nav_logout') ?></a>
   <?php } else { ?>
     <a href="login.php" class="ds-btn ds-btn--primary ds-btn--md ds-btn--full"><?= __('nav_login') ?></a>
   <?php } ?>
