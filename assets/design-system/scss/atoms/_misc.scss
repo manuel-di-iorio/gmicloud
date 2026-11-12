@@ -18,7 +18,7 @@
 /* stat card — square, no hover lift */
 .ds-stat { display: flex; align-items: center; gap: 1rem; border: 1px solid var(--ds-color-border); background: var(--ds-color-surface); padding: 1.25rem; }
 .ds-stat__icon { display: flex; height: 3rem; width: 3rem; flex-shrink: 0; align-items: center; justify-content: center; font-size: 1.25rem; background: var(--ds-color-surface-muted); color: var(--ds-color-content-muted); }
-.ds-stat__value { font-size: 1.6rem; font-weight: 800; line-height: 1.1; color: var(--ds-color-content); font-variant-numeric: tabular-nums; }
+.ds-stat__value { font-size: 1.6rem; font-weight: 500; line-height: 1.1; color: var(--ds-color-content); font-variant-numeric: tabular-nums; }
 .ds-stat__label { font-size: 0.82rem; color: var(--ds-color-content-muted); }
 
 /* skeleton + spinner */

@@ -17,7 +17,7 @@
 @media (min-width: 640px) { .ds-grid-4 { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .ds-grid-4 { grid-template-columns: repeat(4, 1fr); } }
 .ds-editorial-card { background: var(--ds-color-surface); border: 1px solid var(--ds-color-border); padding: 2rem 1.5rem; text-align: center; }
-.ds-editorial-card h3 { margin: 0 0 0.5rem 0; font-weight: 700; color: var(--ds-color-content); }
+.ds-editorial-card h3 { margin: 0 0 0.5rem 0; font-weight: 500; color: var(--ds-color-content); }
 .ds-editorial-card p { margin: 0; font-size: 0.85rem; line-height: 1.6; color: var(--ds-color-content-muted); }
 .ds-editorial-icon { margin: 0 auto 1.125rem auto; display: flex; height: 3.75rem; width: 3.75rem; align-items: center; justify-content: center; background: var(--ds-color-surface-muted); border: 1px solid var(--ds-color-border); font-size: 1.5rem; color: var(--ds-color-content-muted); }
 .ds-step-number { font-size: 0.7rem; font-weight: 700; color: var(--ds-color-content-muted); margin-bottom: 0.5rem; }

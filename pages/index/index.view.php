@@ -112,7 +112,7 @@
       </div>
     </div>
     <div class="ds-cta-card">
-      <h3 style="margin:0 0 1rem 0;font-size:1.5rem;font-weight:800"><?= __('index_cta_title1') ?> <?= __('index_cta_title2') ?></h3>
+      <h3 style="margin:0 0 1rem 0;font-size:1.5rem;font-weight:500"><?= __('index_cta_title1') ?> <?= __('index_cta_title2') ?></h3>
       <p class="ds-muted" style="margin:0 0 1.75rem 0;line-height:1.6"><?= __('index_cta_desc') ?></p>
       <a href="<?= isset($user) ? './home.php' : './add-game.php' ?>" class="ds-btn ds-btn--primary ds-btn--lg"><?= __('index_cta_button') ?> <i class="fas fa-arrow-right"></i></a>
     </div>
