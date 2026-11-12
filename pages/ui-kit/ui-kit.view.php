@@ -124,4 +124,27 @@
     <?= ui_icon('fas fa-users') ?>
   </div>
 
+  <h2 class="mt-8 border-b border-default pb-2">Sidebar (static)</h2>
+  <div class="ds-panel" style="padding:0;overflow:hidden">
+    <div class="ds-sidebar" style="position:static;transform:none;width:100%;height:auto;max-width:260px">
+      <div class="ds-sidebar__brand">
+        <a href="#" class="navbar-logo-link"><img src="/assets/images/logo.png" class="Logo" alt="Logo" style="max-width:120px;height:auto"></a>
+      </div>
+      <div class="ds-sidebar__menu">
+        <a href="#" class="ds-sidebar__item ds-sidebar__item--active"><span class="navbar-item-label">Dashboard</span></a>
+        <a href="#" class="ds-sidebar__item"><span class="navbar-item-label">Your games</span></a>
+        <a href="#" class="ds-sidebar__item"><span class="navbar-item-label">Your teams</span></a>
+        <a href="#" class="ds-sidebar__item"><span class="navbar-item-label">Documentation</span></a>
+      </div>
+      <div class="ds-sidebar__user">
+        <div class="ds-sidebar__user-row">
+          <span class="ds-avatar">E</span>
+          <div class="ds-sidebar__user-meta">
+            <span class="ds-sidebar__user-name">ethmanu</span>
+          </div>
+        </div>
+        <a href="#" class="ds-sidebar__logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,23 +1,81 @@
 <header class="ds-landing-header" role="banner">
   <div class="ds-landing-header__inner">
-    <a href="./index.php" class="ds-landing-header__logo">
-      <img src="/assets/images/logo.png" alt="Logo" width="451" height="109">
+    <a href="./index.php" title="GMI Cloud - Home" class="ds-landing-header__logo">
+      <img src="/assets/images/logo.png" alt="GMI Cloud" width="451" height="109">
     </a>
-    <nav class="ds-landing-header__nav">
-      <a href="#come-funziona"><?= __('index_nav_how') ?></a>
-      <a href="#servizi"><?= __('index_nav_services') ?></a>
-      <a href="#caratteristiche"><?= __('index_nav_features') ?></a>
-      <a href="#numeri"><?= __('index_nav_numbers') ?></a>
-      <a href="#faq"><?= __('index_nav_faq') ?></a>
-      <?php if (isset($user)) { ?>
-        <a href="./home.php" class="ds-btn ds-btn--secondary ds-btn--sm"><i class="fas fa-home"></i> <?= htmlspecialchars($user["username"]) ?></a>
-      <?php } else { ?>
-        <a href="login.php" class="ds-btn ds-btn--ghost ds-btn--sm"><?= __('nav_login') ?></a>
-      <?php } ?>
-      <a href="<?= isset($user) ? './home.php' : './add-game.php' ?>" class="ds-btn ds-btn--primary ds-btn--sm"><?= __('index_nav_start') ?></a>
+
+    <!-- Desktop navigation -->
+    <nav class="ds-landing-header__nav-desktop">
+      <ul class="ds-landing-header__nav-list">
+        <li><a href="#come-funziona" class="ds-landing-header__link"><?= __('index_nav_how') ?></a></li>
+        <li><a href="#servizi" class="ds-landing-header__link"><?= __('index_nav_services') ?></a></li>
+        <li><a href="#caratteristiche" class="ds-landing-header__link"><?= __('index_nav_features') ?></a></li>
+        <li><a href="#numeri" class="ds-landing-header__link"><?= __('index_nav_numbers') ?></a></li>
+        <li><a href="#faq" class="ds-landing-header__link"><?= __('index_nav_faq') ?></a></li>
+        <li>
+          <?php if (isset($user)) { ?>
+            <div class="ds-landing-header__user">
+              <a href="./home.php" class="ds-landing-header__user-link">
+                <span class="ds-landing-header__avatar"><i class="fab fa-discord"></i></span>
+                <span class="ds-landing-header__user-name"><?= htmlspecialchars($user["username"]) ?></span>
+              </a>
+              <a href="logout.php" class="ds-landing-header__logout"><?= __('nav_logout') ?></a>
+            </div>
+          <?php } else { ?>
+            <a href="login.php" class="ds-btn ds-btn--secondary ds-btn--md"><?= __('nav_login') ?></a>
+          <?php } ?>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Mobile hamburger -->
+    <button type="button" class="ds-landing-header__hamburger" id="landing-menu-toggle" aria-label="Apri menu" aria-expanded="false" aria-controls="landing-main-nav">
+      <span class="ds-landing-header__bar"></span>
+      <span class="ds-landing-header__bar"></span>
+      <span class="ds-landing-header__bar"></span>
+    </button>
+
+    <!-- Mobile navigation -->
+    <nav id="landing-main-nav" class="ds-landing-header__mobile-nav" aria-hidden="true">
+      <ul class="ds-landing-header__mobile-list">
+        <li><a href="#come-funziona" class="ds-landing-header__link" onclick="closeLandingMenu()"><?= __('index_nav_how') ?></a></li>
+        <li><a href="#servizi" class="ds-landing-header__link" onclick="closeLandingMenu()"><?= __('index_nav_services') ?></a></li>
+        <li><a href="#caratteristiche" class="ds-landing-header__link" onclick="closeLandingMenu()"><?= __('index_nav_features') ?></a></li>
+        <li><a href="#numeri" class="ds-landing-header__link" onclick="closeLandingMenu()"><?= __('index_nav_numbers') ?></a></li>
+        <li><a href="#faq" class="ds-landing-header__link" onclick="closeLandingMenu()"><?= __('index_nav_faq') ?></a></li>
+        <li class="ds-landing-header__mobile-user">
+          <?php if (isset($user)) { ?>
+            <div class="ds-landing-header__user">
+              <a href="./home.php" class="ds-landing-header__user-link" onclick="closeLandingMenu()">
+                <span class="ds-landing-header__avatar"><i class="fab fa-discord"></i></span>
+                <span class="ds-landing-header__user-name"><?= htmlspecialchars($user["username"]) ?></span>
+              </a>
+              <a href="logout.php" class="ds-landing-header__logout" onclick="closeLandingMenu()"><?= __('nav_logout') ?></a>
+            </div>
+          <?php } else { ?>
+            <a href="login.php" class="ds-btn ds-btn--secondary ds-btn--md ds-btn--full" onclick="closeLandingMenu()"><?= __('nav_login') ?></a>
+          <?php } ?>
+        </li>
+      </ul>
     </nav>
   </div>
 </header>
+<script>
+(function () {
+  var btn = document.getElementById('landing-menu-toggle');
+  var nav = document.getElementById('landing-main-nav');
+  if (!btn || !nav) return;
+  function setOpen(open) {
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Chiudi menu' : 'Apri menu');
+    nav.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  btn.addEventListener('click', function () { setOpen(!nav.classList.contains('is-open')); });
+  window.closeLandingMenu = function () { setOpen(false); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+})();
+</script>
 
 <div class="ds-hero">
   <div class="ds-hero__inner">
