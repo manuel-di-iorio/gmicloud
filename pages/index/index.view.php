@@ -96,8 +96,8 @@
 
 <div id="come-funziona" class="ds-section">
   <div class="ds-container">
-    <h2 class="ds-section-title"><?= __('index_how_title') ?></h2>
-    <p class="ds-section-subtitle"><?= __('index_how_subtitle') ?></p>
+    <h2 class="ds-section-title ds-section-title--left"><?= __('index_how_title') ?></h2>
+    <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_how_subtitle') ?></p>
     <div class="ds-grid-4">
       <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-gamepad"></i></div><h3><?= __('index_step1_title') ?></h3><p><?= __('index_step1_desc') ?></p></div>
       <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-puzzle-piece"></i></div><h3><?= __('index_step2_title') ?></h3><p><?= __('index_step2_desc') ?></p></div>
@@ -109,8 +109,8 @@
 
 <div id="caratteristiche" class="ds-section">
   <div class="ds-container">
-    <h2 class="ds-section-title"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
-    <p class="ds-section-subtitle"><?= __('index_features_subtitle') ?></p>
+    <h2 class="ds-section-title ds-section-title--left"><?= __('index_features_title1') ?> <?= __('index_features_title2') ?></h2>
+    <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_features_subtitle') ?></p>
     <div class="ds-grid-4">
       <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-cogs"></i></div><h3><?= __('index_feature1_title') ?></h3><p><?= __('index_feature1_desc') ?></p></div>
       <div class="ds-editorial-card md:text-left"><div class="ds-editorial-icon md:mx-0"><i class="fas fa-expand-arrows-alt"></i></div><h3><?= __('index_feature2_title') ?></h3><p><?= __('index_feature2_desc') ?></p></div>
@@ -126,8 +126,8 @@
 
 <div id="servizi" class="ds-section">
   <div class="ds-container">
-    <h2 class="ds-section-title"><?= __('index_services_title') ?></h2>
-    <p class="ds-section-subtitle"><?= __('index_services_subtitle') ?></p>
+    <h2 class="ds-section-title ds-section-title--left"><?= __('index_services_title') ?></h2>
+    <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_services_subtitle') ?></p>
     <div class="ds-grid-4">
       <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-trophy"></i></div><h3><?= __('index_service1_title') ?></h3><p><?= __('index_service1_desc') ?></p></div>
       <div class="ds-editorial-card"><div class="ds-editorial-icon"><i class="fas fa-chart-pie"></i></div><h3><?= __('index_service2_title') ?></h3><p><?= __('index_service2_desc') ?></p></div>
@@ -137,10 +137,10 @@
   </div>
 </div>
 
-<div id="numeri" class="ds-section" style="background:var(--ds-color-surface);border-top:1px solid var(--ds-color-border);border-bottom:1px solid var(--ds-color-border)">
+<div id="numeri" class="ds-section">
   <div class="ds-container">
-    <h2 class="ds-section-title"><?= __('index_stats_title1') ?> <?= __('index_stats_title2') ?></h2>
-    <p class="ds-section-subtitle"><?= __('index_stats_subtitle') ?></p>
+    <h2 class="ds-section-title ds-section-title--left"><?= __('index_stats_title1') ?> <?= __('index_stats_title2') ?></h2>
+    <p class="ds-section-subtitle ds-section-subtitle--left"><?= __('index_stats_subtitle') ?></p>
     <div class="ds-grid-4" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <?php
         $statIcons = [

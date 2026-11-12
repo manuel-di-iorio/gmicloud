@@ -219,6 +219,9 @@
 .ds-hero {
   background: linear-gradient(135deg, #0B1220 0%, #1F2937 100%);
   color: #fff;
+  height: 466px;
+  display: flex;
+  align-items: center;
 }
 .ds-hero__inner {
   max-width: 70rem;
@@ -241,7 +244,7 @@
   font-size: 2.25rem;
   line-height: 1.08;
   font-weight: 400;
-  margin: 0 0 0.5em 0;
+  margin: 0 0 40px 0;
 }
 @media (min-width: 768px) {
   .ds-hero h1 {
@@ -279,7 +282,7 @@
 }
 .ds-hero__visual img {
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   height: auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
 }

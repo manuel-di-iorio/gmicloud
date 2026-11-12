@@ -3935,7 +3935,7 @@ hr {
 
 @media (min-width: 768px) {
   .ds-section {
-    padding: 5rem 1.25rem;
+    padding: 1.9rem;
   }
 }
 .ds-section-title {
@@ -4617,6 +4617,9 @@ hr {
 .ds-hero {
   background: linear-gradient(135deg, #0B1220 0%, #1F2937 100%);
   color: #fff;
+  height: 466px;
+  display: flex;
+  align-items: center;
 }
 
 .ds-hero__inner {
@@ -4641,7 +4644,7 @@ hr {
   font-size: 2.25rem;
   line-height: 1.08;
   font-weight: 400;
-  margin: 0 0 0.5em 0;
+  margin: 0 0 40px 0;
 }
 
 @media (min-width: 768px) {
@@ -4682,7 +4685,7 @@ hr {
 }
 .ds-hero__visual img {
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   height: auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
