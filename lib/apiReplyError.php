@@ -6,8 +6,10 @@
 function api_reply_error(string $message, string $code, int $status) {
   global $db;
 
-  // Log non-validation errors for API v1 endpoints (skip during test runs)
-  if ($code !== "ValidationError" && isset($db) && empty($_SERVER["HTTP_X_TEST_RUN"])) {
+  // Log only server-side/internal errors on API v1 endpoints (skip during test runs).
+  // Client-side mistakes (validation, wrong method, not found, auth) are the dev's fault and are not stored.
+  $skipCodes = ["ValidationError", "MethodNotAllowed", "NotFoundError", "AuthorizationError", "AuthenticationRequired", "RateLimitExceeded"];
+  if (!in_array($code, $skipCodes, true) && isset($db) && empty($_SERVER["HTTP_X_TEST_RUN"])) {
     $uri = $_SERVER["REQUEST_URI"] ?? "";
     $uriPath = parse_url($uri, PHP_URL_PATH);
     if (strpos($uriPath, "/api/v1/") === 0) {
