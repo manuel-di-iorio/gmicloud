@@ -1,4 +1,4 @@
-<div class="internal-page">
+<div class="internal-page prose max-w-none">
     <div class="internal-page__header">
       <h2><?= __('privacy_title') ?></h2>
       <p><?= __('privacy_last_update') ?></p>
