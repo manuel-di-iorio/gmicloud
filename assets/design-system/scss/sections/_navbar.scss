@@ -29,6 +29,7 @@
   transform: none;
 }
 /* Mobile drawer toggle: visible only below lg (ID beats .ds-btn display) */
+#btn-sidebar-open { margin-top: 10px; }
 @media (min-width: 1024px) {
   #btn-sidebar-open {
     display: none;

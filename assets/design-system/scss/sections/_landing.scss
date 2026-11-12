@@ -79,6 +79,17 @@
   font-size: 1rem;
   font-weight: 500;
   transition: color 200ms;
+  flex-wrap: wrap;
+}
+@media (max-width: 1023px) {
+  .ds-landing-header__user {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  .ds-landing-header__logout {
+    margin-top: 1rem;
+  }
 }
 .ds-landing-header__user:hover .ds-landing-header__user-name {
   text-decoration: underline;
@@ -137,6 +148,7 @@
   border: 0;
   cursor: pointer;
   transition: background-color 200ms;
+  margin-left: auto;
 }
 .ds-landing-header__hamburger:hover {
   background: var(--ds-color-surface-muted);
