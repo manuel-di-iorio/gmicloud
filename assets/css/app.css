@@ -4185,12 +4185,12 @@ hr {
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  background: var(--ds-color-surface-muted);
-  border: 1px solid var(--ds-color-border);
-  font-weight: 700;
-  color: var(--ds-color-content-muted);
+  border-radius: 9999px;
+  background: #5865F2;
+  color: #fff;
+  font-size: 0.875rem;
+  overflow: hidden;
   flex-shrink: 0;
-  border-radius: var(--ds-radius-sm);
 }
 
 .ds-team-select {
@@ -4463,7 +4463,7 @@ hr {
     margin-top: 1rem;
   }
 }
-.ds-landing-header__user:hover .ds-landing-header__user-name {
+.ds-landing-header__user-link:hover .ds-landing-header__user-name {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;

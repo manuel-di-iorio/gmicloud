@@ -138,7 +138,7 @@
       </div>
       <div class="ds-sidebar__user">
         <div class="ds-sidebar__user-row">
-          <span class="ds-avatar">E</span>
+          <span class="ds-avatar"><i class="fab fa-discord"></i></span>
           <div class="ds-sidebar__user-meta">
             <span class="ds-sidebar__user-name">ethmanu</span>
           </div>
