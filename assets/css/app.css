@@ -3922,7 +3922,7 @@ hr {
 }
 .ds-section-title {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 400;
   color: var(--ds-color-content);
   margin: 0 0 0.75rem 0;
   text-align: center;
@@ -4013,7 +4013,7 @@ hr {
 
 .ds-step-number {
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ds-color-content-muted);
   margin-bottom: 0.5rem;
 }
@@ -4372,7 +4372,7 @@ hr {
 .ds-hero h1 {
   font-size: 2.25rem;
   line-height: 1.08;
-  font-weight: 800;
+  font-weight: 400;
   margin: 0 0 0.5em 0;
 }
 
@@ -4649,7 +4649,7 @@ hr {
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: 0.25rem 0.625rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;

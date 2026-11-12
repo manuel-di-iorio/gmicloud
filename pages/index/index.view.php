@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="ds-hero__visual" style="flex:1">
-      <img src="/assets/images/hero-image.webp" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
+      <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122" style="border-radius: 10px">
     </div>
   </div>
 </div>
