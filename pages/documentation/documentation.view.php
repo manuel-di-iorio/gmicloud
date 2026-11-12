@@ -84,13 +84,13 @@
     <div class="api-endpoint-right">
       <div class="terminal-mockup">
         <div class="terminal-header">
-          <span class="terminal-title">Error Response JSON</span>
+          <span class="terminal-title"><?= __('docs_errors_response_title') ?></span>
         </div>
         <div class="terminal-body code-block-wrapper">
           <button class="copy-code-btn" onclick="copyBlockContent(this)" data-tippy-content="Copia codice">
             <i class="far fa-copy"></i>
           </button>
-          <div class="code-block jsHigh">{<br/>&nbsp;&nbsp;"message": "&lt;messaggio&gt;",<br/>&nbsp;&nbsp;"code": "&lt;ID errore&gt;",<br/>&nbsp;&nbsp;"status": &lt;http status code&gt;<br/>}</div>
+          <div class="code-block jsHigh">{<br/>&nbsp;&nbsp;"message": "&lt;<?= __('docs_errors_msg_placeholder') ?>&gt;",<br/>&nbsp;&nbsp;"code": "&lt;<?= __('docs_errors_code_placeholder') ?>&gt;",<br/>&nbsp;&nbsp;"status": &lt;<?= __('docs_errors_status_placeholder') ?>&gt;<br/>}</div>
         </div>
       </div>
     </div>
@@ -996,7 +996,7 @@
     <h6 class="documentation-example-title mt-5"><i class="fas fa-cogs mr-2"></i><?= __('docs_offline_sync_how_title') ?></h6>
     <p class="documentation-text"><?= __('docs_offline_sync_how_text') ?></p>
 
-    <div class="terminal-mockup mt-4">
+    <div class="terminal-mockup mt-4 mb-6">
       <div class="terminal-header">
         <span class="terminal-title"><?= __('docs_offline_sync_example_comment') ?></span>
       </div>
