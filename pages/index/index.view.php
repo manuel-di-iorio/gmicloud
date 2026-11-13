@@ -89,7 +89,7 @@
       <div class="ds-hero__recap-row"><span>Diamonds</span><strong id="recap-gems"></strong></div>
       <div class="ds-hero__recap-row total"><span>Points</span><strong id="recap-points"></strong></div>
       <div class="ds-hero__recap-best" id="recap-best"></div>
-      <div class="ds-hero__recap-again">Click to run again</div>
+      <div class="ds-hero__recap-again">Click to continue</div>
     </div>
   </div>
   <div class="ds-hero__inner">
@@ -223,4 +223,5 @@
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script src="/assets/js/hero-game.js?v=<?= asset_version('assets/js/hero-game.js') ?>"></script>
