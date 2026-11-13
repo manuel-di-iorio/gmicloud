@@ -637,7 +637,8 @@
     if (playerInput) playerInput.value = savedPlayerName;
     setHint('Space / click to jump');
     FX.go();
-    if (!Music.on) Music.toggle(true);
+    // Music on/off is only changed from the sound button; starting a run
+    // must not override the player's choice.
   }
 
   function die() {
