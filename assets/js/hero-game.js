@@ -647,7 +647,7 @@
     reset();
     if (deaths >= MAXDEATHS) { toLanding(); return; }
     state = 'ready';
-    setHint('Space to retry \u00B7 ' + (MAXDEATHS - deaths) + ' left');
+    setHint('Click to retry');
   }
 
   function points() {
@@ -709,14 +709,9 @@
     e.preventDefault();
     // Keyboard auto-repeat: holding the key must not keep firing jumps.
     if (e.repeat) return;
-    if (state !== 'playing') {
-      if (e.target === document.body) {
-        if (state === 'finished') {
-          if (recapEl && recapEl.classList.contains('is-open')) toLanding();
-        } else start();
-      }
-      return;
-    }
+    // Keys never start the game: only clicking the hero starts it.
+    // Space / ArrowUp only jump while playing.
+    if (state !== 'playing') return;
     doJump();
   });
   function heroPress(e) {
