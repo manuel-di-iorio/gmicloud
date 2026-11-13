@@ -80,7 +80,8 @@
 <div class="ds-hero">
   <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
   <div class="ds-hero__scrim" aria-hidden="true"></div>
-  <div class="ds-hero__hud" aria-hidden="true"><span id="hero-time">0.00s</span><span id="hero-gems">&#9670; 0/10</span><span id="hero-best"></span></div>
+  <div class="ds-hero__hud"><span id="hero-time" aria-hidden="true">0.00s</span><span id="hero-gems" aria-hidden="true">&#9670; 0/13</span><span id="hero-best" aria-hidden="true"></span><span id="hero-lives" aria-hidden="true"></span><button type="button" class="ds-hero__sound" id="hero-sound" aria-label="Toggle music" aria-pressed="false">&#9834;</button></div>
+  <div class="ds-hero__progress" aria-hidden="true"><i id="hero-progress-fill"></i></div>
   <div class="ds-hero__hint" id="hero-hint" aria-hidden="true">Click to play</div>
   <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
     <div class="ds-hero__recap-card">
