@@ -40,4 +40,9 @@
  }
  $view = "add-game";
  $pageName = __('add_game_title');
+ $breadcrumbs = [
+   ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+   ['label' => __('breadcrumb_games'), 'href' => 'games.php'],
+   ['label' => __('add_game_title')],
+ ];
  require_once("includes/layout.php");

@@ -78,6 +78,20 @@
 </script>
 
 <div class="ds-hero">
+  <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
+  <div class="ds-hero__scrim" aria-hidden="true"></div>
+  <div class="ds-hero__hud" aria-hidden="true"><span id="hero-time">0.00s</span><span id="hero-gems">&#9670; 0/10</span><span id="hero-best"></span></div>
+  <div class="ds-hero__hint" id="hero-hint" aria-hidden="true">Click to play</div>
+  <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
+    <div class="ds-hero__recap-card">
+      <div class="ds-hero__recap-title">Run complete</div>
+      <div class="ds-hero__recap-row"><span>Time</span><strong id="recap-time"></strong></div>
+      <div class="ds-hero__recap-row"><span>Diamonds</span><strong id="recap-gems"></strong></div>
+      <div class="ds-hero__recap-row total"><span>Points</span><strong id="recap-points"></strong></div>
+      <div class="ds-hero__recap-best" id="recap-best"></div>
+      <div class="ds-hero__recap-again">Click to run again</div>
+    </div>
+  </div>
   <div class="ds-hero__inner">
     <div style="min-width:0;flex:1.2">
       <!-- <img src="/assets/images/logo.png" alt="" style="height:2.25rem;width:auto;margin-bottom:1rem;filter:brightness(0) invert(1)" width="451" height="109"> -->
@@ -193,10 +207,12 @@
     <div>
       <h2 class="ds-section-title ds-section-title--left"><?= __('index_faq_title1') ?> <?= __('index_faq_title2') ?></h2>
       <div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq1_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq1_a') ?></div></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq2_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq2_a') ?></div></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq3_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq3_a') ?></div></div></div>
-        <div class="ds-faq__item"><button class="ds-faq__q"><span><?= __('index_faq4_q') ?></span><span class="ds-faq__icon"><i class="fas fa-plus"></i></span></button><div class="ds-faq__a"><div class="ds-faq__a-inner"><?= __('index_faq4_a') ?></div></div></div>
+        <?= ui_accordion([
+          ['title' => __('index_faq1_q'), 'content' => __('index_faq1_a')],
+          ['title' => __('index_faq2_q'), 'content' => __('index_faq2_a')],
+          ['title' => __('index_faq3_q'), 'content' => __('index_faq3_a')],
+          ['title' => __('index_faq4_q'), 'content' => __('index_faq4_a')],
+        ]) ?>
       </div>
     </div>
     <div class="ds-cta-card">
@@ -206,3 +222,5 @@
     </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="/assets/js/hero-game.js?v=<?= asset_version('assets/js/hero-game.js') ?>"></script>

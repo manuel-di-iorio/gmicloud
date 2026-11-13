@@ -75,4 +75,7 @@ if ($selectedTeamId !== null) {
 
 $view = "home";
 $pageName = "Dashboard";
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home')],
+];
 require_once("includes/layout.php");

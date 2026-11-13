@@ -12,4 +12,8 @@ while ($row = $result->fetch_assoc()) {
 
 $view = "teams";
 $pageName = __('teams_title');
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+  ['label' => __('breadcrumb_teams')],
+];
 require_once("includes/layout.php");

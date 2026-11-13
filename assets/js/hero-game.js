@@ -1,0 +1,530 @@
+/* Hero game — 2.5D side-view speedrun platformer (Three.js r128).
+ * States: attract -> playing -> finished (recap) ; fall/enemy hit -> ready.
+ * Goal: reach the portal as fast as possible; diamonds add bonus points.
+ * One-button controls: Space / ArrowUp / click / tap = jump (coyote + buffer).
+ * Runs behind hero content; overlay fades out on start. Sounds via WebAudio. */
+(function () {
+  var canvas = document.getElementById('hero-game');
+  var hero = document.querySelector('.ds-hero');
+  if (!canvas || !hero || !window.THREE) return;
+
+  var hintEl = document.getElementById('hero-hint');
+  var timeEl = document.getElementById('hero-time');
+  var gemsEl = document.getElementById('hero-gems');
+  var bestEl = document.getElementById('hero-best');
+  var recapEl = document.getElementById('hero-recap');
+
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, preserveDrawingBuffer: true });
+  } catch (e) { return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 120);
+  camera.position.set(2.4, 2.6, 10.5);
+
+  scene.add(new THREE.HemisphereLight(0x9fb2cc, 0x0b1220, 0.95));
+  var sun = new THREE.DirectionalLight(0xffffff, 0.85);
+  sun.position.set(4, 8, 6);
+  scene.add(sun);
+
+  // ---- Tiny synth (no assets), created on first user gesture ----
+  var FX = {
+    ctx: null, master: null,
+    ensure: function () {
+      if (!this.ctx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        this.ctx = new AC();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.15;
+        this.master.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+    },
+    tone: function (freq, dur, type, slideTo, delay) {
+      if (!this.ctx) return;
+      var t0 = this.ctx.currentTime + (delay || 0);
+      var o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(freq, t0);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.6, t0 + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(this.master);
+      o.start(t0); o.stop(t0 + dur + 0.05);
+    },
+    jump: function () { this.tone(300, 0.14, 'square', 620); },
+    gem: function (n) { this.tone(620 + (n % 10) * 45, 0.12, 'sine', 1400); },
+    die: function () { this.tone(240, 0.32, 'sawtooth', 55); },
+    go: function () { this.tone(440, 0.09, 'square', 880); },
+    win: function () {
+      var seq = [523, 659, 784, 1047];
+      for (var i = 0; i < seq.length; i++) this.tone(seq[i], 0.16, 'triangle', null, i * 0.09);
+    }
+  };
+
+  function glowTexture(inner, outer) {
+    var c = document.createElement('canvas');
+    c.width = c.height = 64;
+    var g = c.getContext('2d');
+    var grad = g.createRadialGradient(32, 32, 2, 32, 32, 32);
+    grad.addColorStop(0, inner);
+    grad.addColorStop(1, outer);
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+    var tex = new THREE.CanvasTexture(c);
+    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
+  }
+  var softGlowTex = glowTexture('rgba(255,255,255,0.9)', 'rgba(255,255,255,0)');
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var R = mulberry32(1337);
+
+  // ---- Level: same colliders as before, rendered as clouds ----
+  var LEVEL = [
+    { x: -3, y: -0.6, w: 8 },
+    { x: 5, y: -0.6, w: 2.4 },
+    { x: 9.0, y: -0.6, w: 3.4 },
+    { x: 14, y: -0.6, w: 2.4 },
+    { x: 18.5, y: 0.2, w: 2.6 },
+    { x: 22.5, y: 1.0, w: 2.6 },
+    { x: 26.5, y: 1.8, w: 3.2 },
+    { x: 31.5, y: 0.2, w: 2.4 },
+    { x: 36, y: 1.3, w: 2.2 },
+    { x: 40.5, y: 1.9, w: 2.2 },
+    { x: 45, y: 1.9, w: 2.2 },
+    { x: 49.5, y: 1.3, w: 2.2 },
+    { x: 38.2, y: -0.6, w: 3 },
+    { x: 44.2, y: -0.6, w: 3 },
+    { x: 49.5, y: -0.2, w: 2.6 },
+    { x: 54, y: 0.4, w: 2.4 },
+    { x: 58.6, y: 0.8, w: 2.2 },
+    { x: 63.4, y: 0.4, w: 2.2 },
+    { x: 69.5, y: -0.2, w: 6 }
+  ];
+  var DIAMONDS = [
+    [7.2, 1.3], [11.7, 1.3],
+    [22.5, 3.4], [25.3, 3.1],
+    [34.3, 2.6], [38.5, 3.9], [44.3, 3.1], [49.5, 3.3],
+    [57, 2.0], [60.3, 2.6]
+  ];
+  var PORTAL_X = 72.2;
+
+  var cloudMat = new THREE.MeshLambertMaterial({ color: 0x8e9fb5, emissive: 0x0e1728 });
+  var platforms = [];
+  LEVEL.forEach(function (d) {
+    // Visible: cartoon cloud (puffy spheres). Collider: same box as before.
+    var grp = new THREE.Group();
+    var n = Math.max(3, Math.round(d.w / 1.7));
+    for (var i = 0; i < n; i++) {
+      var r = 0.72 + R() * 0.3;
+      var s = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), cloudMat);
+      s.position.set(-d.w / 2 + (i + 0.5) * (d.w / n), (R() - 0.5) * 0.4 + (i % 2 ? 0.3 : 0), (R() - 0.5) * 1.0);
+      s.scale.y = 0.62;
+      grp.add(s);
+    }
+    grp.position.set(d.x, d.y + 0.1, 0);
+    scene.add(grp);
+    platforms.push({ x: d.x, y: d.y, hw: d.w / 2 });
+  });
+
+  var diamondGeo = new THREE.OctahedronGeometry(0.26);
+  var diamondMat = new THREE.MeshLambertMaterial({ color: 0x9fdcff, emissive: 0x0e4a6e });
+  var diamonds = [];
+  DIAMONDS.forEach(function (d) {
+    var grp = new THREE.Group();
+    var core = new THREE.Mesh(diamondGeo, diamondMat);
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: softGlowTex, color: 0x67e8f9, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    glow.scale.set(1.5, 1.5, 1);
+    grp.add(core); grp.add(glow);
+    grp.position.set(d[0], d[1], 0);
+    grp.userData = { taken: false, phase: diamonds.length * 1.7 };
+    scene.add(grp);
+    diamonds.push(grp);
+  });
+
+  // Finish portal ring (always open — diamonds are bonus).
+  var portal = new THREE.Group();
+  var ring = new THREE.Mesh(
+    new THREE.TorusGeometry(1.05, 0.13, 12, 40),
+    new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.95 })
+  );
+  var disc = new THREE.Mesh(new THREE.CircleGeometry(0.92, 32),
+    new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.22, depthWrite: false }));
+  var pglow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: softGlowTex, color: 0x67e8f9, transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  pglow.scale.set(4, 4, 1);
+  portal.add(ring); portal.add(disc); portal.add(pglow);
+  portal.position.set(PORTAL_X, 1.6, 0);
+  scene.add(portal);
+
+  // Enemies: dark spiky orbs patrolling over the track. Touch = death.
+  var enemies = [];
+  function addEnemy(cx, range, topY, speed, phase) {
+    var grp = new THREE.Group();
+    var body = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.42, 0),
+      new THREE.MeshLambertMaterial({ color: 0x1f2937, emissive: 0x0b1220 })
+    );
+    var eyeMat = new THREE.MeshPhongMaterial({ color: 0x3a0d0d, emissive: 0xcc2222, specular: 0xffffff, shininess: 120 });
+    var e1 = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), eyeMat);
+    var e2 = e1.clone();
+    e1.position.set(-0.15, 0.08, 0.36);
+    e2.position.set(0.15, 0.08, 0.36);
+    var eglow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: softGlowTex, color: 0xff5555, transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    eglow.scale.set(1.6, 1.6, 1);
+    grp.add(body); grp.add(e1); grp.add(e2); grp.add(eglow);
+    grp.position.set(cx, topY, 0);
+    scene.add(grp);
+    enemies.push({ grp: grp, cx: cx, range: range, y: topY, speed: speed, phase: phase || 0, body: body });
+  }
+  addEnemy(10.0, 0.5, 0.45, 1.3, 4.15);
+  addEnemy(44.2, 1.2, 0.45, 2.1, 2.1);
+
+  // Player: Discord-Clyde-style bot (white rounded head + dot eyes).
+  var player = new THREE.Group();
+  var head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.52, 20, 16),
+    new THREE.MeshLambertMaterial({ color: 0xffffff, emissive: 0x1c2a44 })
+  );
+  head.scale.set(1.25, 0.95, 0.9);
+  var clydeEyeMat = new THREE.MeshPhongMaterial({ color: 0x111827, emissive: 0x1f2937, specular: 0xffffff, shininess: 90 });
+  var clydeEyeGeo = new THREE.SphereGeometry(0.1, 12, 12);
+  var eyeL = new THREE.Mesh(clydeEyeGeo, clydeEyeMat);
+  var eyeR = new THREE.Mesh(clydeEyeGeo, clydeEyeMat);
+  eyeL.position.set(-0.23, 0.08, 0.41);
+  eyeR.position.set(0.23, 0.08, 0.41);
+  eyeL.scale.z = 0.55;
+  eyeR.scale.z = 0.55;
+  player.add(head); player.add(eyeL); player.add(eyeR);
+  var playerGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: softGlowTex, color: 0xbfd4ee, transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  playerGlow.scale.set(2.6, 2.6, 1);
+  player.add(playerGlow);
+  player.rotation.y = 0.4;
+  scene.add(player);
+
+  // Parallax backdrop + dust.
+  [[-8, 1.5, -18, 5], [14, 3, -24, 7], [36, 2, -20, 6], [58, 3.5, -26, 8], [78, 2, -20, 6]].forEach(function (d) {
+    var m = new THREE.Mesh(new THREE.BoxGeometry(d[3], d[3] * 0.6, 1),
+      new THREE.MeshBasicMaterial({ color: 0x182435, transparent: true, opacity: 0.85 }));
+    m.position.set(d[0], d[1], d[2]);
+    scene.add(m);
+  });
+  var dust = (function () {
+    var n = 70, pos = new Float32Array(n * 3);
+    for (var i = 0; i < n; i++) {
+      pos[i * 3] = R() * 96 - 8;
+      pos[i * 3 + 1] = R() * 7 - 1;
+      pos[i * 3 + 2] = -R() * 14;
+    }
+    var g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    var pts = new THREE.Points(g, new THREE.PointsMaterial({
+      color: 0x8fa0b8, size: 0.35, map: softGlowTex, transparent: true, opacity: 0.5, depthWrite: false
+    }));
+    scene.add(pts);
+    return pts;
+  })();
+
+  var sparkGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+  function burst(x, y, z, color) {
+    for (var i = 0; i < 8; i++) {
+      var s = new THREE.Mesh(sparkGeo, new THREE.MeshBasicMaterial({
+        color: color || 0xf6c76b, transparent: true
+      }));
+      s.position.set(x, y, z);
+      s.userData.v = new THREE.Vector3(
+        (Math.random() * 2 - 1) * 2.4, Math.random() * 2.6 + 0.8, (Math.random() - 0.5) * 1.2);
+      s.userData.life = 0.55;
+      scene.add(s);
+      sparks.push(s);
+    }
+  }
+  var sparks = [];
+
+  // ---- Game state ----
+  var GRAV = -26, RUN = 4.4, JUMP_V = 10.2, COYOTE = 0.1;
+  var state = 'attract'; // attract | playing | ready | finished
+  var p = { x: -3, y: 0.01, vy: 0, grounded: true, coyote: 0, buffer: 0, squash: 0 };
+  var time = 0, got = 0, total = diamonds.length;
+  // Run-local clock (runT) reset on every start for deterministic speedruns.
+  var runT = 0;
+  var best = null;
+  try { best = JSON.parse(localStorage.getItem('hero-game-best') || 'null'); } catch (e) { best = null; }
+  // Legacy saves stored a bare number; current shape is { time, points }.
+  if (best != null && (typeof best !== 'object' || typeof best.time !== 'number' || typeof best.points !== 'number')) {
+    best = null;
+  }
+
+  function fmt(t) { return t.toFixed(2) + 's'; }
+  function refreshHud() {
+    if (timeEl) timeEl.textContent = fmt(time);
+    if (gemsEl) gemsEl.textContent = '\u25C6 ' + got + '/' + total;
+    if (bestEl) bestEl.textContent = best != null ? 'best ' + fmt(best.time) + ' \u00B7 ' + best.points + ' pts' : '';
+  }
+  function setHint(t) { if (hintEl) hintEl.textContent = t; }
+  refreshHud();
+
+  function reset() {
+    p.x = -3; p.y = 0.01; p.vy = 0; p.grounded = true;
+    p.coyote = 0; p.buffer = 0; p.squash = 0;
+    time = 0; got = 0;
+    diamonds.forEach(function (d) { d.userData.taken = false; d.visible = true; });
+    refreshHud();
+  }
+
+  function start() {
+    FX.ensure();
+    reset();
+    runT = 0;
+    sparks.forEach(function (s) { scene.remove(s); });
+    sparks = [];
+    player.rotation.set(0, 0.4, 0);
+    state = 'playing';
+    hero.classList.add('is-playing');
+    if (recapEl) recapEl.classList.remove('is-open');
+    FX.go();
+  }
+
+  function die() {
+    FX.die();
+    burst(p.x, p.y, 0, 0xff6666);
+    reset();
+    state = 'ready';
+  }
+
+  function points() {
+    return Math.max(50, Math.round(1200 + got * 150 - time * 10));
+  }
+
+  function finish() {
+    state = 'finished';
+    var pts = points();
+    var isBest = best == null || pts > best.points;
+    if (isBest) {
+      best = { time: +time.toFixed(2), points: pts };
+      try { localStorage.setItem('hero-game-best', JSON.stringify(best)); } catch (e) {}
+    }
+    FX.win();
+    burst(PORTAL_X, 1.6, 0, 0x67e8f9);
+    refreshHud();
+    setTimeout(function () {
+      if (state !== 'finished') return;
+      var rt = document.getElementById('recap-time');
+      var rg = document.getElementById('recap-gems');
+      var rp = document.getElementById('recap-points');
+      var rb = document.getElementById('recap-best');
+      if (rt) rt.textContent = fmt(time);
+      if (rg) rg.textContent = '\u25C6 ' + got + '/' + total;
+      if (rp) rp.textContent = pts + ' pts';
+      if (rb) rb.textContent = isBest ? 'New best!' : ('Best ' + best.points + ' pts');
+      if (recapEl) recapEl.classList.add('is-open');
+    }, 900);
+  }
+
+  function doJump() {
+    if (p.grounded || p.coyote > 0) {
+      p.vy = JUMP_V; p.grounded = false; p.coyote = 0; p.squash = 0;
+      FX.jump();
+      burst(p.x, p.y - 0.3, 0, 0xbfd4ee);
+    } else {
+      p.buffer = 0.12;
+    }
+  }
+
+  // Input.
+  window.addEventListener('keydown', function (e) {
+    if (e.code !== 'Space' && e.code !== 'ArrowUp') return;
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    e.preventDefault();
+    if (state !== 'playing') { if (e.target === document.body) start(); return; }
+    doJump();
+  });
+  function heroPress(e) {
+    if (e.target.closest && e.target.closest('a,button')) return;
+    FX.ensure();
+    if (state === 'playing') doJump();
+    else start();
+  }
+  hero.addEventListener('mousedown', heroPress);
+  hero.addEventListener('touchstart', heroPress, { passive: true });
+
+  function topAt(i) { return platforms[i].y + 0.3 + 0.31; }
+
+  function step(dt, t) {
+    // Gameplay-relevant motion runs on the run clock (deterministic per run);
+    // ambient attract/ready motion runs on wall time.
+    var at = (state === 'playing' || state === 'finished') ? runT : t;
+    if (state === 'playing') {
+      time += dt;
+      runT += dt;
+      p.x += RUN * dt;
+      if (!p.grounded) {
+        p.vy += GRAV * dt;
+        p.y += p.vy * dt;
+        if (p.vy < 0) {
+          for (var i = 0; i < platforms.length; i++) {
+            var q = platforms[i], hw = q.hw + 0.25;
+            if (Math.abs(p.x - q.x) < hw) {
+              var top = topAt(i);
+              if (p.y <= top + 0.1 && p.y > top - 0.7) {
+                p.y = top; p.vy = 0; p.grounded = true; p.squash = 0.32;
+                if (p.buffer > 0) { p.buffer = 0; doJump(); }
+                break;
+              }
+            }
+          }
+        }
+        if (p.y < -5) { die(); return; }
+      } else {
+        var supported = false;
+        for (var j = 0; j < platforms.length; j++) {
+          var r = platforms[j];
+          if (Math.abs(p.x - r.x) < r.hw + 0.1 &&
+              Math.abs(p.y - (r.y + 0.3 + 0.31)) < 0.15) { supported = true; break; }
+        }
+        if (!supported && p.x > -6.5) { p.grounded = false; p.coyote = COYOTE; }
+      }
+      p.coyote = Math.max(0, p.coyote - dt);
+      p.buffer = Math.max(0, p.buffer - dt);
+
+      diamonds.forEach(function (d) {
+        if (d.userData.taken) return;
+        var dx = d.position.x - p.x, dy = d.position.y - p.y;
+        if (dx * dx + dy * dy < 0.8) {
+          d.userData.taken = true; d.visible = false; got++;
+          FX.gem(got);
+          burst(d.position.x, d.position.y, 0, 0x67e8f9);
+          refreshHud();
+        }
+      });
+
+      // Enemies kill on touch.
+      for (var k = 0; k < enemies.length; k++) {
+        var ex = enemies[k].grp.position.x - p.x;
+        var ey = enemies[k].grp.position.y - p.y;
+        if (ex * ex + ey * ey < 0.4) { die(); return; }
+      }
+
+      if (Math.abs(p.x - PORTAL_X) < 0.9 && p.y > -0.5 && p.y < 3.4) finish();
+      if (timeEl) timeEl.textContent = fmt(time);
+    } else if (state === 'attract' || state === 'ready') {
+      p.y = 0.01 + Math.sin(t * 2.2) * 0.06;
+    }
+
+    // Ambient motion (always alive behind content).
+    diamonds.forEach(function (d) {
+      if (d.userData.taken) return;
+      d.rotation.y += dt * 2.6;
+      d.position.y += Math.sin(at * 3 + d.userData.phase) * dt * 0.25;
+    });
+    enemies.forEach(function (en) {
+      en.grp.position.x = en.cx + Math.sin(at * en.speed + en.phase) * en.range;
+      en.grp.position.y = en.y + Math.sin(at * 2.4 + en.phase) * 0.12;
+      var wantFace = p.x < en.grp.position.x ? -0.5 : 0.5;
+      en.grp.rotation.y += (wantFace - en.grp.rotation.y) * Math.min(1, dt * 6);
+      en.body.rotation.y += dt * 1.5;
+      en.body.rotation.x += dt * 0.6;
+    });
+    var pulse = 0.5 + 0.5 * Math.sin(at * (state === 'playing' ? 6 : 2.2));
+    ring.material.opacity = 0.7 + pulse * 0.3;
+    disc.material.opacity = 0.15 + pulse * 0.2;
+    pglow.material.opacity = 0.3 + pulse * 0.3;
+    portal.rotation.z += dt * (state === 'playing' ? 1.2 : 0.15);
+
+    sparks = sparks.filter(function (s) {
+      s.userData.life -= dt;
+      s.position.addScaledVector(s.userData.v, dt);
+      s.userData.v.y -= 7 * dt;
+      s.material.opacity = Math.max(0, s.userData.life * 2);
+      if (s.userData.life <= 0) { scene.remove(s); return false; }
+      return true;
+    });
+
+    p.squash = Math.max(0, p.squash - dt * 2.4);
+    var stretch = p.grounded ? 0 : Math.min(0.16, Math.abs(p.vy) * 0.01);
+    player.scale.set(1 + p.squash * 0.32, 1 - p.squash * 0.5 + stretch, 1);
+    player.position.set(p.x, p.y, 0);
+
+    var tx = (state === 'attract' || state === 'ready') ? -1 + Math.sin(t * 0.4) * 0.8 : p.x + 2.4;
+    camera.position.x += (tx - camera.position.x) * Math.min(1, dt * 3.5);
+    camera.position.y += (2.6 - camera.position.y) * Math.min(1, dt * 2.5);
+    camera.lookAt(camera.position.x + 0.4, 0.7, 0);
+
+    dust.rotation.y += dt * 0.008;
+  }
+
+  function resize() {
+    var w = canvas.clientWidth || 1, h = canvas.clientHeight || 1;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  var clock = new THREE.Clock();
+  var elapsed = 0;
+  var running = true, raf = 0;
+  function frame() {
+    if (!running) return;
+    var dt = Math.min(clock.getDelta(), 0.05);
+    elapsed += dt;
+    step(dt, elapsed);
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+
+  if (reduceMotion) {
+    step(0.016, 0.016);
+    renderer.render(scene, camera);
+    setHint('');
+    var hud = document.querySelector('.ds-hero__hud');
+    if (hud) hud.style.display = 'none';
+  } else {
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        var vis = entries[0].isIntersecting && !document.hidden;
+        if (vis && !running) { running = true; clock.getDelta(); raf = requestAnimationFrame(frame); }
+        else if (!vis && running) { running = false; cancelAnimationFrame(raf); }
+      }, { threshold: 0.05 }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden && running) { running = false; cancelAnimationFrame(raf); }
+      else if (!document.hidden && !running) { running = true; clock.getDelta(); raf = requestAnimationFrame(frame); }
+    });
+    raf = requestAnimationFrame(frame);
+  }
+
+  // Minimal hook for automated testing.
+  window.heroGame = {
+    start: start,
+    jump: doJump,
+    tick: function (n, silent) {
+      for (var i = 0; i < (n || 1); i++) { elapsed += 1 / 60; step(1 / 60, elapsed); }
+      if (!silent) renderer.render(scene, camera);
+    },
+    info: function () { return { state: state, x: +p.x.toFixed(2), y: +p.y.toFixed(2), time: +time.toFixed(2), got: got, grounded: p.grounded, enemies: enemies.map(function (en) { return +en.grp.position.x.toFixed(2); }) }; }
+  };
+})();

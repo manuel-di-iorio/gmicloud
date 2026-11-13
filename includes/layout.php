@@ -70,6 +70,9 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
         <header id="portfolio" class="pb-0">
           <a href="./index.php"><img src="/assets/images/logo.png" class="shape-circle LogoSmall float-right m-4 hidden w-[120px]" id="logo-small" width="451" height="109" alt="Logo"></a>
           <button type="button" id="btn-sidebar-open" class="ds-btn ds-btn--secondary ds-btn--sm" onclick="w3_open()" aria-label="Menu"><i class="fas fa-bars"></i></button>
+          <?php if (!empty($breadcrumbs)) { ?>
+            <?= ui_breadcrumbs($breadcrumbs, ['class' => 'ds-breadcrumbs--page', 'id' => 'ds-breadcrumbs']) ?>
+          <?php } ?>
           <?php if ($layoutPageTitle !== $config["platformTitle"] && !$isIndexPage) { ?>
             <?= ui_page_header(
               $layoutPageTitle,
@@ -96,6 +99,7 @@ require_once __DIR__ . '/../assets/ui-kit/kit.php';
   <script src="https://unpkg.com/tippy.js@6"></script>
   <?php endif; ?>
 
+  <script>window.dsConfirmLabel = <?= json_encode(__("admin_confirm_confirm")) ?>;</script>
   <script src="/assets/js/main.js?v=<?= asset_version('assets/js/main.js') ?>"></script>
   <?php if (!$isIndexPage): ?>
   <script src="/assets/ui-kit/Toast/toast.js?v=<?= asset_version('assets/ui-kit/Toast/toast.js') ?>"></script>

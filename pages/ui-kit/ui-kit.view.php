@@ -62,6 +62,14 @@
     ]) ?>
   </div>
 
+  <h2 class="mt-8 border-b border-default pb-2">Accordion</h2>
+  <div class="ds-panel">
+    <?= ui_accordion([
+      ['title' => 'First item', 'content' => '<p class="ds-muted">First panel content.</p>'],
+      ['title' => 'Second item', 'content' => '<p class="ds-muted">Second panel content.</p>'],
+    ]) ?>
+  </div>
+
   <h2 class="mt-8 border-b border-default pb-2">Table</h2>
   <?php render_table(
     [['id' => 1, 'name' => 'Alpha'], ['id' => 2, 'name' => 'Beta']],

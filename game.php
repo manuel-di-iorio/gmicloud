@@ -67,5 +67,28 @@ if (isset($_GET['ajax'])) {
 }
 
 $pageName = $game["name"];
+$tabCrumbs = [
+  'players' => __('game_tab_players'),
+  'leaderboards' => __('game_tab_leaderboards_tab'),
+  'analytics' => __('game_tab_analytics'),
+];
+$activeTabCrumb = $tabCrumbs[$activeTab] ?? null;
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+  ['label' => __('breadcrumb_games'), 'href' => 'games.php'],
+  [
+    'label' => $game["name"],
+    'href' => 'game.php?id=' . $gameId,
+    'current' => $activeTabCrumb === null,
+    'link' => true,
+    'attrs' => ['data-crumb-base' => ''],
+  ],
+  [
+    'label' => $activeTabCrumb ?? '',
+    'current' => $activeTabCrumb !== null,
+    'hidden' => $activeTabCrumb === null,
+    'attrs' => ['data-crumb-tab' => ''],
+  ],
+];
 $view = "game";
 require_once("includes/layout.php");

@@ -31,4 +31,8 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $view = "games";
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+  ['label' => __('breadcrumb_games')],
+];
 require_once("includes/layout.php");

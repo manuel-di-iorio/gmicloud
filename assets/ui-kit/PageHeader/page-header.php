@@ -40,19 +40,33 @@ function ui_page_header(string $title, array $options = []): string {
 
 function ui_breadcrumbs(array $items, array $options = []): string {
   $class = $options['class'] ?? '';
+  $id = $options['id'] ?? '';
   if (empty($items)) return '';
-  $html = '<nav aria-label="Breadcrumb" class="ds-breadcrumbs ' . htmlspecialchars($class) . '"><ol>';
+  $html = '<nav aria-label="Breadcrumb"'
+    . ($id ? ' id="' . htmlspecialchars($id) . '"' : '')
+    . ' class="ds-breadcrumbs ' . htmlspecialchars($class) . '"><ol>';
   $n = count($items);
   foreach ($items as $i => $item) {
     $label = $item['label'] ?? '';
     $href = $item['href'] ?? null;
     $isLast = $i === $n - 1;
-    $html .= '<li>';
+    $isCurrent = $item['current'] ?? $isLast;
+    $forceLink = !empty($item['link']);
+    $hidden = !empty($item['hidden']);
+    $attrs = $item['attrs'] ?? [];
+    $attrStr = '';
+    foreach ($attrs as $k => $v) {
+      $attrStr .= ' ' . $k . ($v === '' ? '' : '="' . htmlspecialchars((string) $v) . '"');
+    }
+    $html .= '<li' . ($hidden ? ' hidden' : '') . '>';
     if ($i > 0) $html .= '<span aria-hidden="true">/</span>';
-    if ($href && !$isLast) {
-      $html .= '<a href="' . htmlspecialchars($href) . '">' . htmlspecialchars($label) . '</a>';
+    if ($href && (!$isCurrent || $forceLink)) {
+      $html .= '<a href="' . htmlspecialchars($href) . '"'
+        . ($isCurrent ? ' aria-current="page"' : '') . $attrStr . '>'
+        . htmlspecialchars($label) . '</a>';
     } else {
-      $html .= '<span' . ($isLast ? ' aria-current="page"' : '') . '>' . htmlspecialchars($label) . '</span>';
+      $html .= '<span' . ($isCurrent ? ' aria-current="page"' : '') . $attrStr . '>'
+        . htmlspecialchars($label) . '</span>';
     }
     $html .= '</li>';
   }

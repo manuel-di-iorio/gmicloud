@@ -58,6 +58,28 @@ if (isset($_GET['ajax'])) {
 }
 
 $pageName = $team["name"];
+$tabCrumbs = [
+  'members' => __('team_tab_members'),
+  'games' => __('team_tab_games'),
+];
+$activeTabCrumb = $tabCrumbs[$activeTab] ?? null;
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+  ['label' => __('breadcrumb_teams'), 'href' => 'teams.php'],
+  [
+    'label' => $team["name"],
+    'href' => 'team.php?id=' . $teamId,
+    'current' => $activeTabCrumb === null,
+    'link' => true,
+    'attrs' => ['data-crumb-base' => ''],
+  ],
+  [
+    'label' => $activeTabCrumb ?? '',
+    'current' => $activeTabCrumb !== null,
+    'hidden' => $activeTabCrumb === null,
+    'attrs' => ['data-crumb-tab' => ''],
+  ],
+];
 $view = "team";
 $backUrl = "teams.php";
 require_once("includes/layout.php");

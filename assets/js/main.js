@@ -51,7 +51,7 @@ document.addEventListener('click', function(e) {
   if (!btn.getAttribute('data-original-html')) {
     btn.setAttribute('data-original-html', btn.innerHTML);
   }
-  btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Conferma?';
+  btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (window.dsConfirmLabel || 'Conferma') + '?';
   btn.classList.add('is-armed', 'animate-confirm-pulse');
   setTimeout(function() {
     overlay.removeAttribute('data-armed');
@@ -82,7 +82,9 @@ function toggleAccordion(el) {
       var item = this.parentElement;
       var isOpen = item.classList.contains('is-open');
       var list = item.parentElement;
-      if (list) list.querySelectorAll('.ds-faq__item.is-open').forEach(function(open) { open.classList.remove('is-open'); });
+      if (list) list.querySelectorAll('.ds-faq__item.is-open').forEach(function(open) {
+        open.classList.remove('is-open');
+      });
       if (!isOpen) item.classList.add('is-open');
     });
   });
@@ -129,6 +131,29 @@ document.addEventListener('click', function (e) {
   });
   btn.classList.add('is-active');
   btn.setAttribute('aria-selected', 'true');
+
+  // Keep the dashboard breadcrumb in sync with the active tab
+  var crumbs = document.getElementById('ds-breadcrumbs');
+  if (crumbs) {
+    var tabCrumb = crumbs.querySelector('[data-crumb-tab]');
+    var baseCrumb = crumbs.querySelector('[data-crumb-base]');
+    var firstBtn = tabsEl.querySelector('.ds-tabs__btn, .ui-tabs__btn');
+    if (tabCrumb && firstBtn) {
+      var isFirstTab = tabId === firstBtn.getAttribute('data-tab');
+      var tabLi = tabCrumb.closest('li');
+      if (isFirstTab) {
+        if (tabLi) tabLi.hidden = true;
+        tabCrumb.removeAttribute('aria-current');
+        if (baseCrumb) baseCrumb.setAttribute('aria-current', 'page');
+      } else {
+        if (tabLi) tabLi.hidden = false;
+        tabCrumb.setAttribute('aria-current', 'page');
+        var labelEl = btn.querySelector('span');
+        tabCrumb.textContent = labelEl ? labelEl.textContent : btn.textContent.trim();
+        if (baseCrumb) baseCrumb.removeAttribute('aria-current');
+      }
+    }
+  }
 
   tabsEl.querySelectorAll('.ds-tabs__panel, .ui-tabs__panel').forEach(function (p) {
     p.classList.remove('is-active');

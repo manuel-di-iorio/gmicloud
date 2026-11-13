@@ -41,7 +41,7 @@
   </div>
 
   <div class="mt-6">
-    <h6 class="documentation-example-title mb-3"><i class="fas fa-lock mr-2"></i><?= __('docs_security_how_title') ?></h6>
+    <h6 class="documentation-example-title mb-3"><?= __('docs_security_how_title') ?></h6>
     <p class="documentation-text"><?= __('docs_security_how_text') ?></p>
 
     <div class="terminal-mockup mt-4">
@@ -57,7 +57,7 @@
     </div>
 
     <div class="mt-5">
-      <h6 class="documentation-example-title mb-3"><i class="fas fa-check-circle mr-2 text-green-400"></i><?= __('docs_security_protected_title') ?></h6>
+      <h6 class="documentation-example-title mb-3"><?= __('docs_security_protected_title') ?></h6>
       <ul class="documentation-text ml-5 !leading-[1.8]">
         <li><?= __('docs_security_protected_1') ?></li>
         <li><?= __('docs_security_protected_2') ?></li>
@@ -226,15 +226,10 @@
   <p class="documentation-text font-semibold mb-4"><?= __('docs_subtitle') ?></p>
 
   <!-- POST /scores/add.php Accordion -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--post">POST</span>
-        <span class="font-mono font-semibold">/scores/add.php</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--post">POST</span><span class="font-mono font-semibold">/scores/add.php</span></div>';
+  ob_start();
+  ?>
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -389,20 +384,17 @@
           </div>
         </div>
       </div>
-      
-    </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- GET /scores/list.php Accordion -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--get">GET</span>
-        <span class="font-mono font-semibold">/scores/list.php</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--get">GET</span><span class="font-mono font-semibold">/scores/list.php</span></div>';
+  ob_start();
+  ?>
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -613,20 +605,17 @@
           </div>
         </div>
       </div>
-      
-    </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- POST /sync.php Accordion -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--post">POST</span>
-        <span class="font-mono font-semibold">/sync.php</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--post">POST</span><span class="font-mono font-semibold">/sync.php</span></div>';
+  ob_start();
+  ?>
       
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
@@ -708,9 +697,11 @@
           </div>
         </div>
       </div>
-      
-    </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- Autenticazione Player -->
   <div class="mt-10">
@@ -719,15 +710,10 @@
   </div>
 
   <!-- POST /player-auth/login-start.php -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--post">POST</span>
-        <span class="font-mono font-semibold">/player-auth/login-start.php</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--post">POST</span><span class="font-mono font-semibold">/player-auth/login-start.php</span></div>';
+  ob_start();
+  ?>
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step1_title') ?></strong></p>
@@ -763,19 +749,17 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- GET /player-auth/discord/login.php -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--get">GET</span>
-        <span class="font-mono font-semibold">/player-auth/discord/login.php?session={token}</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--get">GET</span><span class="font-mono font-semibold">/player-auth/discord/login.php?session={token}</span></div>';
+  ob_start();
+  ?>
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step2_title') ?></strong></p>
@@ -811,18 +795,17 @@
         </div>
       </div>
     </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- GET /player-auth/check-session.php -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--get">GET</span>
-        <span class="font-mono font-semibold">/player-auth/check-session.php?session={token}</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--get">GET</span><span class="font-mono font-semibold">/player-auth/check-session.php?session={token}</span></div>';
+  ob_start();
+  ?>
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step3_title') ?></strong></p>
@@ -884,18 +867,17 @@
         </div>
       </div>
     </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <!-- GET /player-auth/check-token.php -->
-  <div class="accordion-container">
-    <button class="accordion-header">
-      <div class="accordion-header-left">
-        <span class="method-badge method-badge--get">GET</span>
-        <span class="font-mono font-semibold">/player-auth/check-token.php?token={token}&amp;game={game}</span>
-      </div>
-      <i class="fas fa-chevron-down accordion-icon"></i>
-    </button>
-    <div class="accordion-content hidden">
+  <?php
+  $docHeader = '<div class="accordion-header-left"><span class="method-badge method-badge--get">GET</span><span class="font-mono font-semibold">/player-auth/check-token.php?token={token}&amp;game={game}</span></div>';
+  ob_start();
+  ?>
       <div class="api-endpoint-grid">
         <div class="api-endpoint-left">
           <p class="documentation-text"><strong><?= __('docs_auth_step4_title') ?></strong></p>
@@ -978,7 +960,11 @@
         </div>
       </div>
     </div>
-  </div>
+
+  <?php
+  $docContent = ob_get_clean();
+  echo ui_accordion([['header' => $docHeader, 'content' => $docContent]]);
+  ?>
 
   <div class="panel-info mt-4">
     <p><i class="fas fa-info-circle mr-2"></i><?= __('docs_auth_note_player') ?></p>
@@ -1053,25 +1039,6 @@
 <script>
   w3CodeColor();
 
-  // Accordion Toggle
-  var accordions = document.getElementsByClassName("accordion-header");
-  for (var i = 0; i < accordions.length; i++) {
-    accordions[i].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var content = this.nextElementSibling;
-      var icon = this.querySelector('.accordion-icon');
-
-      if (!content.classList.contains("hidden")) {
-        content.classList.add("hidden");
-        icon.classList.remove("fa-chevron-up");
-        icon.classList.add("fa-chevron-down");
-      } else {
-        content.classList.remove("hidden");
-        icon.classList.remove("fa-chevron-down");
-        icon.classList.add("fa-chevron-up");
-      }
-    });
-  }
 
   // Copy URL Helper
   function copyTextToClipboard(elementId, btn) {

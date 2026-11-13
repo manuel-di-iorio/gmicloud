@@ -25,4 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 $view = "add-team";
 $pageName = __('teams_create_title');
 $backUrl = "teams.php";
+$breadcrumbs = [
+  ['label' => __('breadcrumb_home'), 'href' => 'home.php'],
+  ['label' => __('breadcrumb_teams'), 'href' => 'teams.php'],
+  ['label' => __('teams_create_title')],
+];
 require_once("includes/layout.php");

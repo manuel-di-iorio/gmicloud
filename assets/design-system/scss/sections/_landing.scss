@@ -222,8 +222,148 @@
   height: 466px;
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.ds-hero__game {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+.ds-hero__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(11, 18, 32, 0.78) 0%, rgba(11, 18, 32, 0.35) 45%, rgba(11, 18, 32, 0) 70%);
+}
+.ds-hero__hud {
+  position: absolute;
+  top: 0.9rem;
+  right: 1.1rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+.ds-hero__hud #hero-gems {
+  color: #7dd3fc;
+}
+.ds-hero__hud #hero-best {
+  color: rgba(255, 255, 255, 0.45);
+}
+.ds-hero__hint {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 0.9rem;
+  z-index: 1;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+  animation: heroHintPulse 2.2s ease-in-out infinite;
+  transition: opacity 0.6s ease;
+}
+/* Overlay content fades out once the game starts. */
+.ds-hero__inner,
+.ds-hero__scrim {
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.ds-hero.is-playing .ds-hero__inner {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+.ds-hero.is-playing .ds-hero__scrim {
+  opacity: 0;
+}
+.ds-hero.is-playing .ds-hero__hud {
+  opacity: 1;
+}
+/* End-of-run recap card. */
+.ds-hero__recap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.ds-hero__recap.is-open {
+  opacity: 1;
+}
+.ds-hero__recap-card {
+  background: #fff;
+  color: #1f2937;
+  border: 1px solid #e5e7eb;
+  padding: 1.25rem 1.5rem;
+  min-width: 240px;
+  text-align: center;
+  transform: translateY(8px) scale(0.98);
+  transition: transform 0.4s ease;
+}
+.ds-hero__recap.is-open .ds-hero__recap-card {
+  transform: none;
+}
+.ds-hero__recap-title {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+.ds-hero__recap-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+  padding: 0.2rem 0;
+}
+.ds-hero__recap-row.total {
+  font-size: 1.35rem;
+  color: #111827;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 0.5rem;
+  padding-top: 0.6rem;
+}
+.ds-hero__recap-row strong {
+  font-variant-numeric: tabular-nums;
+}
+.ds-hero__recap-best {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #b45309;
+  min-height: 1.2em;
+}
+.ds-hero__recap-again {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  animation: heroHintPulse 2.2s ease-in-out infinite;
+}
+@keyframes heroHintPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
 }
 .ds-hero__inner {
+  position: relative;
+  z-index: 1;
   max-width: 70rem;
   margin: 0 auto;
   display: flex;
@@ -314,7 +454,7 @@
   transition: transform 300ms ease;
 }
 .ds-faq__item.is-open .ds-faq__icon {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
 }
 .ds-faq__a {
   display: grid;

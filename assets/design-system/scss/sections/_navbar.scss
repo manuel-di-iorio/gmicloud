@@ -1,4 +1,4 @@
-/* Sidebar — white, right border, 2px left active bar */
+/* Sidebar - white, right border, 2px left active bar */
 .ds-overlay {
   position: fixed;
   inset: 0;
@@ -29,7 +29,9 @@
   transform: none;
 }
 /* Mobile drawer toggle: visible only below lg (ID beats .ds-btn display) */
-#btn-sidebar-open { margin-top: 10px; }
+#btn-sidebar-open {
+  margin-top: 10px;
+}
 @media (min-width: 1024px) {
   #btn-sidebar-open {
     display: none;
@@ -38,10 +40,13 @@
 .ds-sidebar__brand {
   padding: 1.25rem 1rem;
   border-bottom: 1px solid var(--ds-color-border);
+  text-align: center;
 }
 .ds-sidebar__brand img {
   max-width: 120px;
   height: auto;
+  margin: 0 auto;
+  display: block;
 }
 .ds-sidebar__menu {
   flex: 1;
@@ -87,6 +92,7 @@
 .ds-sidebar__user-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
@@ -94,7 +100,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  flex: 1;
+  align-items: center;
 }
 .ds-sidebar__user-name {
   font-weight: 600;
@@ -104,11 +110,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.ds-sidebar__user-role {
-  font-size: 0.75rem;
-  color: var(--ds-color-content-muted);
-  line-height: 1.2;
+  text-align: center;
 }
 .ds-sidebar__logout {
   display: flex;
@@ -140,7 +142,7 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 9999px;
-  background: #5865F2;
+  background: #5865f2;
   color: #fff;
   font-size: 0.875rem;
   overflow: hidden;

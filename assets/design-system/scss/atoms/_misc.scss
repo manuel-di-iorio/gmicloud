@@ -54,8 +54,11 @@
 .ds-tutorial-pop { position: fixed; z-index: 95001; max-width: 22rem; background: var(--ds-color-surface); border: 1px solid var(--ds-color-border); padding: 1rem 1.25rem; }
 
 /* breadcrumbs */
+.ds-breadcrumbs--page { margin-top: 1.25rem; }
+.ds-breadcrumbs--page + .ds-page-header { margin-top: 0; }
 .ds-breadcrumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.75rem; line-height: 1.25rem; color: var(--ds-color-content-muted); margin: 0 0 0.75rem 0; padding: 0; list-style: none; }
 .ds-breadcrumbs li { display: flex; align-items: center; gap: 0.5rem; }
+.ds-breadcrumbs li[hidden] { display: none; }
 .ds-breadcrumbs a { color: var(--ds-color-content-muted); text-decoration: none; }
 .ds-breadcrumbs a:hover { color: var(--ds-color-content); text-decoration: underline; text-underline-offset: 4px; }
 .ds-breadcrumbs [aria-current="page"] { font-weight: 500; color: var(--ds-color-content); }
