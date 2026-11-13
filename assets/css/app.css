@@ -4724,10 +4724,6 @@ img.ds-card__media {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.ds-hero__hud #hero-lives {
-  color: rgba(255, 255, 255, 0.55);
-}
-
 /* Online top scores, muted like the jump hint, top-left while playing. */
 .ds-hero__leaderboard {
   position: absolute;

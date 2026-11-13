@@ -12,7 +12,6 @@
   var timeEl = document.getElementById('hero-time');
   var gemsEl = document.getElementById('hero-gems');
   var bestEl = document.getElementById('hero-best');
-  var livesEl = document.getElementById('hero-lives');
   var progEl = document.getElementById('hero-progress-fill');
   var recapEl = document.getElementById('hero-recap');
   var leaderboardBody = document.getElementById('hero-leaderboard-body');
@@ -23,6 +22,14 @@
 
   var heroConfig = window.HERO_GAME_CONFIG || {};
   var scoresUrl = heroConfig.scoresUrl || '/hero-scores.php';
+  var I18N = heroConfig.i18n || {};
+  // Localized string with {placeholder} replacement (server renders the
+  // same templates via __() into HERO_GAME_CONFIG.i18n).
+  function tr(key, params) {
+    var s = I18N[key] != null ? I18N[key] : key;
+    if (params) for (var k in params) s = s.split('{' + k + '}').join(params[k]);
+    return s;
+  }
   var savedPlayerName = '';
   try { savedPlayerName = localStorage.getItem('hero-game-player') || ''; } catch (e) { savedPlayerName = ''; }
   var submittingScore = false;
@@ -138,7 +145,7 @@
     if (!soundBtn) return;
     soundBtn.textContent = Music.on ? '\u266A' : '\u266A\u0338';
     soundBtn.setAttribute('aria-pressed', Music.on ? 'true' : 'false');
-    soundBtn.title = Music.on ? 'Music on' : 'Music off';
+    soundBtn.title = Music.on ? tr('hero_game_music_on') : tr('hero_game_music_off');
   }
   if (soundBtn) {
     syncSoundButton();
@@ -495,7 +502,7 @@
       var emptyCell = document.createElement('td');
       emptyCell.colSpan = 4;
       emptyCell.className = 'is-empty';
-      emptyCell.textContent = 'No scores yet';
+      emptyCell.textContent = tr('hero_game_no_scores');
       empty.appendChild(emptyCell);
       leaderboardBody.appendChild(empty);
       return;
@@ -537,19 +544,19 @@
     if (submittingScore || state !== 'finished') return;
     var name = playerInput ? playerInput.value.trim() : '';
     if (!name) {
-      setScoreStatus('Enter a player name to save your score.', true);
+      setScoreStatus(tr('hero_game_enter_name'), true);
       if (playerInput) playerInput.focus();
       return;
     }
     var encoded = b64Encode(name);
     if (!encoded) {
-      setScoreStatus('Invalid player name.', true);
+      setScoreStatus(tr('hero_game_invalid_name'), true);
       return;
     }
 
     submittingScore = true;
     if (saveScoreBtn) saveScoreBtn.disabled = true;
-    setScoreStatus('Saving\u2026');
+    setScoreStatus(tr('hero_game_saving'));
 
     fetch(scoresUrl, {
       method: 'POST',
@@ -563,7 +570,7 @@
       if (saveScoreBtn) saveScoreBtn.disabled = false;
       var data = res.data || {};
       if (!res.ok || data.status !== 200) {
-        setScoreStatus(data.message || 'Could not save the score.', true);
+        setScoreStatus(data.message || tr('hero_game_save_error'), true);
         return;
       }
       savedPlayerName = name;
@@ -571,19 +578,18 @@
       if (playerInput) playerInput.value = name;
       if (data.scores) renderLeaderboard(data.scores);
       setScoreStatus(data.improved
-        ? 'Saved! You are #' + data.rank + ' with ' + data.best + ' pts.'
-        : 'Best already saved: #' + data.rank + ' with ' + data.best + ' pts.');
+        ? tr('hero_game_saved', { rank: data.rank, best: data.best })
+        : tr('hero_game_kept', { rank: data.rank, best: data.best }));
     }).catch(function () {
       submittingScore = false;
       if (saveScoreBtn) saveScoreBtn.disabled = false;
-      setScoreStatus('Could not save the score.', true);
+      setScoreStatus(tr('hero_game_save_error'), true);
     });
   }
   function refreshHud() {
     if (timeEl) timeEl.textContent = fmt(time);
     if (gemsEl) gemsEl.textContent = '\u25C6 ' + got + '/' + total;
-    if (bestEl) bestEl.textContent = best != null ? 'best ' + fmt(best.time) + ' \u00B7 ' + best.points + ' pts' : '';
-    if (livesEl) livesEl.textContent = '\u2764 ' + Math.max(0, MAXDEATHS - deaths);
+    if (bestEl) bestEl.textContent = best != null ? tr('hero_game_hud_best', { time: fmt(best.time), points: best.points }) : '';
     if (progEl) progEl.style.width = Math.max(0, Math.min(100, (p.x + 3) / (PORTAL_X + 3) * 100)).toFixed(1) + '%';
   }
   function setHint(t) { if (hintEl) hintEl.textContent = t; }
@@ -616,7 +622,7 @@
     state = 'attract';
     hero.classList.remove('is-playing');
     closeRecap();
-    setHint('Click to play');
+    setHint(tr('hero_game_hint_play'));
     refreshHud();
   }
 
@@ -635,7 +641,7 @@
     if (saveScoreBtn) saveScoreBtn.disabled = false;
     setScoreStatus('');
     if (playerInput) playerInput.value = savedPlayerName;
-    setHint('Space / click to jump');
+    setHint(tr('hero_game_hint_jump'));
     FX.go();
     // Music on/off is only changed from the sound button; starting a run
     // must not override the player's choice.
@@ -648,7 +654,7 @@
     reset();
     if (deaths >= MAXDEATHS) { toLanding(); return; }
     state = 'ready';
-    setHint('Click to retry');
+    setHint(tr('hero_game_hint_retry', { left: MAXDEATHS - deaths }));
   }
 
   function points() {
@@ -677,8 +683,8 @@
       var rb = document.getElementById('recap-best');
       if (rt) rt.textContent = fmt(time);
       if (rg) rg.textContent = '\u25C6 ' + got + '/' + total;
-      if (rp) rp.textContent = pts + ' pts';
-      if (rb) rb.textContent = isBest ? 'New best!' : ('Best ' + best.points + ' pts');
+      if (rp) rp.textContent = tr('hero_game_pts', { points: pts });
+      if (rb) rb.textContent = isBest ? tr('hero_game_new_best') : tr('hero_game_best_pts', { points: best.points });
       if (recapEl) {
         recapEl.classList.add('is-open');
         recapEl.setAttribute('aria-hidden', 'false');

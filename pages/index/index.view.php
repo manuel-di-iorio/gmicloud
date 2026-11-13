@@ -81,33 +81,33 @@
   <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
   <div class="ds-hero__scrim" aria-hidden="true"></div>
   <div class="ds-hero__leaderboard" id="hero-leaderboard" aria-hidden="true">
-    <div class="ds-hero__leaderboard-title">Top scores</div>
+    <div class="ds-hero__leaderboard-title"><?= __('hero_game_top_scores') ?></div>
     <table class="ds-hero__leaderboard-table">
       <thead>
-        <tr><th scope="col">#</th><th scope="col">Player</th><th scope="col">Pts</th><th scope="col">Time</th></tr>
+        <tr><th scope="col">#</th><th scope="col"><?= __('hero_game_th_player') ?></th><th scope="col"><?= __('hero_game_th_pts') ?></th><th scope="col"><?= __('hero_game_th_time') ?></th></tr>
       </thead>
       <tbody id="hero-leaderboard-body"></tbody>
     </table>
   </div>
-  <div class="ds-hero__hud"><span id="hero-time" aria-hidden="true">0.00s</span><span id="hero-gems" aria-hidden="true">&#9670; 0/13</span><span id="hero-best" aria-hidden="true"></span><span id="hero-lives" aria-hidden="true"></span><button type="button" class="ds-hero__sound" id="hero-sound" aria-label="Toggle music" aria-pressed="false">&#9834;</button></div>
+  <div class="ds-hero__hud"><span id="hero-time" aria-hidden="true">0.00s</span><span id="hero-gems" aria-hidden="true">&#9670; 0/13</span><span id="hero-best" aria-hidden="true"></span><button type="button" class="ds-hero__sound" id="hero-sound" aria-label="<?= htmlspecialchars(__('hero_game_music_toggle'), ENT_QUOTES, 'UTF-8') ?>" aria-pressed="false">&#9834;</button></div>
   <div class="ds-hero__progress" aria-hidden="true"><i id="hero-progress-fill"></i></div>
-  <div class="ds-hero__hint" id="hero-hint" aria-hidden="true">Click to play</div>
+  <div class="ds-hero__hint" id="hero-hint" aria-hidden="true"><?= __('hero_game_hint_play') ?></div>
   <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
     <div class="ds-hero__recap-card">
-      <div class="ds-hero__recap-title">Run complete</div>
-      <div class="ds-hero__recap-row"><span>Time</span><strong id="recap-time"></strong></div>
-      <div class="ds-hero__recap-row"><span>Diamonds</span><strong id="recap-gems"></strong></div>
-      <div class="ds-hero__recap-row total"><span>Points</span><strong id="recap-points"></strong></div>
+      <div class="ds-hero__recap-title"><?= __('hero_game_recap_title') ?></div>
+      <div class="ds-hero__recap-row"><span><?= __('hero_game_th_time') ?></span><strong id="recap-time"></strong></div>
+      <div class="ds-hero__recap-row"><span><?= __('hero_game_recap_gems') ?></span><strong id="recap-gems"></strong></div>
+      <div class="ds-hero__recap-row total"><span><?= __('hero_game_recap_points') ?></span><strong id="recap-points"></strong></div>
       <div class="ds-hero__recap-best" id="recap-best"></div>
       <form class="ds-hero__recap-form" id="hero-score-form" autocomplete="off" inert>
-        <label class="ds-hero__recap-label" for="hero-player-name">Player name</label>
+        <label class="ds-hero__recap-label" for="hero-player-name"><?= __('hero_game_player_name') ?></label>
         <div class="ds-hero__recap-controls">
-          <input type="text" id="hero-player-name" name="player" maxlength="64" placeholder="Your name" autocomplete="nickname" spellcheck="false">
-          <button type="submit" id="hero-score-save">Save score</button>
+          <input type="text" id="hero-player-name" name="player" maxlength="64" placeholder="<?= htmlspecialchars(__('hero_game_your_name'), ENT_QUOTES, 'UTF-8') ?>" autocomplete="nickname" spellcheck="false">
+          <button type="submit" id="hero-score-save"><?= __('hero_game_save_score') ?></button>
         </div>
         <div class="ds-hero__recap-status" id="hero-score-status" role="status"></div>
       </form>
-      <div class="ds-hero__recap-again">Click to continue</div>
+      <div class="ds-hero__recap-again"><?= __('hero_game_continue') ?></div>
     </div>
   </div>
   <div class="ds-hero__inner">
@@ -248,6 +248,24 @@ window.HERO_GAME_CONFIG = <?= json_encode([
   'minTime'   => round(hero_game_min_time(), 3),
   'maxScore'  => hero_game_max_points(),
   'scoresUrl' => '/hero-scores.php',
+  'i18n'      => [
+    'hero_game_hint_play'   => __('hero_game_hint_play'),
+    'hero_game_hint_jump'   => __('hero_game_hint_jump'),
+    'hero_game_hint_retry'  => __('hero_game_hint_retry'),
+    'hero_game_hud_best'    => __('hero_game_hud_best'),
+    'hero_game_no_scores'   => __('hero_game_no_scores'),
+    'hero_game_enter_name'  => __('hero_game_enter_name'),
+    'hero_game_invalid_name' => __('hero_game_invalid_name'),
+    'hero_game_saving'      => __('hero_game_saving'),
+    'hero_game_save_error'  => __('hero_game_save_error'),
+    'hero_game_saved'       => __('hero_game_saved'),
+    'hero_game_kept'        => __('hero_game_kept'),
+    'hero_game_new_best'    => __('hero_game_new_best'),
+    'hero_game_best_pts'    => __('hero_game_best_pts'),
+    'hero_game_pts'         => __('hero_game_pts'),
+    'hero_game_music_on'    => __('hero_game_music_on'),
+    'hero_game_music_off'   => __('hero_game_music_off'),
+  ],
 ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
 <script src="/assets/js/hero-game.js?v=<?= asset_version('assets/js/hero-game.js') ?>"></script>
