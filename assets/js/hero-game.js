@@ -15,6 +15,17 @@
   var livesEl = document.getElementById('hero-lives');
   var progEl = document.getElementById('hero-progress-fill');
   var recapEl = document.getElementById('hero-recap');
+  var leaderboardBody = document.getElementById('hero-leaderboard-body');
+  var scoreForm = document.getElementById('hero-score-form');
+  var playerInput = document.getElementById('hero-player-name');
+  var saveScoreBtn = document.getElementById('hero-score-save');
+  var scoreStatusEl = document.getElementById('hero-score-status');
+
+  var heroConfig = window.HERO_GAME_CONFIG || {};
+  var scoresUrl = heroConfig.scoresUrl || '/hero-scores.php';
+  var savedPlayerName = '';
+  try { savedPlayerName = localStorage.getItem('hero-game-player') || ''; } catch (e) { savedPlayerName = ''; }
+  var submittingScore = false;
 
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -137,6 +148,13 @@
       Music.toggle();
     });
   }
+  if (scoreForm) {
+    scoreForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitScore();
+    });
+  }
+  fetchLeaderboard();
 
   function glowTexture(inner, outer) {
     var c = document.createElement('canvas');
@@ -362,6 +380,9 @@
   gripR.rotation.z = -0.3;
   fallback.add(gripL); fallback.add(gripR);
   player.add(fallback);
+  // Inner body animated procedurally (idle breathing / walk hop): it points
+  // at the fallback Clyde until the GLB model loads, then at its wrap.
+  player.userData.body = fallback;
   if (THREE.GLTFLoader) {
     new THREE.GLTFLoader().load('assets/models/discord-logo.glb', function (gltf) {
       var wrap = new THREE.Group();
@@ -382,6 +403,7 @@
       wrap.add(model);
       player.remove(fallback);
       player.add(wrap);
+      player.userData.body = wrap;
     });
   }
   var playerGlow = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -455,6 +477,108 @@
   var MAXDEATHS = 15;
   var deaths = 0;
   function fmt(t) { return t.toFixed(2) + 's'; }
+
+  // ---- Online leaderboard ----
+  function b64Encode(value) {
+    try { return btoa(unescape(encodeURIComponent(value))); } catch (e) { return ''; }
+  }
+  function setScoreStatus(text, isError) {
+    if (!scoreStatusEl) return;
+    scoreStatusEl.textContent = text || '';
+    scoreStatusEl.classList.toggle('is-error', !!isError);
+  }
+  function renderLeaderboard(rows) {
+    if (!leaderboardBody) return;
+    leaderboardBody.innerHTML = '';
+    if (!rows || !rows.length) {
+      var empty = document.createElement('tr');
+      var emptyCell = document.createElement('td');
+      emptyCell.colSpan = 4;
+      emptyCell.className = 'is-empty';
+      emptyCell.textContent = 'No scores yet';
+      empty.appendChild(emptyCell);
+      leaderboardBody.appendChild(empty);
+      return;
+    }
+    rows.forEach(function (row, i) {
+      var name = String(row.player || '');
+      var tr = document.createElement('tr');
+      if (savedPlayerName && name === savedPlayerName) tr.className = 'is-you';
+
+      var pos = document.createElement('td');
+      pos.textContent = i + 1;
+      var player = document.createElement('td');
+      player.textContent = name;
+      player.title = name;
+      var pts = document.createElement('td');
+      pts.textContent = row.score;
+      var timeCell = document.createElement('td');
+      timeCell.textContent = row.time != null ? Number(row.time).toFixed(2) + 's' : '';
+
+      tr.appendChild(pos);
+      tr.appendChild(player);
+      tr.appendChild(pts);
+      tr.appendChild(timeCell);
+      leaderboardBody.appendChild(tr);
+    });
+  }
+  function fetchLeaderboard() {
+    if (!leaderboardBody || typeof fetch !== 'function') return;
+    fetch(scoresUrl + '?limit=5', {
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      if (data && data.scores) renderLeaderboard(data.scores);
+    }).catch(function () {});
+  }
+  function submitScore() {
+    if (submittingScore || state !== 'finished') return;
+    var name = playerInput ? playerInput.value.trim() : '';
+    if (!name) {
+      setScoreStatus('Enter a player name to save your score.', true);
+      if (playerInput) playerInput.focus();
+      return;
+    }
+    var encoded = b64Encode(name);
+    if (!encoded) {
+      setScoreStatus('Invalid player name.', true);
+      return;
+    }
+
+    submittingScore = true;
+    if (saveScoreBtn) saveScoreBtn.disabled = true;
+    setScoreStatus('Saving\u2026');
+
+    fetch(scoresUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ player: encoded, time: time, gems: got, score: points() })
+    }).then(function (res) {
+      return res.json().then(function (data) { return { ok: res.ok, data: data }; });
+    }).then(function (res) {
+      submittingScore = false;
+      if (saveScoreBtn) saveScoreBtn.disabled = false;
+      var data = res.data || {};
+      if (!res.ok || data.status !== 200) {
+        setScoreStatus(data.message || 'Could not save the score.', true);
+        return;
+      }
+      savedPlayerName = name;
+      try { localStorage.setItem('hero-game-player', name); } catch (e) {}
+      if (playerInput) playerInput.value = name;
+      if (data.scores) renderLeaderboard(data.scores);
+      setScoreStatus(data.improved
+        ? 'Saved! You are #' + data.rank + ' with ' + data.best + ' pts.'
+        : 'Best already saved: #' + data.rank + ' with ' + data.best + ' pts.');
+    }).catch(function () {
+      submittingScore = false;
+      if (saveScoreBtn) saveScoreBtn.disabled = false;
+      setScoreStatus('Could not save the score.', true);
+    });
+  }
   function refreshHud() {
     if (timeEl) timeEl.textContent = fmt(time);
     if (gemsEl) gemsEl.textContent = '\u25C6 ' + got + '/' + total;
@@ -463,6 +587,16 @@
     if (progEl) progEl.style.width = Math.max(0, Math.min(100, (p.x + 3) / (PORTAL_X + 3) * 100)).toFixed(1) + '%';
   }
   function setHint(t) { if (hintEl) hintEl.textContent = t; }
+  function closeRecap() {
+    if (recapEl) {
+      recapEl.classList.remove('is-open');
+      recapEl.setAttribute('aria-hidden', 'true');
+      if (document.activeElement && recapEl.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+    }
+    if (scoreForm) scoreForm.setAttribute('inert', '');
+  }
   refreshHud();
 
   function reset() {
@@ -481,7 +615,7 @@
     player.rotation.set(0, 0.4, 0);
     state = 'attract';
     hero.classList.remove('is-playing');
-    if (recapEl) recapEl.classList.remove('is-open');
+    closeRecap();
     setHint('Click to play');
     refreshHud();
   }
@@ -496,7 +630,11 @@
     player.rotation.set(0, 0.4, 0);
     state = 'playing';
     hero.classList.add('is-playing');
-    if (recapEl) recapEl.classList.remove('is-open');
+    closeRecap();
+    submittingScore = false;
+    if (saveScoreBtn) saveScoreBtn.disabled = false;
+    setScoreStatus('');
+    if (playerInput) playerInput.value = savedPlayerName;
     setHint('Space / click to jump');
     FX.go();
     if (!Music.on) Music.toggle(true);
@@ -513,7 +651,9 @@
   }
 
   function points() {
-    return Math.max(50, Math.round(1200 + got * 150 - time * 10));
+    var pts = Math.max(50, Math.round(1200 + got * 150 - time * 10));
+    if (heroConfig.maxScore) pts = Math.min(pts, heroConfig.maxScore);
+    return pts;
   }
 
   function finish() {
@@ -538,7 +678,14 @@
       if (rg) rg.textContent = '\u25C6 ' + got + '/' + total;
       if (rp) rp.textContent = pts + ' pts';
       if (rb) rb.textContent = isBest ? 'New best!' : ('Best ' + best.points + ' pts');
-      if (recapEl) recapEl.classList.add('is-open');
+      if (recapEl) {
+        recapEl.classList.add('is-open');
+        recapEl.setAttribute('aria-hidden', 'false');
+      }
+      if (scoreForm) scoreForm.removeAttribute('inert');
+      if (playerInput) playerInput.value = savedPlayerName;
+      if (savedPlayerName) submitScore();
+      else if (playerInput) playerInput.focus();
     }, 900);
   }
 
@@ -558,7 +705,7 @@
   // Input.
   window.addEventListener('keydown', function (e) {
     if (e.code !== 'Space' && e.code !== 'ArrowUp') return;
-    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName)) return;
     e.preventDefault();
     // Keyboard auto-repeat: holding the key must not keep firing jumps.
     if (e.repeat) return;
@@ -573,7 +720,7 @@
     doJump();
   });
   function heroPress(e) {
-    if (e.target.closest && e.target.closest('a,button')) return;
+    if (e.target.closest && e.target.closest('a,button,input,label,form')) return;
     FX.ensure();
     if (state === 'playing') doJump();
     else if (state === 'finished') {
@@ -719,6 +866,30 @@
     var sX = 1 + p.squash * 0.32 - airStretch * 0.6 - p.stretch * 0.26 - wob * 0.6 - wob2 * 0.6;
     player.scale.set(sX, sY, 1);
     player.position.set(p.x, p.y + 0.45, 0);
+    // Procedural idle/walk on the inner body (works for fallback and GLB).
+    var pbody = player.userData.body || fallback;
+    if (state === 'playing' && p.grounded) {
+      // Walk: speedy hop + wiggle, phase-locked to distance (no foot-slide).
+      var wp = p.x * 2.8;
+      pbody.position.y = Math.abs(Math.sin(wp)) * 0.07;
+      pbody.rotation.z = Math.sin(wp) * 0.07;
+      pbody.rotation.x = 0;
+      pbody.scale.set(1, 1 + Math.sin(wp * 2) * 0.015, 1);
+    } else if (state === 'playing') {
+      // Airborne: lean into the vertical velocity.
+      pbody.position.y = 0;
+      pbody.rotation.z = 0;
+      pbody.rotation.x = Math.max(-0.25, Math.min(0.25, -p.vy * 0.02));
+      pbody.scale.set(1, 1, 1);
+    } else {
+      // Idle: gentle breathing + sway on wall time (frozen runT would stall
+      // the pose behind the finish recap).
+      var bp = t * 2.2;
+      pbody.position.y = 0;
+      pbody.rotation.z = Math.sin(bp * 0.7) * 0.03;
+      pbody.rotation.x = 0;
+      pbody.scale.set(1, 1 + Math.sin(bp) * 0.02, 1);
+    }
     // Project the blob shadow on the nearest cloud below the player.
     var shTop = -10, shX = p.x;
     for (var shi = 0; shi < platforms.length; shi++) {

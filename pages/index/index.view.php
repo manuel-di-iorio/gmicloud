@@ -80,6 +80,15 @@
 <div class="ds-hero">
   <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
   <div class="ds-hero__scrim" aria-hidden="true"></div>
+  <div class="ds-hero__leaderboard" id="hero-leaderboard" aria-hidden="true">
+    <div class="ds-hero__leaderboard-title">Top scores</div>
+    <table class="ds-hero__leaderboard-table">
+      <thead>
+        <tr><th scope="col">#</th><th scope="col">Player</th><th scope="col">Pts</th><th scope="col">Time</th></tr>
+      </thead>
+      <tbody id="hero-leaderboard-body"></tbody>
+    </table>
+  </div>
   <div class="ds-hero__hud"><span id="hero-time" aria-hidden="true">0.00s</span><span id="hero-gems" aria-hidden="true">&#9670; 0/13</span><span id="hero-best" aria-hidden="true"></span><span id="hero-lives" aria-hidden="true"></span><button type="button" class="ds-hero__sound" id="hero-sound" aria-label="Toggle music" aria-pressed="false">&#9834;</button></div>
   <div class="ds-hero__progress" aria-hidden="true"><i id="hero-progress-fill"></i></div>
   <div class="ds-hero__hint" id="hero-hint" aria-hidden="true">Click to play</div>
@@ -90,6 +99,14 @@
       <div class="ds-hero__recap-row"><span>Diamonds</span><strong id="recap-gems"></strong></div>
       <div class="ds-hero__recap-row total"><span>Points</span><strong id="recap-points"></strong></div>
       <div class="ds-hero__recap-best" id="recap-best"></div>
+      <form class="ds-hero__recap-form" id="hero-score-form" autocomplete="off" inert>
+        <label class="ds-hero__recap-label" for="hero-player-name">Player name</label>
+        <div class="ds-hero__recap-controls">
+          <input type="text" id="hero-player-name" name="player" maxlength="64" placeholder="Your name" autocomplete="nickname" spellcheck="false">
+          <button type="submit" id="hero-score-save">Save score</button>
+        </div>
+        <div class="ds-hero__recap-status" id="hero-score-status" role="status"></div>
+      </form>
       <div class="ds-hero__recap-again">Click to continue</div>
     </div>
   </div>
@@ -225,4 +242,12 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+window.HERO_GAME_CONFIG = <?= json_encode([
+  'maxGems'   => HERO_GAME_DIAMONDS,
+  'minTime'   => round(hero_game_min_time(), 3),
+  'maxScore'  => hero_game_max_points(),
+  'scoresUrl' => '/hero-scores.php',
+], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+</script>
 <script src="/assets/js/hero-game.js?v=<?= asset_version('assets/js/hero-game.js') ?>"></script>

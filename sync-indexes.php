@@ -15,6 +15,7 @@ require_once("models/Team.php");
 require_once("models/Ban.php");
 require_once("models/Leaderboard.php");
 require_once("models/RateLimit.php");
+require_once("models/HeroGameScore.php");
 
 $allSchemas = [
   User::$schema,
@@ -26,6 +27,7 @@ $allSchemas = [
   Ban::$schema,
   Leaderboard::$schema,
   RateLimit::$schema,
+  HeroGameScore::$schema,
 ];
 
 // Build expected index map: tableName => [indexName => columns]

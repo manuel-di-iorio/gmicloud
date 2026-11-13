@@ -264,6 +264,75 @@
 .ds-hero__hud #hero-lives {
   color: rgba(255, 255, 255, 0.55);
 }
+/* Online top scores, muted like the jump hint, top-left while playing. */
+.ds-hero__leaderboard {
+  position: absolute;
+  top: 0.9rem;
+  left: 1.1rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  min-width: 12.5rem;
+  max-width: 16rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.55);
+}
+.ds-hero.is-playing .ds-hero__leaderboard {
+  opacity: 1;
+}
+.ds-hero__leaderboard-title {
+  margin-bottom: 0.35rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+.ds-hero__leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.ds-hero__leaderboard-table th,
+.ds-hero__leaderboard-table td {
+  padding: 0.1rem 0.4rem 0.1rem 0;
+  font-weight: 400;
+  text-align: left;
+}
+.ds-hero__leaderboard-table th {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+.ds-hero__leaderboard-table th:first-child,
+.ds-hero__leaderboard-table td:first-child {
+  width: 1.1rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+.ds-hero__leaderboard-table th:nth-child(3),
+.ds-hero__leaderboard-table td:nth-child(3) {
+  text-align: right;
+  color: #7dd3fc;
+}
+.ds-hero__leaderboard-table th:nth-child(4),
+.ds-hero__leaderboard-table td:nth-child(4) {
+  text-align: right;
+  color: rgba(255, 255, 255, 0.4);
+}
+.ds-hero__leaderboard-table td:nth-child(2) {
+  max-width: 6.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-hero__leaderboard-table tr.is-you td {
+  color: #fff;
+}
+.ds-hero__leaderboard-table td.is-empty {
+  color: rgba(255, 255, 255, 0.4);
+}
 .ds-hero__sound {
   pointer-events: auto;
   appearance: none;
@@ -365,6 +434,7 @@
 }
 .ds-hero__recap.is-open .ds-hero__recap-card {
   transform: none;
+  pointer-events: auto;
 }
 .ds-hero__recap-title {
   font-size: 0.75rem;
@@ -396,6 +466,66 @@
   font-size: 0.8rem;
   color: #b45309;
   min-height: 1.2em;
+}
+.ds-hero__recap-form {
+  margin-top: 0.75rem;
+  text-align: left;
+}
+.ds-hero__recap-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+.ds-hero__recap-controls {
+  display: flex;
+  gap: 0.35rem;
+}
+.ds-hero__recap-controls input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  color: #111827;
+  background: #fff;
+}
+.ds-hero__recap-controls input:focus {
+  outline: 2px solid #67e8f9;
+  outline-offset: 1px;
+}
+.ds-hero__recap-controls button {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #1f2937;
+  border-radius: 0;
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #1f2937;
+  cursor: pointer;
+}
+.ds-hero__recap-controls button:hover,
+.ds-hero__recap-controls button:focus-visible {
+  background: #111827;
+}
+.ds-hero__recap-controls button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.ds-hero__recap-status {
+  min-height: 1.2em;
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: #047857;
+}
+.ds-hero__recap-status.is-error {
+  color: #b91c1c;
 }
 .ds-hero__recap-again {
   margin-top: 0.25rem;

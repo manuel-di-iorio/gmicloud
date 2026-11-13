@@ -13,6 +13,9 @@ $dbTableTeams = "teams";
 $dbTableTeamMembers = "team_members";
 $dbTableMigrations = "migrations";
 
+// Landing hero mini-game
+$dbTableHeroGameScores = "hero_game_scores";
+
 // API tables
 $dbTableApiErrors = "api_errors";
 $dbTableSyncOperations = "sync_operations";

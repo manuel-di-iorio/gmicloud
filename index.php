@@ -4,6 +4,7 @@ require_once("models/User.php");
 require_once("models/Game.php");
 require_once("models/Player.php");
 require_once("models/Score.php");
+require_once("lib/heroGame.php");
 
 // Get the ordered stats
 $stats = [
