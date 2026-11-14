@@ -1665,24 +1665,9 @@
     }
 
     // Camera: tilted side view. Horizontally it follows the run; vertically it is
-    // bound to the average height of the nearby platforms (not the drone) so
-    // jumps no longer make the view bob up and down.
-    var platformAvgY = 0, platformCount = 0;
-    for (var pci = 0; pci < platforms.length; pci++) {
-      var pc = platforms[pci];
-      if (pc.x > p.x - 6 && pc.x < p.x + 32) {
-        platformAvgY += pc.y;
-        platformCount++;
-      }
-    }
-    if (platformCount) platformAvgY /= platformCount;
-    else platformAvgY = (state === 'attract') ? 0 : p.y;
-    // Smooth the terrain height so the camera glides instead of snapping
-    // when platforms are generated or culled.
-    if (state === 'attract') smoothedPlatformY = platformAvgY;
-    else smoothedPlatformY += (platformAvgY - smoothedPlatformY) * Math.min(1, dt * 3.0);
+    // fixed (no tracking) so the view never bobs during jumps.
     var targetX = (state === 'attract') ? START_X + 1.8 + Math.sin(t * 0.25) * 0.7 : p.x + 2.9;
-    var targetY = (state === 'attract') ? 3.0 : Math.max(-1.2, smoothedPlatformY) + 2.85;
+    var targetY = (state === 'attract') ? 3.0 : 3.0;
     camera.position.x += (targetX - camera.position.x) * Math.min(1, dt * 3.0);
     camera.position.y += (targetY - camera.position.y) * Math.min(1, dt * 2.4);
     camera.position.z += (viewZ - camera.position.z) * Math.min(1, dt * 2.0);
@@ -1693,7 +1678,7 @@
       shake *= Math.pow(0.02, dt);
     }
     var lookX = (state === 'attract') ? camera.position.x - 0.9 : p.x + 1.35;
-    var lookY = (state === 'attract') ? camera.position.y - 2.55 : Math.max(-1.2, platformAvgY) + 0.35;
+    var lookY = (state === 'attract') ? camera.position.y - 2.55 : 0.35;
     camera.lookAt(lookX + sx, lookY + sy, 0);
 
     // Background layers follow the run but their world-space noise scrolls,
