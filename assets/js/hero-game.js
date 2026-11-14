@@ -825,10 +825,10 @@
   // ------------------------------------------------------------- GAME DATA --
   var START_X = -3;
   var START_TOP = 0;
-  var BASE_SPEED = 4.6;
+  var BASE_SPEED = 5.0;
   var MAX_SPEED = 9.6;
   var GRAV = -30;
-  var JUMP_V = 11.4;
+  var JUMP_V = 12.0;
   var COYOTE = 0.11;
   var TIER_TIME = 20;
   var PLATFORM_H = 1.35;
@@ -923,7 +923,7 @@
 
     var w = (7.1 - 4.45 * d + Math.random() * (1.3 - 0.4 * d));
     var gap = 0.9 + 1.45 * d + Math.random() * (0.55 + 0.75 * d);
-    var yStep = (Math.random() * 2 - 1) * (0.25 + 1.05 * d);
+    var yStep = (Math.random() * 2 - 1) * (0.35 + 1.25 * d);
 
     if (early) {
       w = 7.6 - gen.count * 0.5;
@@ -978,10 +978,10 @@
 
     // Enemies become denser as the run progresses, but never in the first
     // few seconds: the opening must stay friendly.
-    if (!early && gen.count > 6 && runT > 5 && Math.random() < Math.min(0.78, 0.10 + d * 0.62)) {
+    if (!early && gen.count > 6 && runT > 5 && w >= 4.2 && Math.random() < Math.min(0.78, 0.10 + d * 0.62)) {
       var kind = Math.random() < 0.30 + d * 0.12 ? 'zeppelin' : 'sprocket';
       spawnEnemy(x, y, w, kind, d);
-      if (d > 0.58 && Math.random() < 0.22 && w > 3.4) {
+      if (d > 0.62 && Math.random() < 0.18 && w >= 5.6) {
         spawnEnemy(x, y, w, Math.random() < 0.5 ? 'sprocket' : 'zeppelin', d);
       }
     }
@@ -1006,7 +1006,7 @@
 
   function spawnEnemy(x, y, w, kind, d) {
     var grp = kind === 'zeppelin' ? buildZeppelin() : buildSprocket();
-    var amp = Math.min(1.15, w * 0.36) * (0.7 + Math.random() * 0.5);
+    var amp = Math.min(0.95, w * 0.26) * (0.6 + Math.random() * 0.4);
     var baseY = y + (kind === 'zeppelin' ? 2.15 : 1.08);
     grp.position.set(x, baseY, 0.05);
     scene.add(grp);
@@ -1018,8 +1018,8 @@
       amp: amp,
       speed: (kind === 'zeppelin' ? 0.55 : 1.05) + Math.random() * 0.45 + d * 0.35,
       phase: Math.random() * Math.PI * 2,
-      rx: kind === 'zeppelin' ? 0.92 : 0.52,
-      ry: kind === 'zeppelin' ? 0.50 : 0.52
+      rx: kind === 'zeppelin' ? 0.85 : 0.45,
+      ry: kind === 'zeppelin' ? 0.46 : 0.46
     });
   }
 
@@ -1053,13 +1053,14 @@
   }
 
   function refreshDifficulty() {
+    // Continuous curve still drives level generation (gaps, enemies, height).
     difficulty = 1 - Math.exp(-runT / 68);
-    var nextSpeed = BASE_SPEED + (MAX_SPEED - BASE_SPEED) * difficulty;
-    speed += (nextSpeed - speed) * 0.08;
+    // Speed, instead, steps up only when a new tier is reached.
     var nextTier = 1 + Math.floor(runT / TIER_TIME);
     if (nextTier !== lastTier) {
       lastTier = nextTier;
       tier = nextTier;
+      speed = Math.min(MAX_SPEED, BASE_SPEED + (tier - 1) * 0.55);
       showEvent(tr('hero_game_tier').toUpperCase() + ' ' + tier + '  //  BOOST', 'tier');
       FX.tier();
     }
