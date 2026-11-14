@@ -220,6 +220,14 @@
   if (scoreForm) {
     scoreForm.addEventListener('submit', function (e) { e.preventDefault(); submitScore(); });
   }
+  if (playerInput && saveScoreBtn) {
+    playerInput.addEventListener('input', function () {
+      if (saveScoreBtn.disabled && playerInput.value.trim() !== '' &&
+          playerInput.value.trim() !== savedPlayerName) {
+        saveScoreBtn.disabled = false;
+      }
+    });
+  }
 
   // ------------------------------------------------------------- TEXTURES --
   function glowTexture(inner, outer) {
@@ -1289,10 +1297,14 @@
       setScoreStatus(data.improved
         ? tr('hero_game_saved', { rank: data.rank, best: data.best })
         : tr('hero_game_kept', { rank: data.rank, best: data.best }));
-      // Hide the whole score-entry block after a successful save so it
-      // can't be submitted again in this screen.
-      if (scoreForm) scoreForm.style.display = 'none';
-      if (scoreStatusEl) scoreStatusEl.style.display = 'none';
+      // Lock the button right away.
+      if (saveScoreBtn) saveScoreBtn.disabled = true;
+      // After 5 seconds, hide the whole score-entry block.
+      setTimeout(function () {
+        if (state !== 'finished') return;
+        if (scoreForm) scoreForm.style.display = 'none';
+        if (scoreStatusEl) scoreStatusEl.style.display = 'none';
+      }, 5000);
     }).catch(function () {
       submittingScore = false;
       if (saveScoreBtn) saveScoreBtn.disabled = false;
@@ -1380,6 +1392,11 @@
     state = 'finished';
     hero.classList.remove('is-playing');
     hero.classList.add('is-finished');
+    // Reset the score-entry block for this new run.
+    submittingScore = false;
+    if (saveScoreBtn) saveScoreBtn.disabled = false;
+    if (scoreForm) scoreForm.style.display = '';
+    if (scoreStatusEl) scoreStatusEl.style.display = '';
     var pts = scoreValue();
     var isBest = best == null || pts > best.score;
     if (isBest) {
@@ -1417,7 +1434,9 @@
       }
       if (scoreForm) scoreForm.removeAttribute('inert');
       if (playerInput) playerInput.value = savedPlayerName;
-      if (savedPlayerName) submitScore();
+      var runScore = scoreValue();
+      var shouldAutoSave = !!savedPlayerName && (best === null || runScore >= (best ? best.score : 0));
+      if (shouldAutoSave) submitScore();
       else if (playerInput && !reduceMotion) playerInput.focus();
     }, 350);
   }
