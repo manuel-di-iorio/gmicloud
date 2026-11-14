@@ -1275,9 +1275,10 @@
       return res.json().then(function (data) { return { ok: res.ok, data: data }; });
     }).then(function (res) {
       submittingScore = false;
-      if (saveScoreBtn) saveScoreBtn.disabled = false;
       var data = res.data || {};
       if (!res.ok || data.status !== 200) {
+        // Allow retry on failure.
+        if (saveScoreBtn) saveScoreBtn.disabled = false;
         setScoreStatus(data.message || tr('hero_game_save_error'), true);
         return;
       }
@@ -1288,6 +1289,9 @@
       setScoreStatus(data.improved
         ? tr('hero_game_saved', { rank: data.rank, best: data.best })
         : tr('hero_game_kept', { rank: data.rank, best: data.best }));
+      // Lock the button after a successful save so the score can't be
+      // submitted repeatedly in this screen.
+      if (saveScoreBtn) saveScoreBtn.disabled = true;
     }).catch(function () {
       submittingScore = false;
       if (saveScoreBtn) saveScoreBtn.disabled = false;
