@@ -929,9 +929,9 @@
     var isRest = gen.count > 3 && gen.count % 7 === 0;
     var early = gen.count < 4;
 
-    var w = (7.1 - 4.45 * d + Math.random() * (1.3 - 0.4 * d));
-    var gap = 0.9 + 1.45 * d + Math.random() * (0.55 + 0.75 * d);
-    var yStep = (Math.random() * 2 - 1) * (0.35 + 1.25 * d);
+    var w = (7.1 - 4.45 * d + Math.random() * (1.6 - 0.4 * d));
+    var gap = 0.9 + 1.45 * d + Math.random() * (0.75 + 0.95 * d);
+    var yStep = (Math.random() * 2 - 1) * (0.45 + 1.5 * d);
 
     if (early) {
       w = 7.6 - gen.count * 0.5;
@@ -988,9 +988,13 @@
     // few seconds: the opening must stay friendly.
     if (!early && gen.count > 6 && runT > 5 && w >= 4.2 && Math.random() < Math.min(0.78, 0.10 + d * 0.62)) {
       var kind = Math.random() < 0.30 + d * 0.12 ? 'zeppelin' : 'sprocket';
+      // Sprockets (ground-level) need wider platforms to be jumpable.
+      if (kind === 'sprocket' && w < 5.2) kind = 'zeppelin';
       spawnEnemy(x, y, w, kind, d);
-      if (d > 0.62 && Math.random() < 0.18 && w >= 5.6) {
-        spawnEnemy(x, y, w, Math.random() < 0.5 ? 'sprocket' : 'zeppelin', d);
+      if (d > 0.62 && Math.random() < 0.18 && w >= 6.0) {
+        var kind2 = Math.random() < 0.5 ? 'sprocket' : 'zeppelin';
+        if (kind2 === 'sprocket' && w < 5.2) kind2 = 'zeppelin';
+        spawnEnemy(x, y, w, kind2, d);
       }
     }
 
@@ -1664,12 +1668,25 @@
       }
     }
 
-    // Camera: tilted side view. Horizontally it follows the run; vertically it is
-    // fixed (no tracking) so the view never bobs during jumps.
+    // Camera: tilted side view. Horizontally it follows the run; vertically it
+    // tracks the average height of the nearby platforms, heavily smoothed so the
+    // view glides instead of bobbing on jumps.
+    var platformAvgY = 0, platformCount = 0;
+    for (var pci = 0; pci < platforms.length; pci++) {
+      var pc = platforms[pci];
+      if (pc.x > p.x - 6 && pc.x < p.x + 32) {
+        platformAvgY += pc.y;
+        platformCount++;
+      }
+    }
+    if (platformCount) platformAvgY /= platformCount;
+    else platformAvgY = (state === 'attract') ? 0 : p.y;
+    if (state === 'attract') smoothedPlatformY = platformAvgY;
+    else smoothedPlatformY += (platformAvgY - smoothedPlatformY) * Math.min(1, dt * 1.5);
     var targetX = (state === 'attract') ? START_X + 1.8 + Math.sin(t * 0.25) * 0.7 : p.x + 2.9;
-    var targetY = (state === 'attract') ? 3.0 : 3.0;
+    var targetY = (state === 'attract') ? 3.0 : Math.max(-1.2, smoothedPlatformY) + 2.85;
     camera.position.x += (targetX - camera.position.x) * Math.min(1, dt * 3.0);
-    camera.position.y += (targetY - camera.position.y) * Math.min(1, dt * 2.4);
+    camera.position.y += (targetY - camera.position.y) * Math.min(1, dt * 1.8);
     camera.position.z += (viewZ - camera.position.z) * Math.min(1, dt * 2.0);
     var sx = 0, sy = 0;
     if (shake > 0.001) {
@@ -1678,7 +1695,7 @@
       shake *= Math.pow(0.02, dt);
     }
     var lookX = (state === 'attract') ? camera.position.x - 0.9 : p.x + 1.35;
-    var lookY = (state === 'attract') ? camera.position.y - 2.55 : 0.35;
+    var lookY = (state === 'attract') ? camera.position.y - 2.55 : Math.max(-1.2, smoothedPlatformY) + 0.35;
     camera.lookAt(lookX + sx, lookY + sy, 0);
 
     // Background layers follow the run but their world-space noise scrolls,
