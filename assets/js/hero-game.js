@@ -1289,9 +1289,10 @@
       setScoreStatus(data.improved
         ? tr('hero_game_saved', { rank: data.rank, best: data.best })
         : tr('hero_game_kept', { rank: data.rank, best: data.best }));
-      // Lock the button after a successful save so the score can't be
-      // submitted repeatedly in this screen.
-      if (saveScoreBtn) saveScoreBtn.disabled = true;
+      // Hide the whole score-entry block after a successful save so it
+      // can't be submitted again in this screen.
+      if (scoreForm) scoreForm.style.display = 'none';
+      if (scoreStatusEl) scoreStatusEl.style.display = 'none';
     }).catch(function () {
       submittingScore = false;
       if (saveScoreBtn) saveScoreBtn.disabled = false;
@@ -1315,6 +1316,8 @@
   }
 
   function closeRecap() {
+    if (scoreForm) scoreForm.style.display = '';
+    if (scoreStatusEl) scoreStatusEl.style.display = '';
     if (recapEl) {
       recapEl.classList.remove('is-open');
       recapEl.setAttribute('aria-hidden', 'true');
@@ -1344,6 +1347,8 @@
     closeRecap();
     submittingScore = false;
     if (saveScoreBtn) saveScoreBtn.disabled = false;
+    if (scoreForm) scoreForm.style.display = '';
+    if (scoreStatusEl) scoreStatusEl.style.display = '';
     setScoreStatus('');
     if (playerInput) playerInput.value = savedPlayerName;
     setHint(tr('hero_game_hint_jump'));
