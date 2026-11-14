@@ -44,6 +44,11 @@
 
   var savedPlayerName = '';
   try { savedPlayerName = localStorage.getItem('hero-game-player') || ''; } catch (e) { savedPlayerName = ''; }
+  var savedSound = true;
+  try {
+    var ss = localStorage.getItem('hero-game-sound');
+    if (ss !== null) savedSound = ss === '1';
+  } catch (e) { savedSound = true; }
   var submittingScore = false;
   var reduceMotion = window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -197,11 +202,13 @@
     soundBtn.setAttribute('aria-pressed', Music.on ? 'true' : 'false');
     soundBtn.title = Music.on ? tr('hero_game_music_on') : tr('hero_game_music_off');
   }
+  // Apply the saved (or default-on) sound preference.
+  Music.toggle(savedSound);
   if (soundBtn) {
-    syncSoundButton();
     soundBtn.addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation();
-      Music.toggle();
+      var nowOn = Music.toggle();
+      try { localStorage.setItem('hero-game-sound', nowOn ? '1' : '0'); } catch (e) {}
     });
   }
   if (restartBtn) {
@@ -1680,9 +1687,13 @@
     bankMid.position.x = p.x + 12;
     bankFar.position.x = p.x + 24;
 
-    // Engine soundtrack & music.
-    if (state === 'playing') FX.engine(true, speed);
-    Music.tick();
+    // Engine soundtrack & music (only while playing).
+    if (state === 'playing') {
+      FX.engine(true, speed);
+      Music.tick();
+    } else {
+      FX.engine(false);
+    }
   }
 
   // --------------------------------------------------------------- RESIZE ---
