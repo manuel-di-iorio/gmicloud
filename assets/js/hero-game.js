@@ -1330,7 +1330,6 @@
     setScoreStatus('');
     if (playerInput) playerInput.value = savedPlayerName;
     setHint(tr('hero_game_hint_jump'));
-    showEvent('AETHER RUN  //  GO', 'go');
     FX.go();
   }
 

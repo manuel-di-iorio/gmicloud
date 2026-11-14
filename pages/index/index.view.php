@@ -122,7 +122,7 @@
 
   <div class="ds-hero__inner">
     <div class="ds-hero__copy">
-      <div class="ds-hero__eyebrow"><span aria-hidden="true"></span>AETHER RUN · ENDLESS</div>
+
       <h1><?= __('index_hero_title1') ?><br><?= __('index_hero_title2') ?></h1>
       <p><?= __('index_hero_subtitle') ?></p>
       <div class="ds-hero__actions">
@@ -131,7 +131,7 @@
       </div>
     </div>
     <div class="ds-hero__visual">
-      <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
+      <img src="/assets/images/hero-image.jpg" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
     </div>
   </div>
 

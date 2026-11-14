@@ -546,6 +546,16 @@
   flex: none;
 }
 
+.ds-hero:not(.is-playing):not(.is-finished) .ds-hero__best {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ds-hero.is-playing .ds-hero__best {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .ds-hero.is-finished .ds-hero__best {
   opacity: 0;
 }
@@ -573,9 +583,10 @@
   transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.ds-hero:not(.is-playing):not(.is-finished) .ds-hero__leaderboard {
-  opacity: 1;
-  transform: none;
+.ds-hero.is-playing .ds-hero__leaderboard,
+.ds-hero.is-finished .ds-hero__leaderboard {
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .ds-hero__leaderboard-title {
