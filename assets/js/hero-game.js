@@ -851,6 +851,7 @@
   var particles = [];
   var sparkGeo = new THREE.BoxGeometry(0.09, 0.09, 0.12);
   var shake = 0;
+  var smoothedPlatformY = 0;
   var hudClock = 0;
   var eventTimer = null;
   var startPlatform = null;
@@ -1676,11 +1677,15 @@
     }
     if (platformCount) platformAvgY /= platformCount;
     else platformAvgY = (state === 'attract') ? 0 : p.y;
+    // Smooth the terrain height so the camera glides instead of snapping
+    // when platforms are generated or culled.
+    if (state === 'attract') smoothedPlatformY = platformAvgY;
+    else smoothedPlatformY += (platformAvgY - smoothedPlatformY) * Math.min(1, dt * 3.0);
     var targetX = (state === 'attract') ? START_X + 1.8 + Math.sin(t * 0.25) * 0.7 : p.x + 2.9;
-    var targetY = (state === 'attract') ? 3.0 : Math.max(-1.2, platformAvgY) + 2.85;
-    camera.position.x += (targetX - camera.position.x) * Math.min(1, dt * 4.5);
-    camera.position.y += (targetY - camera.position.y) * Math.min(1, dt * 3.6);
-    camera.position.z += (viewZ - camera.position.z) * Math.min(1, dt * 3);
+    var targetY = (state === 'attract') ? 3.0 : Math.max(-1.2, smoothedPlatformY) + 2.85;
+    camera.position.x += (targetX - camera.position.x) * Math.min(1, dt * 3.0);
+    camera.position.y += (targetY - camera.position.y) * Math.min(1, dt * 2.4);
+    camera.position.z += (viewZ - camera.position.z) * Math.min(1, dt * 2.0);
     var sx = 0, sy = 0;
     if (shake > 0.001) {
       sx = (Math.random() - 0.5) * shake;
