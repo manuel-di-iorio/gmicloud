@@ -1356,6 +1356,7 @@
 
   function finish() {
     state = 'finished';
+    hero.classList.remove('is-playing');
     hero.classList.add('is-finished');
     var pts = scoreValue();
     var isBest = best == null || pts > best.score;

@@ -138,7 +138,7 @@
   <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
     <div class="ds-recap__rays" aria-hidden="true"></div>
     <div class="ds-hero__recap-card" role="dialog" aria-modal="true" aria-labelledby="recap-title">
-      <div class="ds-recap__kicker"><span aria-hidden="true"></span>AETHER RUN · RUN OVER<span aria-hidden="true"></span></div>
+
       <h2 class="ds-hero__recap-title" id="recap-title"><?= __('hero_game_recap_title') ?></h2>
       <div class="ds-recap__score">
         <span><?= __('hero_game_recap_points') ?></span>

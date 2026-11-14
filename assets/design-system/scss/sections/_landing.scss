@@ -552,8 +552,8 @@
 }
 
 .ds-hero.is-playing .ds-hero__best {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .ds-hero.is-finished .ds-hero__best {
@@ -565,7 +565,7 @@
   position: absolute;
   top: 1.1rem;
   right: 1.1rem;
-  z-index: 3;
+  z-index: 9;
   width: 15.5rem;
   padding: 0.75rem 0.9rem 0.8rem;
   border-radius: 14px;
@@ -583,7 +583,6 @@
   transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.ds-hero.is-playing .ds-hero__leaderboard,
 .ds-hero.is-finished .ds-hero__leaderboard {
   opacity: 1 !important;
   transform: none !important;
