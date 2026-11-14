@@ -77,42 +77,52 @@
 })();
 </script>
 
-<div class="ds-hero">
+<div class="ds-hero" id="hero-stage">
   <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
   <div class="ds-hero__scrim" aria-hidden="true"></div>
+  <div class="ds-hero__vignette" aria-hidden="true"></div>
+  <div class="ds-hero__grain" aria-hidden="true"></div>
+
   <div class="ds-hero__leaderboard" id="hero-leaderboard" aria-hidden="true">
-    <div class="ds-hero__leaderboard-title"><?= __('hero_game_top_scores') ?></div>
+    <div class="ds-hero__leaderboard-title"><i class="fas fa-crown" aria-hidden="true"></i> <?= __('hero_game_top_scores') ?></div>
     <table class="ds-hero__leaderboard-table">
       <thead>
-        <tr><th scope="col">#</th><th scope="col"><?= __('hero_game_th_player') ?></th><th scope="col"><?= __('hero_game_th_pts') ?></th><th scope="col"><?= __('hero_game_th_time') ?></th></tr>
+        <tr><th scope="col">#</th><th scope="col"><?= __('hero_game_th_player') ?></th><th scope="col"><?= __('hero_game_th_pts') ?></th><th scope="col"><?= __('hero_game_th_distance') ?></th></tr>
       </thead>
       <tbody id="hero-leaderboard-body"></tbody>
     </table>
   </div>
-  <div class="ds-hero__hud"><span id="hero-time" aria-hidden="true">0.00s</span><span id="hero-gems" aria-hidden="true">&#9670; 0/13</span><span id="hero-best" aria-hidden="true"></span><button type="button" class="ds-hero__sound" id="hero-sound" aria-label="<?= htmlspecialchars(__('hero_game_music_toggle'), ENT_QUOTES, 'UTF-8') ?>" aria-pressed="false">&#9834;</button></div>
-  <div class="ds-hero__progress" aria-hidden="true"><i id="hero-progress-fill"></i></div>
-  <div class="ds-hero__hint" id="hero-hint" aria-hidden="true"><?= __('hero_game_hint_play') ?></div>
-  <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
-    <div class="ds-hero__recap-card">
-      <div class="ds-hero__recap-title"><?= __('hero_game_recap_title') ?></div>
-      <div class="ds-hero__recap-row"><span><?= __('hero_game_th_time') ?></span><strong id="recap-time"></strong></div>
-      <div class="ds-hero__recap-row"><span><?= __('hero_game_recap_gems') ?></span><strong id="recap-gems"></strong></div>
-      <div class="ds-hero__recap-row total"><span><?= __('hero_game_recap_points') ?></span><strong id="recap-points"></strong></div>
-      <div class="ds-hero__recap-best" id="recap-best"></div>
-      <form class="ds-hero__recap-form" id="hero-score-form" autocomplete="off" inert>
-        <label class="ds-hero__recap-label" for="hero-player-name"><?= __('hero_game_player_name') ?></label>
-        <div class="ds-hero__recap-controls">
-          <input type="text" id="hero-player-name" name="player" maxlength="64" placeholder="<?= htmlspecialchars(__('hero_game_your_name'), ENT_QUOTES, 'UTF-8') ?>" autocomplete="nickname" spellcheck="false">
-          <button type="submit" id="hero-score-save"><?= __('hero_game_save_score') ?></button>
-        </div>
-        <div class="ds-hero__recap-status" id="hero-score-status" role="status"></div>
-      </form>
-      <div class="ds-hero__recap-again"><?= __('hero_game_continue') ?></div>
+
+  <div class="ds-hero__hud" aria-hidden="true">
+    <div class="ds-hud ds-hud--score">
+      <div class="ds-hud__label"><?= __('hero_game_hud_score') ?></div>
+      <div class="ds-hud__score" id="hero-score">0</div>
+      <div class="ds-hud__meta">
+        <span class="ds-hud__distance"><i class="fas fa-arrows-alt-h" aria-hidden="true"></i><b id="hero-distance">0</b><em>m</em></span>
+        <span class="ds-hud__gears"><i class="fas fa-cog" aria-hidden="true"></i><b id="hero-gems">0</b></span>
+      </div>
+    </div>
+    <div class="ds-hud ds-hud--status">
+      <div class="ds-hud__topline">
+        <span id="hero-tier-label"><?= __('hero_game_tier') ?> 1</span>
+        <span id="hero-speed">4.6 m/s</span>
+      </div>
+      <div class="ds-hud__bar"><i id="hero-tier-fill"></i></div>
+      <div class="ds-hud__bottomline">
+        <span id="hero-time">0.0s</span>
+        <button type="button" class="ds-hero__sound" id="hero-sound" aria-label="<?= htmlspecialchars(__('hero_game_music_toggle'), ENT_QUOTES, 'UTF-8') ?>" aria-pressed="false">&#9834;</button>
+      </div>
     </div>
   </div>
+
+  <div class="ds-hero__best" id="hero-best" aria-hidden="true"></div>
+  <div class="ds-hero__event" id="hero-event" aria-hidden="true"></div>
+  <div class="ds-hero__hint" id="hero-hint" aria-hidden="true"><?= __('hero_game_hint_play') ?></div>
+  <div class="ds-hero__progress" aria-hidden="true"><i id="hero-progress-fill"></i></div>
+
   <div class="ds-hero__inner">
-    <div style="min-width:0;flex:1.2">
-      <!-- <img src="/assets/images/logo.png" alt="" style="height:2.25rem;width:auto;margin-bottom:1rem;filter:brightness(0) invert(1)" width="451" height="109"> -->
+    <div class="ds-hero__copy">
+      <div class="ds-hero__eyebrow"><span aria-hidden="true"></span>AETHER RUN · ENDLESS</div>
       <h1><?= __('index_hero_title1') ?><br><?= __('index_hero_title2') ?></h1>
       <p><?= __('index_hero_subtitle') ?></p>
       <div class="ds-hero__actions">
@@ -120,8 +130,39 @@
         <a href="./documentation.php" class="ds-btn ds-btn--outline-light ds-btn--lg"><?= __('index_hero_docs') ?></a>
       </div>
     </div>
-    <div class="ds-hero__visual" style="flex:1">
+    <div class="ds-hero__visual">
       <img src="/assets/images/hero-image.png" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
+    </div>
+  </div>
+
+  <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
+    <div class="ds-recap__rays" aria-hidden="true"></div>
+    <div class="ds-hero__recap-card" role="dialog" aria-modal="true" aria-labelledby="recap-title">
+      <div class="ds-recap__kicker"><span aria-hidden="true"></span>AETHER RUN · RUN OVER<span aria-hidden="true"></span></div>
+      <h2 class="ds-hero__recap-title" id="recap-title"><?= __('hero_game_recap_title') ?></h2>
+      <div class="ds-recap__score">
+        <span><?= __('hero_game_recap_points') ?></span>
+        <strong id="recap-points">0</strong>
+      </div>
+      <div class="ds-recap__grid">
+        <div><span><?= __('hero_game_recap_distance') ?></span><strong id="recap-distance">0 m</strong></div>
+        <div><span><?= __('hero_game_th_time') ?></span><strong id="recap-time">0.00s</strong></div>
+        <div><span><?= __('hero_game_recap_gems') ?></span><strong id="recap-gems">0</strong></div>
+        <div><span><?= __('hero_game_recap_tier') ?></span><strong id="recap-tier">1</strong></div>
+      </div>
+      <div class="ds-hero__recap-best" id="recap-best"></div>
+      <form class="ds-hero__recap-form" id="hero-score-form" autocomplete="off" inert>
+        <label class="ds-hero__recap-label" for="hero-player-name"><?= __('hero_game_player_name') ?></label>
+        <div class="ds-hero__recap-controls">
+          <input type="text" id="hero-player-name" name="player" maxlength="64" placeholder="<?= htmlspecialchars(__('hero_game_your_name'), ENT_QUOTES, 'UTF-8') ?>" autocomplete="nickname" spellcheck="false">
+          <button type="submit" id="hero-score-save"><i class="fas fa-cloud-upload-alt" aria-hidden="true"></i> <?= __('hero_game_save_score') ?></button>
+        </div>
+        <div class="ds-hero__recap-status" id="hero-score-status" role="status"></div>
+      </form>
+      <div class="ds-recap__actions">
+        <button type="button" class="ds-recap__restart" id="hero-restart"><i class="fas fa-redo-alt" aria-hidden="true"></i> <?= __('hero_game_restart') ?></button>
+        <span class="ds-recap__enter"><?= __('hero_game_press_enter') ?></span>
+      </div>
     </div>
   </div>
 </div>
@@ -241,30 +282,33 @@
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 window.HERO_GAME_CONFIG = <?= json_encode([
-  'maxGems'   => HERO_GAME_DIAMONDS,
-  'minTime'   => round(hero_game_min_time(), 3),
+  'mode'      => 'endless',
+  'maxGears'  => HERO_GAME_MAX_GEARS,
   'maxScore'  => hero_game_max_points(),
   'scoresUrl' => '/hero-scores.php',
   'i18n'      => [
-    'hero_game_hint_play'   => __('hero_game_hint_play'),
-    'hero_game_hint_jump'   => __('hero_game_hint_jump'),
-    'hero_game_hint_retry'  => __('hero_game_hint_retry'),
-    'hero_game_hud_best'    => __('hero_game_hud_best'),
-    'hero_game_no_scores'   => __('hero_game_no_scores'),
-    'hero_game_enter_name'  => __('hero_game_enter_name'),
+    'hero_game_hint_play'    => __('hero_game_hint_play'),
+    'hero_game_hint_jump'    => __('hero_game_hint_jump'),
+    'hero_game_hint_retry'   => __('hero_game_hint_retry'),
+    'hero_game_hud_best'     => __('hero_game_hud_best'),
+    'hero_game_hud_score'    => __('hero_game_hud_score'),
+    'hero_game_tier'         => __('hero_game_tier'),
+    'hero_game_no_scores'    => __('hero_game_no_scores'),
+    'hero_game_enter_name'   => __('hero_game_enter_name'),
     'hero_game_invalid_name' => __('hero_game_invalid_name'),
-    'hero_game_saving'      => __('hero_game_saving'),
-    'hero_game_save_error'  => __('hero_game_save_error'),
-    'hero_game_saved'       => __('hero_game_saved'),
-    'hero_game_kept'        => __('hero_game_kept'),
-    'hero_game_new_best'    => __('hero_game_new_best'),
-    'hero_game_best_pts'    => __('hero_game_best_pts'),
-    'hero_game_pts'         => __('hero_game_pts'),
-    'hero_game_music_on'    => __('hero_game_music_on'),
-    'hero_game_music_off'   => __('hero_game_music_off'),
+    'hero_game_saving'       => __('hero_game_saving'),
+    'hero_game_save_error'   => __('hero_game_save_error'),
+    'hero_game_saved'        => __('hero_game_saved'),
+    'hero_game_kept'         => __('hero_game_kept'),
+    'hero_game_new_best'     => __('hero_game_new_best'),
+    'hero_game_best_pts'     => __('hero_game_best_pts'),
+    'hero_game_pts'          => __('hero_game_pts'),
+    'hero_game_music_on'     => __('hero_game_music_on'),
+    'hero_game_music_off'    => __('hero_game_music_off'),
+    'hero_game_restart'      => __('hero_game_restart'),
+    'hero_game_press_enter'  => __('hero_game_press_enter'),
   ],
 ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>

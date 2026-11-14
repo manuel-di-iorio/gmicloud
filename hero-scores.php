@@ -1,13 +1,14 @@
 <?php
 /**
- * Online leaderboard endpoint for the landing-page hero mini-game.
+ * Online leaderboard endpoint for the endless landing-page hero mini-game.
  *
  * GET  /hero-scores.php?limit=10  -> best scores
  * POST /hero-scores.php           -> submit a run (JSON or form data)
  *
  * The player name is sent base64-encoded and is used as the unique key.
- * The score is always recomputed server-side from time + gems and clamped to
- * the maximum obtainable score, so a tampered client cannot submit more.
+ * The score is always recomputed server-side from distance + gears, and the
+ * distance must be reachable within the submitted survival time, so a tampered
+ * client cannot submit impossible runs.
  */
 $apiMode = true;
 require_once("lib/db.php");
@@ -24,11 +25,19 @@ function hero_scores_list(int $limit): array {
   $rows = [];
   $result = HeroGameScore::top($limit);
   while ($row = $result->fetch_assoc()) {
+    $score = (int)$row["score"];
+    $gems = (int)$row["gems"];
+    // Scores are deterministic (100 + distance * 10 + gears * 150), so the
+    // distance can be reconstructed for legacy rows that predate the column.
+    $distance = max(0, ($score - HERO_GAME_POINTS_BASE - $gems * HERO_GAME_POINTS_PER_GEAR)
+      / HERO_GAME_POINTS_PER_METER);
+
     $rows[] = [
-      "player" => $row["player_name"],
-      "score"  => (int)$row["score"],
-      "gems"   => (int)$row["gems"],
-      "time"   => round((float)$row["time_seconds"], 2),
+      "player"   => $row["player_name"],
+      "score"    => $score,
+      "gems"     => $gems,
+      "time"     => round((float)$row["time_seconds"], 2),
+      "distance" => round($distance, 1),
     ];
   }
   return $rows;
@@ -90,20 +99,30 @@ try {
     api_reply_error("Invalid time", "ValidationError", 400);
   }
   $time = (float)$data["time"];
-  if (!is_finite($time) || $time < hero_game_min_time() - 0.01 || $time > HERO_GAME_MAX_TIME) {
+  if (!is_finite($time) || $time < 0.15 || $time > HERO_GAME_MAX_TIME) {
     api_reply_error("Invalid time", "ValidationError", 400);
   }
 
+  if (!isset($data["distance"]) || !is_numeric($data["distance"])) {
+    api_reply_error("Invalid distance", "ValidationError", 400);
+  }
+  $distance = (float)$data["distance"];
+  $maxDistance = hero_game_max_distance($time);
+  if (!is_finite($distance) || $distance < 0 || $distance > $maxDistance) {
+    api_reply_error("Invalid distance", "ValidationError", 400);
+  }
+
+  $maxGearsForTime = min(HERO_GAME_MAX_GEARS, (int)floor($time * 20) + 20);
   $gems = isset($data["gems"])
     ? filter_var($data["gems"], FILTER_VALIDATE_INT, [
-        "options" => ["min_range" => 0, "max_range" => HERO_GAME_DIAMONDS],
+        "options" => ["min_range" => 0, "max_range" => $maxGearsForTime],
       ])
     : false;
   if ($gems === false) {
     api_reply_error("Invalid gems", "ValidationError", 400);
   }
 
-  $maxScore = hero_game_max_points();
+  $maxScore = hero_game_score_cap($time, (int)$gems);
 
   // If the client sends its score, only reject impossible values; the stored
   // value is always the one recomputed here.
@@ -117,7 +136,7 @@ try {
     }
   }
 
-  $score = hero_game_points($time, (int)$gems);
+  $score = hero_game_points($distance, (int)$gems);
 
   $rawIp = $_SERVER["HTTP_CF_CONNECTING_IP"] ?? $_SERVER["REMOTE_ADDR"] ?? "";
   $ip = filter_var($rawIp, FILTER_VALIDATE_IP) ? substr($rawIp, 0, 45) : null;

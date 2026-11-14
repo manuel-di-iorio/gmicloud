@@ -67,6 +67,8 @@
   "hero_game_hint_jump": "Leertaste / Klick zum Springen",
   "hero_game_hint_retry": "Klicken für neuen Versuch · noch {left}",
   "hero_game_hud_best": "Beste {time} · {points} Pkt",
+  "hero_game_hud_score": "Punkte",
+  "hero_game_tier": "Stufe",
   "hero_game_no_scores": "Noch keine Ergebnisse",
   "hero_game_enter_name": "Gib einen Spielernamen ein, um deinen Punktestand zu speichern.",
   "hero_game_invalid_name": "Ungültiger Spielername.",
@@ -85,11 +87,15 @@
   "hero_game_th_pts": "Pkt",
   "hero_game_th_time": "Zeit",
   "hero_game_recap_title": "Lauf beendet",
-  "hero_game_recap_gems": "Diamanten",
+  "hero_game_recap_gems": "Zahnräder",
+  "hero_game_recap_distance": "Distanz",
+  "hero_game_recap_tier": "Stufe",
   "hero_game_recap_points": "Punkte",
   "hero_game_player_name": "Spielername",
   "hero_game_your_name": "Dein Name",
   "hero_game_save_score": "Punktestand speichern",
+  "hero_game_restart": "Nochmal",
+  "hero_game_press_enter": "Enter drücken",
   "hero_game_continue": "Klicken zum Fortfahren",
   "index_scroll": "Entdecken",
   "index_theme_toggle": "Design wechseln",
@@ -828,5 +834,6 @@
   "cookie_banner_close": "Schliessen",
   "cookie_section5_text_tech": "Wir nutzen nur technische Cookies, ohne Einwilligungspflicht. Loeschbar im Browser, manche Funktionen koennen dann fehlen.",
   "cookie_table_text_tech": "user (1 Jahr), theme/lang (1 Jahr), selected_team_id (1 Jahr), PHPSESSID/CSRF (Sitzung), cookie_consent (6 Monate).",
-  "privacy_section4_text_tech": "Wir nutzen nur technische Cookies. Details in unserer"
+  "privacy_section4_text_tech": "Wir nutzen nur technische Cookies. Details in unserer",
+  "hero_game_th_distance": "Dist."
 }
