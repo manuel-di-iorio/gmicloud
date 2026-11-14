@@ -1297,8 +1297,9 @@
       setScoreStatus(data.improved
         ? tr('hero_game_saved', { rank: data.rank, best: data.best })
         : tr('hero_game_kept', { rank: data.rank, best: data.best }));
-      // Lock the button right away.
+      // Lock the button and make the name field read-only.
       if (saveScoreBtn) saveScoreBtn.disabled = true;
+      if (playerInput) playerInput.setAttribute('readonly', 'readonly');
       // After 5 seconds, hide the whole score-entry block.
       setTimeout(function () {
         if (state !== 'finished') return;
@@ -1328,6 +1329,7 @@
   }
 
   function closeRecap() {
+    if (playerInput) playerInput.removeAttribute('readonly');
     if (scoreForm) scoreForm.style.display = '';
     if (scoreStatusEl) scoreStatusEl.style.display = '';
     if (recapEl) {
@@ -1359,6 +1361,7 @@
     closeRecap();
     submittingScore = false;
     if (saveScoreBtn) saveScoreBtn.disabled = false;
+    if (playerInput) playerInput.removeAttribute('readonly');
     if (scoreForm) scoreForm.style.display = '';
     if (scoreStatusEl) scoreStatusEl.style.display = '';
     setScoreStatus('');
@@ -1395,6 +1398,7 @@
     // Reset the score-entry block for this new run.
     submittingScore = false;
     if (saveScoreBtn) saveScoreBtn.disabled = false;
+    if (playerInput) playerInput.removeAttribute('readonly');
     if (scoreForm) scoreForm.style.display = '';
     if (scoreStatusEl) scoreStatusEl.style.display = '';
     var pts = scoreValue();
