@@ -5366,6 +5366,47 @@ img.ds-card__media {
   transform: perspective(1100px) rotateY(0deg) rotateX(0deg) translateY(-4px);
 }
 
+.ds-hero__visual-link {
+  position: relative;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 18px;
+}
+
+.ds-hero__visual-hint {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(7, 12, 23, 0.78), rgba(18, 30, 50, 0.62));
+  border: 1px solid rgba(255, 198, 122, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 222, 174, 0.92);
+  pointer-events: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ds-hero__visual-link:hover .ds-hero__visual-hint {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.ds-hero__visual-hint em {
+  font-style: normal;
+  color: rgba(143, 243, 255, 0.85);
+}
+
 /* --------------------------------------------------------- end screen ----- */
 .ds-hero__recap {
   position: absolute;

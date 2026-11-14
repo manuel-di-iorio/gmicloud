@@ -131,7 +131,10 @@
       </div>
     </div>
     <div class="ds-hero__visual">
-      <img src="/assets/images/hero-image.jpg" alt="<?= __('index_hero_title2') ?>" width="1402" height="1122">
+      <a class="ds-hero__visual-link" href="https://gx.games/games/4amoqj/supersonic-fever/" target="_blank" rel="noopener noreferrer">
+        <img src="/assets/images/supersonic.png" alt="<?= __('index_hero_title2') ?>" width="1635" height="918">
+        <span class="ds-hero__visual-hint"><em>Supersonic Fever - Award "Popular Game"</em></span>
+      </a>
     </div>
   </div>
 
