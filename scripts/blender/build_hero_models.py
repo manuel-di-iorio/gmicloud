@@ -473,16 +473,8 @@ def build_drone(M):
         body.append(torus('goggle', 0.026, 0.009, (0.19, s * 0.032, 0.327), M['brass'], rot=(0, R(90), 0), seg=16, mseg=6))
         body.append(sphere('lens', 0.022, (0.192, s * 0.032, 0.327), M['glow_blue'], scale=(0.45, 1, 1), seg=14, rings=8))
 
-    # Aether furnace cage under the belly (the glowing core is a separate node).
-    cx, cz = -0.06, -0.385
-    body.append(torus('cageTop', 0.15, 0.024, (cx, 0, -0.29), M['brass'], seg=32))
-    body.append(torus('cageBot', 0.13, 0.024, (cx, 0, -0.48), M['brass'], seg=32))
-    for k in range(8):
-        t = 2 * math.pi * k / 8
-        body.append(cyl('bar', 0.011, 0.2, (cx + 0.14 * math.cos(t), 0.14 * math.sin(t), -0.385), M['iron_dark'],
-                        rot=(0, 0, 0), verts=8, bev=0))
-    body.append(cyl('cageCap', 0.12, 0.07, (cx, 0, -0.52), M['iron'], rot=(R(180), 0, 0), r2=0.045, verts=28))
-    core = ico('Core', 0.095, (cx, 0, cz), M['glow_blue'], subdiv=2)
+    # No furnace cage or glowing core under the belly: the underside stays a
+    # clean hull (the game only anchors its engine point light there).
 
     # Side nacelles with ducted propellers.
     props = []
@@ -551,10 +543,9 @@ def build_drone(M):
 
     canopy_obj = canopy
     body_obj = join('Body', body)
-    core = join('Core', [core], pivot=(cx, 0, cz))
     beacon = join('Beacon', [beacon], pivot=(-0.231, 0.08, 0.72))
     root = empty('Drone')
-    parts = [body_obj, canopy_obj, core, beacon] + props
+    parts = [body_obj, canopy_obj, beacon] + props
     parent(parts, root)
     return {'root': root, 'objects': [root] + parts,
             'bake': [(body_obj, [canopy_obj])] + [(p, [canopy_obj]) for p in props],

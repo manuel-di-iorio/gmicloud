@@ -1154,30 +1154,24 @@
 
   function applyDroneModel(src) {
     var model = src.clone(true);
-    var corePos = nodePos(model, 'Core');
     var beaconPos = nodePos(model, 'Beacon');
     playerBody.children.slice().forEach(function (c) { playerBody.remove(c); });
     playerBody.add(model);
 
-    var coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: softGlowTex, color: 0x4fc3ff, transparent: true, opacity: 0.7,
-      depthWrite: false, blending: THREE.AdditiveBlending
-    }));
-    coreGlow.position.copy(corePos);
-    playerBody.add(coreGlow);
     var beaconGlow = new THREE.Sprite(amberGlowSprite);
     beaconGlow.scale.set(0.42, 0.42, 1);
     beaconGlow.position.copy(beaconPos);
     playerBody.add(beaconGlow);
+    // Engine light inside the hull: the model has no under-belly furnace any more.
     var light = new THREE.PointLight(0x5cc6ff, 1.0, 4.5, 2);
-    light.position.copy(corePos);
+    light.position.set(-0.06, -0.34, 0);
     playerBody.add(light);
 
     player.userData = {
       body: playerBody,
       props: ['PropL', 'PropR'].map(function (n) { return model.getObjectByName(n); }).filter(Boolean),
-      core: model.getObjectByName('Core') || coreGlow,
-      coreGlow: coreGlow,
+      core: model.getObjectByName('Core') || null,
+      coreGlow: null,
       beacon: model.getObjectByName('Beacon'),
       light: light,
       baseY: 0
@@ -2173,8 +2167,8 @@
       var spin = (state === 'playing' ? 22 + speed * 2.2 : 12) * dt;
       player.userData.props.forEach(function (prop) { prop.rotation.z += spin; });
       var pulse = 0.7 + 0.3 * Math.sin(t * 7.5);
-      player.userData.core.scale.setScalar(0.85 + pulse * 0.28);
-      player.userData.coreGlow.scale.set(1.0 + pulse * 0.45, 1.0 + pulse * 0.45, 1);
+      if (player.userData.core) player.userData.core.scale.setScalar(0.85 + pulse * 0.28);
+      if (player.userData.coreGlow) player.userData.coreGlow.scale.set(1.0 + pulse * 0.45, 1.0 + pulse * 0.45, 1);
       player.userData.light.intensity = 0.7 + pulse * 0.5;
       playerHalo.material.opacity = (0.20 + pulse * 0.14) * haloStrength;
 
