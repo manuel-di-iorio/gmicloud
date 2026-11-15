@@ -319,7 +319,7 @@ window.HERO_GAME_CONFIG = <?= json_encode([
   'maxScore'  => hero_game_max_points(),
   'scoresUrl' => '/hero-scores.php',
   'modelsUrl' => '/assets/models/hero/',
-  'modelsVersion' => asset_version('assets/models/hero/platform.glb'),
+  'modelsVersion' => max(array_map(fn($m) => (int) asset_version("assets/models/hero/$m.glb"), ['drone', 'sprocket', 'zeppelin', 'platform', 'skyprops'])),
   'i18n'      => [
     'hero_game_hint_play'    => __('hero_game_hint_play'),
     'hero_game_hint_jump'    => __('hero_game_hint_jump'),

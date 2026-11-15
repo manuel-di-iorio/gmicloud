@@ -14,7 +14,7 @@ import math
 import os
 import struct
 import sys
-from mathutils import Vector
+from mathutils import Vector, noise
 
 argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -107,6 +107,12 @@ def palette():
         'glow_blue': make_mat('GlowBlue', '#3cb8ff', 0.0, 0.3, emit='#3cb8ff'),
         'glow_orange': make_mat('GlowOrange', '#ffa53a', 0.0, 0.3, emit='#ffa53a'),
         'glow_red': make_mat('GlowRed', '#ff3a26', 0.0, 0.3, emit='#ff3a26'),
+        'rock': make_mat('Rock', '#6e5d52', 0.0, 0.88),
+        'rock_dark': make_mat('RockDark', '#3e332e', 0.0, 0.9),
+        'moss': make_mat('Moss', '#5a7a3e', 0.0, 0.92),
+        'foliage': make_mat('Foliage', '#3f6e36', 0.0, 0.85),
+        'stone': make_mat('Stone', '#a49784', 0.0, 0.8),
+        'patina': make_mat('Patina', '#4c9a88', 0.35, 0.45),
     }
 
 
@@ -555,6 +561,252 @@ def build_drone(M):
             'preview': dict(target=(0, 0, 0.08), dist=4.2)}
 
 
+# ================================================================ SKYPROPS ==
+def island_rock(name, R, depth, seed, M):
+    """Floating rock: flat mossy top, bulbous underside tapering to a point."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=5, radius=1.0)
+    o = bpy.context.active_object
+    me = o.data
+    off = Vector((seed * 7.31, seed * 3.17, seed * 1.9))
+    for v in me.vertices:
+        d = v.co.normalized()
+        m = math.sqrt(max(0.0, 1.0 - d.z * d.z))
+        hx, hy = (d.x / m, d.y / m) if m > 1e-5 else (0.0, 0.0)
+        if d.z >= 0:
+            r, z = R * m, 0.08 * R * d.z
+        else:
+            r, z = R * m ** 0.35, -depth * (1.0 - m) ** 0.7
+        p = Vector((hx * r, hy * r, z))
+        n = noise.fractal(p / R * 2.2 + off, 0.55, 2.0, 5)
+        if d.z >= 0:
+            p.z += 0.03 * R * n
+        else:
+            k = 0.22 * R * min(1.0, (1.0 - m) * 4.0 + 0.15)
+            p.x += hx * k * n
+            p.y += hy * k * n
+            p.z += 0.12 * R * noise.fractal(p / R * 3.1 - off, 0.5, 2.0, 4)
+        v.co = p
+    me.update()
+    o.name = name
+    for mat in (M['rock'], M['moss'], M['rock_dark']):
+        me.materials.append(mat)
+    for poly in me.polygons:
+        c = poly.center
+        if c.z > -0.03 * R and poly.normal.z > 0.45:
+            poly.material_index = 1
+        elif c.z < -depth * (0.5 + 0.12 * math.sin(c.x * 1.7 + c.y)):
+            poly.material_index = 2
+    me.shade_smooth()
+    return o
+
+
+def top_z(R, x, y):
+    r = math.hypot(x, y) / R
+    return 0.08 * R * math.sqrt(max(0.0, 1 - r * r))
+
+
+def pyramid_roof(name, w, h, loc, mat):
+    return cyl(name, w, h, loc, mat, r2=0.0, verts=4, rot=(0, 0, R(45)), bev=0.02)
+
+
+def aether_anchor(parts, depth, M, scale=1.0):
+    """Glowing aether crystal hung under the rock: the reason it floats."""
+    s = scale
+    zc = -depth - 1.5 * s
+    parts.append(ico('crystal', 0.8 * s, (0, 0, zc), M['glow_blue'], subdiv=1, scale=(0.6, 0.6, 1.35)))
+    for z in (zc + 0.55 * s, zc - 0.55 * s):
+        parts.append(torus('cage', 0.5 * s, 0.05 * s, (0, 0, z), M['brass'], seg=24, mseg=8))
+    for k in range(3):
+        t = 2 * math.pi * k / 3
+        a = Vector((math.cos(t) * 0.5 * s, math.sin(t) * 0.5 * s, zc + 0.55 * s))
+        b = Vector((math.cos(t) * 0.35 * s, math.sin(t) * 0.35 * s, -depth * 0.82))
+        parts.append(pipe('chain', [a, (a + b) / 2 + Vector((0, 0, -0.15 * s)), b], 0.045 * s, M['brass_old'], res=6))
+
+
+def build_island_a(M):
+    Rr, depth = 5.0, 7.0
+    parts = [island_rock('rockA', Rr, depth, 1, M)]
+    # Clock tower with a lit face (GMI orange) and a blue beacon spire.
+    tx, ty = 0.6, 0.3
+    z0 = top_z(Rr, tx, ty) - 0.4
+    parts.append(box('tower', (1.3, 1.3, 4.6), (tx, ty, z0 + 2.3), M['stone'], bev=0.05))
+    for z in (z0 + 1.2, z0 + 3.05, z0 + 4.6):
+        parts.append(box('towerTrim', (1.45, 1.45, 0.14), (tx, ty, z), M['brass_old'], bev=0.03))
+    for face in (-1, 1):
+        parts.append(cyl('clock', 0.46, 0.08, (tx, ty + face * 0.67, z0 + 3.85), M['glow_orange'], rot=(R(90), 0, 0), verts=32, bev=0))
+        parts.append(torus('clockRing', 0.5, 0.06, (tx, ty + face * 0.71, z0 + 3.85), M['brass'], rot=(R(90), 0, 0), seg=32, mseg=8))
+    parts.append(box('handH', (0.05, 0.03, 0.3), (tx, ty - 0.73, z0 + 3.95), M['iron_dark'], bev=0))
+    parts.append(box('handM', (0.36, 0.03, 0.04), (tx + 0.14, ty - 0.74, z0 + 3.85), M['iron_dark'], bev=0))
+    parts.append(pyramid_roof('roof', 1.05, 1.7, (tx, ty, z0 + 5.5), M['navy']))
+    parts.append(cyl('spire', 0.05, 1.0, (tx, ty, z0 + 6.7), M['brass'], verts=10, bev=0))
+    parts.append(sphere('spireLight', 0.14, (tx, ty, z0 + 7.25), M['glow_blue'], seg=16, rings=10))
+    # Verdigris domes.
+    for x, y, r in ((-1.9, 0.9, 0.95), (-0.9, -1.5, 0.7), (2.5, -0.7, 0.6)):
+        z = top_z(Rr, x, y)
+        parts.append(cyl('drum', r, 1.1, (x, y, z + 0.25), M['stone'], verts=32, bev=0.03))
+        parts.append(torus('domeRing', r + 0.02, 0.06, (x, y, z + 0.8), M['brass'], seg=32, mseg=8))
+        parts.append(sphere('dome', r * 1.01, (x, y, z + 0.8), M['patina'], scale=(1, 1, 0.9), seg=32, rings=16))
+        parts.append(sphere('finial', 0.08, (x, y, z + 0.8 + r * 0.92), M['brass'], seg=12, rings=8))
+        for k in range(5):
+            t = R(200 + k * 35)
+            parts.append(box('win', (0.14, 0.06, 0.24), (x + math.cos(t) * r, y + math.sin(t) * r, z + 0.45),
+                             M['glow_orange'], rot=(0, 0, t + math.pi / 2), bev=0))
+    # Houses.
+    for x, y, w, h in ((-3.0, -0.4, 0.9, 0.9), (1.9, 1.7, 1.0, 1.1), (-0.3, 2.3, 0.8, 0.8),
+                       (3.3, 0.9, 0.7, 0.8), (-2.3, -2.3, 0.7, 0.7), (1.6, -2.6, 0.75, 0.8)):
+        z = top_z(Rr, x, y)
+        parts.append(box('house', (w, w * 0.8, h + 0.4), (x, y, z + h / 2 - 0.2), M['stone'], bev=0.03))
+        parts.append(pyramid_roof('houseRoof', w * 0.78, 0.75, (x, y, z + h - 0.2 + 0.37), M['rust']))
+        parts.append(box('houseWin', (0.18, 0.05, 0.22), (x, y - w * 0.4 - 0.02, z + h * 0.45), M['glow_orange'], bev=0))
+    # Smokestacks and a beacon mast.
+    for x, y in ((-1.3, 2.0), (-0.85, 2.45)):
+        z = top_z(Rr, x, y)
+        parts.append(cyl('stack', 0.18, 2.4, (x, y, z + 1.0), M['iron_dark'], verts=16, bev=0.02))
+        parts.append(torus('stackLip', 0.19, 0.05, (x, y, z + 2.2), M['brass'], seg=16, mseg=6))
+    mx, my = 3.6, -2.0
+    z = top_z(Rr, mx, my)
+    parts.append(cyl('mast', 0.07, 3.2, (mx, my, z + 1.4), M['iron_dark'], verts=8, bev=0))
+    parts.append(sphere('mastLight', 0.2, (mx, my, z + 3.1), M['glow_blue'], seg=16, rings=10))
+    # Copper pipes running down the camera-facing cliff.
+    for x0 in (-1.5, 0.9):
+        parts.append(pipe('cliffPipe', [(x0, -Rr * 0.97, -0.2), (x0 * 0.9, -Rr * 0.92, -1.6), (x0 * 0.75, -Rr * 0.8, -3.0)],
+                          0.09, M['copper'], res=8))
+    aether_anchor(parts, depth, M)
+
+    gear_loc = (Rr * 0.62, -Rr * 0.8, -0.7)
+    gear = spoked_gear('gearA', 1.5, 1.32, 20, 0.25, M['brass'], gear_loc, (R(90), 0, 0), spokes=6, hub_mat=M['iron_dark'])
+    body = join('IslandA_Body', parts)
+    gear = join('IslandA_Gear', [gear], pivot=gear_loc)
+    root = empty('IslandA')
+    parent([body, gear], root)
+    return root, [body, gear]
+
+
+def build_island_b(M):
+    Rr, depth = 3.2, 4.6
+    parts = [island_rock('rockB', Rr, depth, 2, M)]
+    # Lighthouse in white enamel with navy bands.
+    lx, ly = -0.6, 0.2
+    z0 = top_z(Rr, lx, ly) - 0.3
+    parts.append(cyl('lighthouse', 0.6, 3.4, (lx, ly, z0 + 1.7), M['white'], r2=0.42, verts=32, bev=0.03))
+    for k, z in enumerate((z0 + 0.9, z0 + 2.2)):
+        rr = 0.6 - 0.18 * (z - z0) / 3.4
+        parts.append(cyl('band', rr + 0.015, 0.4, (lx, ly, z), M['navy'], verts=32, bev=0))
+    parts.append(torus('gallery', 0.62, 0.05, (lx, ly, z0 + 3.45), M['brass'], seg=32, mseg=8))
+    parts.append(cyl('galleryFloor', 0.62, 0.08, (lx, ly, z0 + 3.42), M['iron_dark'], verts=32, bev=0.01))
+    parts.append(cyl('lamp', 0.32, 0.55, (lx, ly, z0 + 3.75), M['glow_orange'], verts=24, bev=0))
+    for k in range(6):
+        t = 2 * math.pi * k / 6
+        parts.append(cyl('lampBar', 0.025, 0.6, (lx + 0.34 * math.cos(t), ly + 0.34 * math.sin(t), z0 + 3.75), M['brass'], verts=6, bev=0))
+    parts.append(cyl('lampRoof', 0.48, 0.45, (lx, ly, z0 + 4.25), M['navy'], r2=0.04, verts=32, bev=0.02))
+    parts.append(sphere('lampTop', 0.08, (lx, ly, z0 + 4.52), M['brass'], seg=12, rings=8))
+    # Cottages and trees.
+    for x, y, w, h in ((1.2, -0.6, 0.8, 0.7), (0.8, 1.4, 0.7, 0.6)):
+        z = top_z(Rr, x, y)
+        parts.append(box('house', (w, w * 0.8, h + 0.4), (x, y, z + h / 2 - 0.2), M['wood'], bev=0.03))
+        parts.append(pyramid_roof('houseRoof', w * 0.78, 0.7, (x, y, z + h - 0.2 + 0.35), M['navy']))
+        parts.append(box('houseWin', (0.16, 0.05, 0.2), (x, y - w * 0.4 - 0.02, z + h * 0.45), M['glow_orange'], bev=0))
+    for x, y, s in ((2.2, 0.6, 0.55), (-1.9, -1.0, 0.65), (-2.2, 0.9, 0.5), (0.3, -2.0, 0.45), (1.9, -1.6, 0.4)):
+        z = top_z(Rr, x, y)
+        parts.append(cyl('trunk', 0.07, 0.6, (x, y, z + 0.2), M['wood2'], verts=8, bev=0))
+        parts.append(ico('tree', s, (x, y, z + 0.5 + s * 0.8), M['foliage'], subdiv=1, scale=(1, 1, 1.25)))
+    # Small dock with a moored balloon.
+    parts.append(box('dock', (1.4, 0.5, 0.12), (Rr + 0.4, -0.3, -0.05), M['wood'], bev=0.02))
+    parts.append(cyl('bollard', 0.06, 0.3, (Rr + 1.0, -0.3, 0.1), M['brass'], verts=10, bev=0))
+    parts.append(sphere('balloon', 0.55, (Rr + 1.3, -0.3, 1.8), M['crimson'], scale=(1, 1, 1.15), seg=24, rings=12))
+    parts.append(box('basket', (0.3, 0.3, 0.22), (Rr + 1.3, -0.3, 0.95), M['wood2'], bev=0.02))
+    parts.append(pipe('rope', [(Rr + 1.0, -0.3, 0.2), (Rr + 1.2, -0.3, 0.6), (Rr + 1.3, -0.3, 1.0)], 0.015, M['leather'], res=6))
+    aether_anchor(parts, depth, M, scale=0.7)
+    body = join('IslandB_Body', parts)
+    root = empty('IslandB')
+    parent([body], root)
+    return root, [body]
+
+
+def build_airship(M):
+    """Friendly GMI cargo airship (nose at +X)."""
+    a, b = 4.0, 1.1
+    parts = [sphere('envelope', 1.0, (0, 0, 0), M['navy'], scale=(a, b, b), seg=56, rings=28)]
+    for k in range(8):
+        phi = 2 * math.pi * k / 8
+        pts = []
+        for i in range(13):
+            th = math.pi * (0.05 + 0.9 * i / 12)
+            r = (b + 0.012) * math.sin(th)
+            pts.append((a * 1.003 * math.cos(th), r * math.cos(phi), r * math.sin(phi)))
+        parts.append(pipe('rib', pts, 0.025, M['brass_old'], res=4))
+    for bx in (-2.6, 0.0, 2.5):
+        f = math.sqrt(1 - (bx / a) ** 2)
+        parts.append(torus('band', b * f + 0.02, 0.06, (bx, 0, 0), M['brass'], rot=(0, R(90), 0), seg=48, mseg=8))
+    parts.append(sphere('noseCap', 0.3, (a - 0.05, 0, 0), M['brass'], scale=(1.2, 1, 1), seg=24, rings=12))
+    # GMI emblem on the camera side.
+    ex = 0.9
+    ey = -b * math.sqrt(1 - (ex / a) ** 2) - 0.02
+    parts.append(cyl('emblem', 0.62, 0.04, (ex, ey, 0.1), M['white'], rot=(R(90), 0, 0), verts=40, bev=0.01))
+    parts.append(torus('emblemRing', 0.62, 0.05, (ex, ey - 0.02, 0.1), M['brass'], rot=(R(90), 0, 0), seg=40, mseg=8))
+    parts.append(box('crossH', (0.46, 0.04, 0.14), (ex - 0.15, ey - 0.04, 0.1), M['navy'], bev=0.01))
+    parts.append(box('crossV', (0.14, 0.04, 0.46), (ex - 0.15, ey - 0.04, 0.1), M['navy'], bev=0.01))
+    for dx, dz in ((0.22, -0.02), (0.38, 0.14)):
+        parts.append(cyl('dot', 0.08, 0.04, (ex + dx, ey - 0.04, 0.1 + dz), M['glow_orange'], rot=(R(90), 0, 0), verts=16, bev=0))
+    # Tail fins at the stern (-X).
+    fin_pts = [(-2.2, 0.75), (-3.6, 2.0), (-4.15, 2.0), (-4.0, 0.45), (-3.2, 0.3)]
+    for k in range(4):
+        f = prism('fin', fin_pts, 0.08, M['navy'], plane='XZ', bev=0.02)
+        trim = pipe('finTrim', [(-3.6, 0, 2.03), (-4.15, 0, 2.03), (-4.02, 0, 0.45)], 0.04, M['brass'], handles='VECTOR')
+        for o in (f, trim):
+            o.rotation_euler = (k * math.pi / 2, 0, 0)
+        parts += [f, trim]
+    parts.append(cyl('sternAxle', 0.1, 0.5, (-4.1, 0, 0), M['iron_dark'], rot=(0, R(90), 0), verts=12))
+    # Long gondola with blue-lit windows.
+    gz = -1.75
+    parts.append(box('gondola', (3.4, 0.75, 0.6), (0.2, 0, gz), M['wood'], bev=0.06))
+    parts.append(box('gondolaRoof', (3.6, 0.85, 0.1), (0.2, 0, gz + 0.35), M['brass_old'], bev=0.03))
+    parts.append(box('gondolaKeel', (3.0, 0.5, 0.14), (0.2, 0, gz - 0.36), M['iron'], bev=0.04))
+    parts.append(cyl('gondolaNose', 0.3, 0.75, (1.9, 0, gz), M['wood'], rot=(R(90), 0, 0), verts=24, bev=0.03))
+    for i in range(7):
+        x = -1.1 + i * 0.42
+        parts.append(box('window', (0.22, 0.04, 0.2), (x, -0.39, gz + 0.05), M['glow_blue'], bev=0))
+    for sx in (-1.0, 1.3):
+        for sy in (-0.3, 0.3):
+            parts.append(pipe('strut', [(sx, sy, gz + 0.38), (sx * 0.85, sy * 0.7, -b * 0.93)], 0.03, M['iron_dark'], res=2))
+    # Side engine pods (static blades: they are far away).
+    for s in (-1, 1):
+        py = s * 1.05
+        parts.append(cyl('pod', 0.26, 1.1, (-0.6, py, -1.1), M['copper'], rot=(0, R(90), 0), verts=24, bev=0.03))
+        parts.append(pipe('podArm', [(-0.6, s * 0.35, -1.6), (-0.6, s * 0.8, -1.3), (-0.6, py, -1.1)], 0.05, M['brass_old'], res=6))
+        for k in range(4):
+            t = k * math.pi / 2 + R(20)
+            bl = box('podBlade', (0.04, 0.12, 0.5), (-1.2, py + 0.28 * math.sin(t), -1.1 + 0.28 * math.cos(t)), M['wood2'],
+                     rot=(-t, 0, 0), bev=0.01)
+            parts.append(bl)
+        parts.append(sphere('podLight', 0.07, (0.0, py + s * 0.25, -1.1), M['glow_orange'], seg=12, rings=8))
+    prop = []
+    for k in range(4):
+        t = k * math.pi / 2
+        bl = box('blade', (0.05, 0.22, 0.95), (-4.4, 0.55 * math.sin(t), 0.55 * math.cos(t)), M['wood'], rot=(-t, 0, 0), bev=0.015)
+        bl.rotation_euler.rotate_axis('Z', R(22))
+        prop.append(bl)
+    prop.append(cyl('spinner', 0.18, 0.3, (-4.45, 0, 0), M['brass'], rot=(0, R(-90), 0), r2=0.03, verts=20))
+    body = join('Airship_Body', parts)
+    prop = join('Airship_Prop', prop, pivot=(-4.4, 0, 0))
+    root = empty('Airship')
+    parent([body, prop], root)
+    return root, [body, prop]
+
+
+def build_skyprops(M):
+    groups = [build_island_a(M), build_island_b(M), build_airship(M)]
+    roots = [g[0] for g in groups]
+    meshes = [o for g in groups for o in g[1]]
+    bake = []
+    for root, objs in groups:
+        others = [o for o in meshes if o not in objs]
+        bake += [(o, others) for o in objs]
+    return {'root': None, 'objects': roots + meshes, 'bake': bake,
+            'layout': {roots[0]: (-7, 6, 0), roots[1]: (7, 6, 0), roots[2]: (0, -2, 7)},
+            'preview': dict(target=(0, 0, 0), dist=34, elev=0.12, azim=-0.2, lens=40)}
+
+
 # ================================================================ SPROCKET ==
 def build_sprocket(M):
     body = []
@@ -834,7 +1086,7 @@ def build_platform(M):
 
 # ==================================================================== MAIN ==
 ASSETS = [('drone', build_drone), ('sprocket', build_sprocket), ('zeppelin', build_zeppelin),
-          ('platform', build_platform)]
+          ('platform', build_platform), ('skyprops', build_skyprops)]
 
 
 def main():
@@ -850,7 +1102,7 @@ def main():
         for obj, loc in info.get('layout', {}).items():
             obj.location = loc
         pv = info['preview']
-        render_preview(name, pv['target'], pv['dist'], pv.get('elev', 0.32), pv.get('azim', -0.62))
+        render_preview(name, pv['target'], pv['dist'], pv.get('elev', 0.32), pv.get('azim', -0.62), pv.get('lens', 50))
     print('DONE ->', OUT_DIR)
 
 

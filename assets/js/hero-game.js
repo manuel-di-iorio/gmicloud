@@ -68,6 +68,8 @@
   renderer.toneMappingExposure = 1.08;
 
   var scene = new THREE.Scene();
+  // Atmospheric perspective for the models; the sky shaders ignore fog.
+  scene.fog = new THREE.Fog(0x8e5e70, 70, 240);
   var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 260);
   var viewZ = 12;
 
@@ -306,16 +308,21 @@
 
   var U_TIME = { value: 0 };
   var SUN_DIR = new THREE.Vector3(-0.42, 0.5, -0.76).normalize();
+  // Visible sun: low on the horizon, on the same side as the key light.
+  var SUN_VIS = new THREE.Vector3(-0.36, 0.075, -1).normalize();
+  var HORIZON = new THREE.Color(0xe8955a);
+  var HAZE = new THREE.Color(0x8e5e70);
 
-  // Sky dome: gradient + warm sun bloom + a faint high-altitude cloud band.
+  // Sunset sky dome: layered gradient, sun disc + corona, god rays, cirrus, stars.
   var skyMaterial = new THREE.ShaderMaterial({
     uniforms: {
       uTime: U_TIME,
-      uSunDir: { value: SUN_DIR },
-      uTop: { value: new THREE.Color(0x050b18) },
-      uMid: { value: new THREE.Color(0x172944) },
-      uHorizon: { value: new THREE.Color(0x6b4a55) },
-      uSunColor: { value: new THREE.Color(0xffb35e) }
+      uSunDir: { value: SUN_VIS },
+      uTop: { value: new THREE.Color(0x060e20) },
+      uMid: { value: new THREE.Color(0x1a356a) },
+      uLow: { value: new THREE.Color(0x7a4f80) },
+      uHorizon: { value: HORIZON },
+      uSunColor: { value: new THREE.Color(0xffb766) }
     },
     vertexShader: [
       'varying vec3 vDir;',
@@ -326,17 +333,31 @@
     ].join('\n'),
     fragmentShader: NOISE_GLSL + '\n' + [
       'uniform float uTime;',
-      'uniform vec3 uSunDir, uTop, uMid, uHorizon, uSunColor;',
+      'uniform vec3 uSunDir, uTop, uMid, uLow, uHorizon, uSunColor;',
       'varying vec3 vDir;',
       'void main(){',
-      '  float h = clamp(vDir.y * 0.5 + 0.5, 0.0, 1.0);',
-      '  vec3 col = mix(uHorizon, uMid, smoothstep(0.27, 0.62, h));',
-      '  col = mix(col, uTop, smoothstep(0.56, 1.0, h));',
-      '  float sd = max(dot(normalize(vDir), normalize(uSunDir)), 0.0);',
-      '  col += uSunColor * pow(sd, 240.0) * 1.9;',
-      '  col += uSunColor * pow(sd, 7.0) * 0.16;',
-      '  float band = fbm2(vec2(atan(vDir.z, vDir.x) * 2.4, vDir.y * 7.5 + uTime * 0.003));',
-      '  col += vec3(0.07, 0.12, 0.18) * smoothstep(0.58, 0.95, band) * smoothstep(0.03, 0.55, h);',
+      '  vec3 d = normalize(vDir);',
+      '  float h = d.y;',
+      '  vec3 col = mix(uHorizon, uLow, smoothstep(0.0, 0.11, h));',
+      '  col = mix(col, uMid, smoothstep(0.08, 0.34, h));',
+      '  col = mix(col, uTop, smoothstep(0.3, 0.9, h));',
+      '  col = mix(col, uHorizon * 0.82 + vec3(0.02, 0.03, 0.07), smoothstep(0.0, -0.2, h));',
+      '  vec3 s = normalize(uSunDir);',
+      '  float sd = max(dot(d, s), 0.0);',
+      '  col += uSunColor * smoothstep(0.99955, 0.9998, sd) * 2.4;',
+      '  col += uSunColor * (pow(sd, 900.0) * 1.2 + pow(sd, 60.0) * 0.45 + pow(sd, 8.0) * 0.22);',
+      '  col += uSunColor * exp(-abs(h) * 14.0) * pow(sd, 2.0) * 0.35;',
+      '  vec3 t1 = normalize(cross(s, vec3(0.0, 1.0, 0.0)));',
+      '  vec3 t2 = cross(t1, s);',
+      '  float ang = atan(dot(d, t2), dot(d, t1));',
+      '  float rays = fbm2(vec2(cos(ang), sin(ang)) * 4.0 + vec2(uTime * 0.03, 0.0));',
+      '  col += uSunColor * smoothstep(0.45, 0.8, rays) * pow(sd, 5.0) * 0.34 * smoothstep(-0.05, 0.1, h);',
+      '  vec2 cp = d.xz / max(h + 0.08, 0.04);',
+      '  float ci = fbm2(cp * vec2(0.35, 1.6) + vec2(uTime * 0.006, 0.0));',
+      '  float cir = smoothstep(0.52, 0.85, ci) * smoothstep(0.03, 0.2, h) * (1.0 - smoothstep(0.5, 0.9, h));',
+      '  col = mix(col, mix(vec3(0.74, 0.62, 0.78), uSunColor * 1.3, pow(sd, 3.0)), cir * 0.45);',
+      '  float star = step(0.9985, hash31(floor(d * 420.0))) * smoothstep(0.3, 0.7, h);',
+      '  col += vec3(star) * (0.5 + 0.5 * sin(uTime * 3.0 + d.x * 300.0));',
       '  gl_FragColor = vec4(col, 1.0);',
       '}'
     ].join('\n'),
@@ -347,9 +368,10 @@
   sky.renderOrder = -1000;
   scene.add(sky);
 
-  // Far cloud sea below the road: huge shader plane, fbm volume + sun tint.
+  // Far cloud sea below the road: fbm heightfield lit by the low sun, fading
+  // into the horizon haze with distance.
   var deckMaterial = new THREE.ShaderMaterial({
-    uniforms: { uTime: U_TIME },
+    uniforms: { uTime: U_TIME, uSunDir: { value: SUN_VIS }, uHorizon: { value: HAZE } },
     vertexShader: [
       'varying vec2 vUv; varying vec3 vWorld;',
       'void main(){',
@@ -360,18 +382,28 @@
     ].join('\n'),
     fragmentShader: NOISE_GLSL + '\n' + [
       'uniform float uTime;',
+      'uniform vec3 uSunDir, uHorizon;',
       'varying vec2 vUv; varying vec3 vWorld;',
       'void main(){',
-      '  vec2 uv = vWorld.xz * 0.052;',
-      '  uv.x += uTime * 0.004;',
+      '  vec2 uv = vWorld.xz * 0.045 + vec2(uTime * 0.006, 0.0);',
       '  float n = fbm2(uv);',
-      '  float n2 = fbm2(uv * 2.25 + vec2(3.1, 7.7) - uTime * 0.002);',
-      '  float cloud = smoothstep(0.40, 0.78, n * 0.62 + n2 * 0.55);',
-      '  vec3 col = mix(vec3(0.11, 0.16, 0.29), vec3(0.96, 0.90, 0.83), cloud);',
-      '  col = mix(col, vec3(1.0, 0.73, 0.42), pow(cloud, 3.0) * 0.26);',
+      '  float e = 0.04;',
+      '  float nx = fbm2(uv + vec2(e, 0.0)) - n;',
+      '  float nz = fbm2(uv + vec2(0.0, e)) - n;',
+      '  vec3 N = normalize(vec3(-nx * 7.0, 1.0, -nz * 7.0));',
+      '  float cloud = smoothstep(0.34, 0.68, n);',
+      '  vec3 L = normalize(vec3(uSunDir.x, max(uSunDir.y, 0.25), uSunDir.z));',
+      '  float diff = clamp(dot(N, L) * 0.6 + 0.4, 0.0, 1.0);',
+      '  vec3 shade = vec3(0.17, 0.20, 0.40);',
+      '  vec3 lit = vec3(0.92, 0.72, 0.62);',
+      '  vec3 col = mix(shade, lit, diff * smoothstep(0.25, 0.85, n));',
+      '  col += vec3(1.0, 0.58, 0.34) * pow(1.0 - N.y, 1.5) * 0.7 * smoothstep(0.3, 0.7, n);',
+      '  float dist = length(vWorld - cameraPosition);',
+      '  col = mix(col, uHorizon, smoothstep(70.0, 260.0, dist));',
       '  float edge = smoothstep(0.0, 0.12, vUv.x) * smoothstep(1.0, 0.88, vUv.x);',
       '  edge *= smoothstep(0.0, 0.12, vUv.y) * smoothstep(1.0, 0.88, vUv.y);',
-      '  gl_FragColor = vec4(col, cloud * 0.96 * edge);',
+      '  float alpha = max(cloud * 0.95, smoothstep(90.0, 240.0, dist) * 0.85);',
+      '  gl_FragColor = vec4(col, alpha * edge);',
       '}'
     ].join('\n'),
     transparent: true,
@@ -428,12 +460,12 @@
     });
   }
 
-  var bankFar = new THREE.Mesh(new THREE.PlaneGeometry(190, 58), makeCloudMaterial(0.75, 0.004, 0x8c6a63));
-  bankFar.position.set(0, 6, -54);
+  var bankFar = new THREE.Mesh(new THREE.PlaneGeometry(520, 140), makeCloudMaterial(0.75, 0.004, 0xb07488));
+  bankFar.position.set(0, 8, -235);
   bankFar.renderOrder = -55;
   scene.add(bankFar);
-  var bankMid = new THREE.Mesh(new THREE.PlaneGeometry(130, 36), makeCloudMaterial(0.9, 0.008, 0x9d7358));
-  bankMid.position.set(0, 3.5, -36);
+  var bankMid = new THREE.Mesh(new THREE.PlaneGeometry(380, 100), makeCloudMaterial(0.9, 0.008, 0xc08068));
+  bankMid.position.set(0, 2, -205);
   bankMid.renderOrder = -54;
   scene.add(bankMid);
 
@@ -702,7 +734,7 @@
   function loadModels() {
     if (!THREE.GLTFLoader) { revealGame(); return; }
     var loader = new THREE.GLTFLoader();
-    var names = ['drone', 'sprocket', 'zeppelin', 'platform'];
+    var names = ['drone', 'sprocket', 'zeppelin', 'platform', 'skyprops'];
     var loaded = {}, left = names.length, failed = false;
     names.forEach(function (name) {
       loader.load(modelsUrl + name + '.glb' + modelsVersion, function (gltf) {
@@ -721,6 +753,46 @@
     hero.classList.remove('is-loading');
   }
 
+  // Distant floating islands and airships, recycled around the camera.
+  var skyProps = [];
+  var SKY_SPAN = 300;
+  var SKY_LAYOUT = [
+    { name: 'IslandA', x: 24, y: -1, z: -140, s: 2.6, ry: -0.35 },
+    { name: 'IslandB', x: 95, y: 3, z: -170, s: 3.2, ry: 0.5 },
+    { name: 'IslandB', x: 160, y: -3, z: -115, s: 1.8, ry: 2.2 },
+    { name: 'IslandA', x: 235, y: 4, z: -175, s: 3.6, ry: 1.4 },
+    { name: 'Airship', x: 60, y: 7, z: -85, s: 0.9, ry: 0.12, vx: 1.1 },
+    { name: 'Airship', x: 200, y: 11, z: -130, s: 1.4, ry: 0.1, vx: 0.7 }
+  ];
+  function buildSkyProps(src) {
+    if (!src) return;
+    SKY_LAYOUT.forEach(function (d) {
+      var node = src.getObjectByName(d.name);
+      if (!node) return;
+      var obj = node.clone(true);
+      obj.position.set(d.x, d.y, d.z);
+      obj.rotation.y = d.ry;
+      obj.scale.setScalar(d.s);
+      scene.add(obj);
+      skyProps.push({
+        obj: obj, d: d, phase: Math.random() * Math.PI * 2,
+        gear: obj.getObjectByName('IslandA_Gear'), prop: obj.getObjectByName('Airship_Prop')
+      });
+    });
+  }
+  function updateSkyProps(dt, t) {
+    var cx = camera.position.x;
+    skyProps.forEach(function (sp) {
+      var o = sp.obj;
+      if (sp.d.vx) o.position.x += sp.d.vx * dt;
+      if (o.position.x < cx - 150) o.position.x += SKY_SPAN;
+      else if (o.position.x > cx + SKY_SPAN - 150) o.position.x -= SKY_SPAN;
+      o.position.y = sp.d.y + Math.sin(t * 0.3 + sp.phase) * 0.3 * sp.d.s;
+      if (sp.gear) sp.gear.rotation.z += dt * 0.25;
+      if (sp.prop) sp.prop.rotation.x += dt * 7;
+    });
+  }
+
   function onModelsReady(loaded) {
     var kit = buildPlatformKit(loaded.platform);
     if (!kit) { revealGame(); return; }
@@ -728,6 +800,7 @@
     PLATFORM_KIT = kit;
     MODELS = loaded;
     applyDroneModel(loaded.drone);
+    buildSkyProps(loaded.skyprops);
     // Swap the decor in place unless a run is in progress.
     if (state === 'attract' || state === 'finished') clearWorld();
     revealGame();
@@ -2006,6 +2079,7 @@
     deck.position.z = -26;
     bankMid.position.x = p.x + 12;
     bankFar.position.x = p.x + 24;
+    updateSkyProps(dt, t);
 
     // Engine soundtrack & music (only while playing).
     if (state === 'playing') {
