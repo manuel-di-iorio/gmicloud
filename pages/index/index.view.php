@@ -103,14 +103,40 @@
       </div>
     </div>
     <div class="ds-hud ds-hud--status">
-      <div class="ds-hud__topline">
-        <span id="hero-tier-label"><?= __('hero_game_tier') ?> 1</span>
-        <span id="hero-speed">4.6 m/s</span>
+      <div class="ds-gauge" id="hero-gauge">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <defs>
+            <linearGradient id="gauge-brass" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fbe2a2"/><stop offset="0.35" stop-color="#c9963c"/>
+              <stop offset="0.6" stop-color="#7d5420"/><stop offset="1" stop-color="#f2cc7c"/>
+            </linearGradient>
+            <radialGradient id="gauge-face" cx="0.4" cy="0.35" r="0.75">
+              <stop offset="0" stop-color="#fbf5e4"/><stop offset="0.75" stop-color="#e6d7b2"/><stop offset="1" stop-color="#b9a27a"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="url(#gauge-brass)" stroke="#2a1606" stroke-width="1.5"/>
+          <circle cx="50" cy="50" r="41" fill="url(#gauge-face)" stroke="#5a3a16" stroke-width="1.5"/>
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#d2402a" stroke-width="5" pathLength="360" stroke-dasharray="60 300" transform="rotate(330 50 50)" opacity="0.85"/>
+          <?php for ($i = 0; $i <= 12; $i++): $a = deg2rad(150 + $i * 20); $r1 = $i % 3 === 0 ? 27 : 30; ?>
+          <line class="ds-gauge__tick<?= $i % 3 === 0 ? ' is-major' : '' ?>" x1="<?= round(50 + cos($a) * $r1, 2) ?>" y1="<?= round(50 + sin($a) * $r1, 2) ?>" x2="<?= round(50 + cos($a) * 37, 2) ?>" y2="<?= round(50 + sin($a) * 37, 2) ?>"/>
+          <?php endfor; ?>
+          <g class="ds-gauge__needle"><g class="ds-gauge__jitter">
+            <path d="M50 15 L53 50 L50 58 L47 50 Z" fill="#b3261a" stroke="#4a0d06" stroke-width="0.8"/>
+          </g></g>
+          <circle cx="50" cy="50" r="6" fill="url(#gauge-brass)" stroke="#2a1606" stroke-width="1"/>
+          <circle cx="50" cy="50" r="41" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1" pathLength="360" stroke-dasharray="70 290" transform="rotate(200 50 50)"/>
+        </svg>
+        <span id="hero-speed">5.0 m/s</span>
       </div>
-      <div class="ds-hud__bar"><i id="hero-tier-fill"></i></div>
-      <div class="ds-hud__bottomline">
-        <span id="hero-time">0.0s</span>
-        <button type="button" class="ds-hero__sound" id="hero-sound" aria-label="<?= htmlspecialchars(__('hero_game_music_toggle'), ENT_QUOTES, 'UTF-8') ?>" aria-pressed="false">&#9834;</button>
+      <div class="ds-hud__status-col">
+        <div class="ds-hud__topline">
+          <span id="hero-tier-label"><?= __('hero_game_tier') ?> 1</span>
+          <button type="button" class="ds-hero__sound" id="hero-sound" aria-label="<?= htmlspecialchars(__('hero_game_music_toggle'), ENT_QUOTES, 'UTF-8') ?>" aria-pressed="false">&#9834;</button>
+        </div>
+        <div class="ds-hud__bar"><i id="hero-tier-fill"></i></div>
+        <div class="ds-hud__bottomline">
+          <span id="hero-time">0.0s</span>
+        </div>
       </div>
     </div>
   </div>
@@ -141,7 +167,7 @@
   <div class="ds-hero__recap" id="hero-recap" aria-hidden="true">
     <div class="ds-recap__rays" aria-hidden="true"></div>
     <div class="ds-hero__recap-card" role="dialog" aria-modal="true" aria-labelledby="recap-title">
-
+      <div class="ds-recap__kicker"><span></span>Aether Run<span></span></div>
       <h2 class="ds-hero__recap-title" id="recap-title"><?= __('hero_game_recap_title') ?></h2>
       <div class="ds-recap__score">
         <span><?= __('hero_game_recap_points') ?></span>

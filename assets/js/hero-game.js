@@ -22,6 +22,7 @@
   var bestEl = document.getElementById('hero-best');
   var tierLabelEl = document.getElementById('hero-tier-label');
   var speedEl = document.getElementById('hero-speed');
+  var gaugeEl = document.getElementById('hero-gauge');
   var tierFillEl = document.getElementById('hero-tier-fill');
   var progEl = document.getElementById('hero-progress-fill');
   var eventEl = document.getElementById('hero-event');
@@ -1410,6 +1411,10 @@
     if (gemsEl) gemsEl.textContent = String(got);
     if (tierLabelEl) tierLabelEl.textContent = tr('hero_game_tier').toUpperCase() + ' ' + tier;
     if (speedEl) speedEl.textContent = speed.toFixed(1) + ' m/s';
+    if (gaugeEl) {
+      var sp = state === 'playing' ? 0.12 + 0.88 * (speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED) : 0;
+      gaugeEl.style.setProperty('--p', sp.toFixed(3));
+    }
     var fill = Math.min(100, (runT % TIER_TIME) / TIER_TIME * 100);
     if (tierFillEl) tierFillEl.style.width = fill.toFixed(1) + '%';
     if (progEl) progEl.style.width = fill.toFixed(1) + '%';
@@ -1471,7 +1476,9 @@
       if (savedPlayerName && name === savedPlayerName) trEl.className = 'is-you';
 
       var pos = document.createElement('td');
-      pos.textContent = i + 1;
+      var rank = document.createElement('span');
+      rank.textContent = i + 1;
+      pos.appendChild(rank);
       var player = document.createElement('td');
       player.textContent = name;
       player.title = name;
@@ -1684,6 +1691,7 @@
         ? tr('hero_game_new_best')
         : tr('hero_game_best_pts', { points: fmtInt(best.score) });
       if (recapEl) {
+        recapEl.classList.toggle('is-best', isBest);
         recapEl.classList.add('is-open');
         recapEl.setAttribute('aria-hidden', 'false');
       }
