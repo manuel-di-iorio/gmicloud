@@ -23,6 +23,15 @@ PREVIEW_DIR = os.path.abspath(argv[1]) if len(argv) > 1 and argv[1] != '-' else 
 ONLY = set(argv[2].split(',')) if len(argv) > 2 else None
 R = math.radians
 
+# Global tessellation scale. The models are always seen small in the hero, so the
+# full segment counts cost download and GPU time without being visible.
+# HERO_DETAIL=1 rebuilds at full quality for close-up previews.
+DETAIL = float(os.environ.get('HERO_DETAIL', '0.7'))
+
+
+def segs(n, floor=6):
+    return max(floor, int(round(n * DETAIL)))
+
 
 # ----------------------------------------------------------------- basics --
 def lin(h):
@@ -151,15 +160,16 @@ def box(name, size, loc, mat, rot=(0, 0, 0), bev=0.012, seg=2):
 
 
 def cyl(name, r, depth, loc, mat, rot=(0, 0, 0), verts=28, bev=0.006, seg=2, r2=None):
+    v = segs(verts, 8)
     if r2 is None:
-        bpy.ops.mesh.primitive_cylinder_add(vertices=verts, radius=r, depth=depth, location=loc, rotation=rot)
+        bpy.ops.mesh.primitive_cylinder_add(vertices=v, radius=r, depth=depth, location=loc, rotation=rot)
     else:
-        bpy.ops.mesh.primitive_cone_add(vertices=verts, radius1=r, radius2=r2, depth=depth, location=loc, rotation=rot)
+        bpy.ops.mesh.primitive_cone_add(vertices=v, radius1=r, radius2=r2, depth=depth, location=loc, rotation=rot)
     return _finish(bpy.context.active_object, name, mat, bev, seg)
 
 
 def sphere(name, r, loc, mat, scale=(1, 1, 1), seg=32, rings=16, rot=(0, 0, 0), flat=False):
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=seg, ring_count=rings, radius=r, location=loc, rotation=rot)
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=segs(seg, 8), ring_count=segs(rings, 5), radius=r, location=loc, rotation=rot)
     o = bpy.context.active_object
     o.scale = scale
     return _finish(o, name, mat, smooth=not flat)
@@ -173,8 +183,8 @@ def ico(name, r, loc, mat, subdiv=1, scale=(1, 1, 1), flat=True):
 
 
 def torus(name, major, minor, loc, mat, rot=(0, 0, 0), seg=36, mseg=10, scale=(1, 1, 1)):
-    bpy.ops.mesh.primitive_torus_add(major_radius=major, minor_radius=minor, major_segments=seg,
-                                     minor_segments=mseg, location=loc, rotation=rot)
+    bpy.ops.mesh.primitive_torus_add(major_radius=major, minor_radius=minor, major_segments=segs(seg, 8),
+                                     minor_segments=segs(mseg, 4), location=loc, rotation=rot)
     o = bpy.context.active_object
     o.scale = scale
     return _finish(o, name, mat)
@@ -347,7 +357,8 @@ def export_glb(path, objs):
               export_cameras=False, export_lights=False, export_extras=False, export_animations=False,
               export_texcoords=False, export_normals=True, export_tangents=False,
               export_vertex_color='ACTIVE', export_all_vertex_colors=False,
-              export_draco_mesh_compression_enable=False, export_materials='EXPORT')
+              export_draco_mesh_compression_enable=(os.environ.get('HERO_DRACO') == '1'),
+              export_draco_mesh_compression_level=6, export_materials='EXPORT')
     kw = {k: v for k, v in kw.items() if k in keys}
     try:
         op(**kw)
@@ -555,7 +566,7 @@ def build_drone(M):
 # ================================================================ SKYPROPS ==
 def island_rock(name, R, depth, seed, M):
     """Floating rock: flat mossy top, bulbous underside tapering to a point."""
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=5, radius=1.0)
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=4, radius=1.0)
     o = bpy.context.active_object
     me = o.data
     off = Vector((seed * 7.31, seed * 3.17, seed * 1.9))

@@ -908,6 +908,15 @@
   function loadModels() {
     if (!THREE.GLTFLoader) { revealGame(); return; }
     var loader = new THREE.GLTFLoader();
+    // The .glb files are Draco-compressed by scripts/blender/build_hero_models.py
+    // (~0.7 MB total instead of ~3.9 MB). Without the decoder the meshes cannot
+    // be parsed, so keep the procedural fallback rather than a loading state.
+    if (!THREE.DRACOLoader) { revealGame(); return; }
+    var draco = new THREE.DRACOLoader();
+    // Decoder vendored in assets/vendor/draco (1.5.7, matches the Blender encoder):
+    // no third-party host is contacted at runtime.
+    draco.setDecoderPath('/assets/vendor/draco/');
+    loader.setDRACOLoader(draco);
     var names = ['drone', 'sprocket', 'zeppelin', 'platform', 'skyprops'];
     var loaded = {}, left = names.length, failed = false;
     names.forEach(function (name) {
@@ -1380,9 +1389,11 @@
 
   // --------------------------------------------------------- WORLD BUILD ---
   function makePlatformVisual(x, y, w) {
+    var tilt = (Math.random() - 0.5) * 0.08;
     if (PLATFORM_KIT) {
       var deckMesh = buildPlatformModel(w);
       deckMesh.position.set(x, y, 0);
+      deckMesh.rotation.z = tilt;
       scene.add(deckMesh);
       return { mesh: deckMesh, tip: null, mist: null, model: true };
     }
@@ -1391,10 +1402,12 @@
       makePlatformMaterial(w, PLATFORM_H, PLATFORM_D)
     );
     mesh.position.set(x, y - PLATFORM_H / 2, 0);
+    mesh.rotation.z = tilt;
     scene.add(mesh);
 
     var tip = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.07, 0.11), trimMat);
     tip.position.set(x, y + 0.03, PLATFORM_D / 2 - 0.05);
+    tip.rotation.z = tilt;
     scene.add(tip);
 
     var mist = new THREE.Mesh(mistGeometry, mistMaterial);
