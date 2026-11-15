@@ -28,6 +28,11 @@ R = math.radians
 # HERO_DETAIL=1 rebuilds at full quality for close-up previews.
 DETAIL = float(os.environ.get('HERO_DETAIL', '0.7'))
 
+# Per-model overrides: the drone is the hero and is seen up close, the platform
+# kit is instanced many times per run, the sky props are far away.
+DETAIL_BY_MODEL = {'drone': 0.72, 'sprocket': 0.6, 'zeppelin': 0.6,
+                   'platform': 0.55, 'skyprops': 0.7}
+
 
 def segs(n, floor=6):
     return max(floor, int(round(n * DETAIL)))
@@ -566,6 +571,8 @@ def build_drone(M):
 # ================================================================ SKYPROPS ==
 def island_rock(name, R, depth, seed, M):
     """Floating rock: flat mossy top, bulbous underside tapering to a point."""
+    # Full resolution regardless of DETAIL: the crags are the silhouette of the
+    # floating islands and vanish as soon as the mesh is coarsened.
     bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=4, radius=1.0)
     o = bpy.context.active_object
     me = o.data
@@ -1092,9 +1099,12 @@ ASSETS = [('drone', build_drone), ('sprocket', build_sprocket), ('zeppelin', bui
 
 
 def main():
+    global DETAIL
+    base = DETAIL
     for name, builder in ASSETS:
         if ONLY and name not in ONLY:
             continue
+        DETAIL = DETAIL_BY_MODEL.get(name, base)
         reset_scene()
         M = palette()
         info = builder(M)
