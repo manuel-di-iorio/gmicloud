@@ -17,8 +17,10 @@ Options -Indexes
 ErrorDocument 404 /404.php
 
 # Cache static assets for 1 year (busted via ?v= param)
+AddType model/gltf-binary .glb
 <IfModule mod_expires.c>
   ExpiresActive On
+  ExpiresByType model/gltf-binary "access plus 1 year"
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType application/javascript "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"
@@ -31,7 +33,7 @@ ErrorDocument 404 /404.php
   ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 <IfModule mod_headers.c>
-  <FilesMatch "\.(css|js|png|gif|jpe?g|webp|ico|ttf|woff2?)$">
+  <FilesMatch "\.(css|js|png|gif|jpe?g|webp|ico|ttf|woff2?|glb)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>

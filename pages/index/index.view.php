@@ -285,12 +285,15 @@
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 window.HERO_GAME_CONFIG = <?= json_encode([
   'mode'      => 'endless',
   'maxGears'  => HERO_GAME_MAX_GEARS,
   'maxScore'  => hero_game_max_points(),
   'scoresUrl' => '/hero-scores.php',
+  'modelsUrl' => '/assets/models/hero/',
+  'modelsVersion' => asset_version('assets/models/hero/platform.glb'),
   'i18n'      => [
     'hero_game_hint_play'    => __('hero_game_hint_play'),
     'hero_game_hint_jump'    => __('hero_game_hint_jump'),

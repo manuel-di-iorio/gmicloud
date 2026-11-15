@@ -4,7 +4,8 @@
  * and the background clouds all read as real 3D), procedural endless level
  * generation and a difficulty ramp that never truly stops.
  *
- * Everything is generated at runtime: no external models or textures.
+ * Drone, enemies and sky-deck platforms are glTF models generated in Blender
+ * (scripts/blender/build_hero_models.py); procedural meshes are the fallback.
  * One-button controls: Space / ArrowUp / W / click / tap = jump.
  */
 (function () {
@@ -541,6 +542,188 @@
     depthWrite: false, blending: THREE.AdditiveBlending
   });
 
+  // ------------------------------------------------------- BLENDER MODELS --
+  // PBR models authored in Blender (scripts/blender/build_hero_models.py).
+  // Until they load (or if loading fails) the procedural meshes below are used.
+  var MODELS = null;
+  var PLATFORM_KIT = null;
+  var PLATFORM_CAP = 0.55;
+  var modelsUrl = heroConfig.modelsUrl || '/assets/models/hero/';
+  var modelsVersion = heroConfig.modelsVersion ? '?v=' + heroConfig.modelsVersion : '';
+
+  // Sky-matched environment so brass/copper read as polished metal.
+  function buildEnvironment() {
+    var pmrem = new THREE.PMREMGenerator(renderer);
+    var envScene = new THREE.Scene();
+    envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 48, 24), new THREE.ShaderMaterial({
+      uniforms: { uSunDir: { value: SUN_DIR } },
+      vertexShader: 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: [
+        'uniform vec3 uSunDir; varying vec3 vDir;',
+        'void main(){',
+        '  vec3 d = normalize(vDir);',
+        '  vec3 top = vec3(0.10, 0.20, 0.42);',
+        '  vec3 horizon = vec3(1.05, 0.66, 0.40);',
+        '  vec3 below = vec3(0.92, 0.86, 0.80);',
+        '  vec3 col = d.y > 0.0 ? mix(horizon, top, pow(d.y, 0.55)) : mix(horizon, below, pow(-d.y, 0.6));',
+        '  col += vec3(1.0, 0.75, 0.45) * pow(max(dot(d, normalize(uSunDir)), 0.0), 48.0) * 7.0;',
+        '  col += vec3(0.25, 0.65, 1.0) * pow(max(dot(d, vec3(0.6, 0.25, 0.75)), 0.0), 6.0) * 0.6;',
+        '  gl_FragColor = vec4(col, 1.0);',
+        // PMREM targets are RGBE-encoded in r128.
+        '  #include <encodings_fragment>',
+        '}'
+      ].join('\n'),
+      side: THREE.BackSide
+    })));
+    var tex = pmrem.fromScene(envScene, 0.035).texture;
+    pmrem.dispose();
+    return tex;
+  }
+
+  function prepModel(root) {
+    root.traverse(function (o) {
+      if (!o.isMesh) return;
+      var m = o.material;
+      if (/^Glass/.test(m.name)) {
+        m.transparent = true;
+        m.depthWrite = false;
+        m.envMapIntensity = 1.8;
+        o.renderOrder = 6;
+      }
+      if (m.userData.prepped) return;
+      m.userData.prepped = true;
+      if (/^Glow/.test(m.name)) m.emissiveIntensity = 2.6;
+      else if (m.metalness > 0.5) m.envMapIntensity = 1.25;
+      // Grazing camera angles make dielectric Fresnel wash out the decks.
+      else m.envMapIntensity = 0.45;
+    });
+  }
+
+  function nodePos(root, name) {
+    var node = root.getObjectByName(name);
+    if (!node) return new THREE.Vector3();
+    root.updateMatrixWorld(true);
+    return root.worldToLocal(node.getWorldPosition(new THREE.Vector3()));
+  }
+
+  function buildPlatformKit(src) {
+    src.updateMatrixWorld(true);
+    function collect(name) {
+      var node = src.getObjectByName(name), parts = [];
+      if (!node) return parts;
+      node.traverse(function (o) {
+        if (o.isMesh) parts.push({ geo: o.geometry, mat: o.material, matrix: o.matrixWorld.clone() });
+      });
+      return parts;
+    }
+    var kit = { mid: collect('DeckMid'), capL: collect('CapL'), capR: collect('CapR') };
+    return kit.mid.length && kit.capL.length && kit.capR.length ? kit : null;
+  }
+
+  // Bakes transformed copies of the given geometries into one indexed buffer.
+  function mergeParts(list) {
+    var vCount = 0, iCount = 0;
+    var hasColor = list.every(function (it) { return !!it.geo.attributes.color; });
+    list.forEach(function (it) {
+      vCount += it.geo.attributes.position.count;
+      iCount += it.geo.index ? it.geo.index.count : it.geo.attributes.position.count;
+    });
+    var pos = new Float32Array(vCount * 3), nor = new Float32Array(vCount * 3);
+    var col = hasColor ? new Float32Array(vCount * 3) : null;
+    var idx = vCount > 65535 ? new Uint32Array(iCount) : new Uint16Array(iCount);
+    var v = new THREE.Vector3(), nm = new THREE.Matrix3();
+    var vOff = 0, iOff = 0;
+    list.forEach(function (it) {
+      var g = it.geo, P = g.attributes.position, N = g.attributes.normal, C = g.attributes.color;
+      nm.getNormalMatrix(it.matrix);
+      var cDiv = 1;
+      if (C && C.normalized) cDiv = C.array instanceof Uint8Array ? 255 : C.array instanceof Uint16Array ? 65535 : 1;
+      for (var i = 0; i < P.count; i++) {
+        var o3 = (vOff + i) * 3;
+        v.fromBufferAttribute(P, i).applyMatrix4(it.matrix);
+        pos[o3] = v.x; pos[o3 + 1] = v.y; pos[o3 + 2] = v.z;
+        v.fromBufferAttribute(N, i).applyMatrix3(nm).normalize();
+        nor[o3] = v.x; nor[o3 + 1] = v.y; nor[o3 + 2] = v.z;
+        if (col) {
+          col[o3] = C.getX(i) / cDiv; col[o3 + 1] = C.getY(i) / cDiv; col[o3 + 2] = C.getZ(i) / cDiv;
+        }
+      }
+      if (g.index) {
+        for (var j = 0; j < g.index.count; j++) idx[iOff + j] = g.index.getX(j) + vOff;
+        iOff += g.index.count;
+      } else {
+        for (var k = 0; k < P.count; k++) idx[iOff + k] = k + vOff;
+        iOff += P.count;
+      }
+      vOff += P.count;
+    });
+    var out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    out.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+    if (col) out.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    out.setIndex(new THREE.BufferAttribute(idx, 1));
+    out.computeBoundingSphere();
+    return out;
+  }
+
+  // Sky-deck of total width w: caps keep their size, the mid module repeats
+  // (slightly stretched) to fill the gap. One mesh per material.
+  function buildPlatformModel(w) {
+    var kit = PLATFORM_KIT;
+    var midLen = Math.max(0.2, w - 2 * PLATFORM_CAP);
+    var n = Math.max(1, Math.round(midLen));
+    var s = midLen / n;
+    var groups = {};
+    var m4 = new THREE.Matrix4();
+    function add(parts) {
+      parts.forEach(function (p) {
+        var g = groups[p.mat.uuid] || (groups[p.mat.uuid] = { mat: p.mat, list: [] });
+        g.list.push({ geo: p.geo, matrix: m4.clone().multiply(p.matrix) });
+      });
+    }
+    for (var i = 0; i < n; i++) {
+      m4.makeScale(s, 1, 1).setPosition(-midLen / 2 + s * (i + 0.5), 0, 0);
+      add(kit.mid);
+    }
+    m4.makeTranslation(-midLen / 2, 0, 0);
+    add(kit.capL);
+    m4.makeTranslation(midLen / 2, 0, 0);
+    add(kit.capR);
+    var grp = new THREE.Group();
+    Object.keys(groups).forEach(function (key) {
+      var mesh = new THREE.Mesh(mergeParts(groups[key].list), groups[key].mat);
+      if (/^Glass/.test(groups[key].mat.name)) mesh.renderOrder = 6;
+      grp.add(mesh);
+    });
+    return grp;
+  }
+
+  function loadModels() {
+    if (!THREE.GLTFLoader) return;
+    var loader = new THREE.GLTFLoader();
+    var names = ['drone', 'sprocket', 'zeppelin', 'platform'];
+    var loaded = {}, left = names.length, failed = false;
+    names.forEach(function (name) {
+      loader.load(modelsUrl + name + '.glb' + modelsVersion, function (gltf) {
+        if (failed) return;
+        prepModel(gltf.scene);
+        loaded[name] = gltf.scene;
+        if (--left === 0) onModelsReady(loaded);
+      }, undefined, function () { failed = true; });
+    });
+  }
+
+  function onModelsReady(loaded) {
+    var kit = buildPlatformKit(loaded.platform);
+    if (!kit) return;
+    try { scene.environment = buildEnvironment(); } catch (e) { /* metals just look darker */ }
+    PLATFORM_KIT = kit;
+    MODELS = loaded;
+    applyDroneModel(loaded.drone);
+    // Swap the decor in place unless a run is in progress.
+    if (state === 'attract' || state === 'finished') clearWorld();
+  }
+
   // ------------------------------------------------------------- PLAYER ----
   function buildDrone() {
     var root = new THREE.Group();
@@ -709,6 +892,41 @@
   player.add(playerHalo);
   playerBody.rotation.y = -0.16;
   scene.add(player);
+  var haloStrength = 1;
+
+  function applyDroneModel(src) {
+    var model = src.clone(true);
+    var corePos = nodePos(model, 'Core');
+    var beaconPos = nodePos(model, 'Beacon');
+    playerBody.children.slice().forEach(function (c) { playerBody.remove(c); });
+    playerBody.add(model);
+
+    var coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: softGlowTex, color: 0x4fc3ff, transparent: true, opacity: 0.7,
+      depthWrite: false, blending: THREE.AdditiveBlending
+    }));
+    coreGlow.position.copy(corePos);
+    playerBody.add(coreGlow);
+    var beaconGlow = new THREE.Sprite(amberGlowSprite);
+    beaconGlow.scale.set(0.42, 0.42, 1);
+    beaconGlow.position.copy(beaconPos);
+    playerBody.add(beaconGlow);
+    var light = new THREE.PointLight(0x5cc6ff, 1.0, 4.5, 2);
+    light.position.copy(corePos);
+    playerBody.add(light);
+
+    player.userData = {
+      body: playerBody,
+      props: ['PropL', 'PropR'].map(function (n) { return model.getObjectByName(n); }).filter(Boolean),
+      core: model.getObjectByName('Core') || coreGlow,
+      coreGlow: coreGlow,
+      beacon: model.getObjectByName('Beacon'),
+      light: light,
+      baseY: 0
+    };
+    playerHalo.material.color.setHex(0x9fd8ff);
+    haloStrength = 0.55;
+  }
 
   var shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(1.3, 1.3),
@@ -734,6 +952,20 @@
   };
 
   function buildSprocket() {
+    if (MODELS) {
+      var mg = new THREE.Group();
+      var model = MODELS.sprocket.clone(true);
+      var eyePos = nodePos(model, 'Eye');
+      mg.add(model);
+      var eyeGlow = new THREE.Sprite(redGlowSprite);
+      eyeGlow.scale.set(1.2, 1.2, 1);
+      eyeGlow.position.copy(eyePos);
+      mg.add(eyeGlow);
+      mg.userData.ring = model.getObjectByName('Ring');
+      mg.userData.ringAxis = 'y';
+      mg.userData.cog = model.getObjectByName('Cog');
+      return mg;
+    }
     var g = new THREE.Group();
     var core = new THREE.Mesh(enemyGeo.sphere, ironMat);
     core.scale.set(1.0, 0.94, 0.94);
@@ -772,6 +1004,18 @@
   }
 
   function buildZeppelin() {
+    if (MODELS) {
+      var mg = new THREE.Group();
+      var model = MODELS.zeppelin.clone(true);
+      var lampPos = nodePos(model, 'Lantern');
+      mg.add(model);
+      var lampGlow = new THREE.Sprite(redGlowSprite);
+      lampGlow.scale.set(1.4, 1.4, 1);
+      lampGlow.position.copy(lampPos);
+      mg.add(lampGlow);
+      mg.userData.prop = model.getObjectByName('Prop') || new THREE.Object3D();
+      return mg;
+    }
     var g = new THREE.Group();
     var body = new THREE.Mesh(enemyGeo.zeppelin, copperMat);
     body.scale.set(1.65, 0.54, 0.54);
@@ -883,28 +1127,38 @@
   }
 
   // --------------------------------------------------------- WORLD BUILD ---
-  function addStartPlatform() {
-    var w = 30;
+  function makePlatformVisual(x, y, w) {
+    if (PLATFORM_KIT) {
+      var deckMesh = buildPlatformModel(w);
+      deckMesh.position.set(x, y, 0);
+      scene.add(deckMesh);
+      return { mesh: deckMesh, tip: null, mist: null, model: true };
+    }
     var mesh = new THREE.Mesh(
       new THREE.BoxGeometry(w, PLATFORM_H, PLATFORM_D),
       makePlatformMaterial(w, PLATFORM_H, PLATFORM_D)
     );
-    mesh.position.set(-1, START_TOP - PLATFORM_H / 2, 0);
+    mesh.position.set(x, y - PLATFORM_H / 2, 0);
     scene.add(mesh);
 
     var tip = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.07, 0.11), trimMat);
-    tip.position.set(-1, START_TOP + 0.03, PLATFORM_D / 2 - 0.05);
+    tip.position.set(x, y + 0.03, PLATFORM_D / 2 - 0.05);
     scene.add(tip);
 
     var mist = new THREE.Mesh(mistGeometry, mistMaterial);
     mist.scale.set(w, PLATFORM_D, 1);
     mist.rotation.x = -Math.PI / 2;
-    mist.position.set(-1, START_TOP + 0.07, 0);
+    mist.position.set(x, y + 0.07, 0);
     scene.add(mist);
+    return { mesh: mesh, tip: tip, mist: mist, model: false };
+  }
 
+  function addStartPlatform() {
+    var w = 30;
+    var vis = makePlatformVisual(-1, START_TOP, w);
     var pl = {
       x: -1, y: START_TOP, hw: w / 2, w: w,
-      mesh: mesh, tip: tip, mist: mist, puffs: []
+      mesh: vis.mesh, tip: vis.tip, mist: vis.mist, model: vis.model, puffs: []
     };
     // Soft cloud fringe at the edges of the start pad.
     addPlatformPuffs(pl, true);
@@ -920,9 +1174,13 @@
       var side = (i % 2 === 0) ? 1 : -1;
       var s = 1.8 + Math.random() * 1.9;
       mesh.scale.set(s * 1.5, s * 0.68, 1);
+      // Sky-decks float on the clouds; the old cloud road was wrapped by them.
+      var py = pl.model
+        ? pl.y - (side > 0 ? 1.25 : 0.7) - Math.random() * 0.4
+        : pl.y + 0.22 + Math.random() * 0.35;
       mesh.position.set(
         pl.x + (Math.random() - 0.5) * pl.w * 0.95,
-        pl.y + 0.22 + Math.random() * 0.35,
+        py,
         side * (0.9 + Math.random() * 0.8)
       );
       mesh.rotation.z = (Math.random() - 0.5) * 0.25;
@@ -960,24 +1218,11 @@
     if (early) y = 0;
 
     var x = gen.nextX + gap + w / 2;
-    var mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(w, PLATFORM_H, PLATFORM_D),
-      makePlatformMaterial(w, PLATFORM_H, PLATFORM_D)
-    );
-    mesh.position.set(x, y - PLATFORM_H / 2, 0);
-    scene.add(mesh);
-
-    var tip = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.07, 0.11), trimMat);
-    tip.position.set(x, y + 0.03, PLATFORM_D / 2 - 0.05);
-    scene.add(tip);
-
-    var mist = new THREE.Mesh(mistGeometry, mistMaterial);
-    mist.scale.set(w, PLATFORM_D, 1);
-    mist.rotation.x = -Math.PI / 2;
-    mist.position.set(x, y + 0.07, 0);
-    scene.add(mist);
-
-    var pl = { x: x, y: y, hw: w / 2, w: w, mesh: mesh, tip: tip, mist: mist, puffs: [] };
+    var vis = makePlatformVisual(x, y, w);
+    var pl = {
+      x: x, y: y, hw: w / 2, w: w,
+      mesh: vis.mesh, tip: vis.tip, mist: vis.mist, model: vis.model, puffs: []
+    };
     addPlatformPuffs(pl, isRest);
     platforms.push(pl);
 
@@ -1045,11 +1290,17 @@
 
   function disposePlatform(pl) {
     scene.remove(pl.mesh);
-    pl.mesh.geometry.dispose();
-    pl.mesh.material.dispose();
-    scene.remove(pl.tip);
-    pl.tip.geometry.dispose();
-    scene.remove(pl.mist);
+    if (pl.model) {
+      pl.mesh.children.forEach(function (c) { c.geometry.dispose(); });
+    } else {
+      pl.mesh.geometry.dispose();
+      pl.mesh.material.dispose();
+    }
+    if (pl.tip) {
+      scene.remove(pl.tip);
+      pl.tip.geometry.dispose();
+    }
+    if (pl.mist) scene.remove(pl.mist);
     pl.puffs.forEach(function (puff) { scene.remove(puff); });
   }
 
@@ -1620,7 +1871,7 @@
       player.userData.core.scale.setScalar(0.85 + pulse * 0.28);
       player.userData.coreGlow.scale.set(1.0 + pulse * 0.45, 1.0 + pulse * 0.45, 1);
       player.userData.light.intensity = 0.7 + pulse * 0.5;
-      playerHalo.material.opacity = 0.20 + pulse * 0.14;
+      playerHalo.material.opacity = (0.20 + pulse * 0.14) * haloStrength;
 
       // Steam trail.
       if (state === 'playing' && !reduceMotion && Math.random() < dt * 11) {
@@ -1672,7 +1923,8 @@
         en.grp.rotation.y += dt * 0.9;
         en.grp.rotation.z = Math.sin(t * 1.8 + en.phase) * 0.10;
         var ring = en.grp.userData.ring;
-        if (ring) ring.rotation.z += dt * 2.5;
+        if (ring) ring.rotation[en.grp.userData.ringAxis || 'z'] += dt * 2.5;
+        if (en.grp.userData.cog) en.grp.userData.cog.rotation.z += dt * 3.2;
       }
     });
 
@@ -1761,6 +2013,7 @@
   // ---------------------------------------------------------------- INIT ----
   reset();
   clearWorld();
+  loadModels();
   refreshHud(true);
   resize();
   camera.position.set(START_X + 2.2, 3.0, viewZ);
