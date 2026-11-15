@@ -37,6 +37,7 @@
 
   var heroConfig = window.HERO_GAME_CONFIG || {};
   var scoresUrl = heroConfig.scoresUrl || '/hero-scores.php';
+  var signKey = heroConfig.signKey || '';
   var I18N = heroConfig.i18n || {};
   function tr(key, params) {
     var s = I18N[key] != null ? I18N[key] : key;
@@ -69,7 +70,8 @@
 
   var scene = new THREE.Scene();
   // Atmospheric perspective for the models; the sky shaders ignore fog.
-  scene.fog = new THREE.Fog(0x8e5e70, 90, 420);
+  // Exponential fog reads more naturally against the cloud sea than linear fog.
+  scene.fog = new THREE.FogExp2(0x8e5e70, 0.0031);
   var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 260);
   var viewZ = 12;
 
@@ -80,6 +82,175 @@
   var fillLight = new THREE.DirectionalLight(0x8fc9ff, 0.55);
   fillLight.position.set(7, 4, 10);
   scene.add(fillLight);
+  // Cool back-rim: separates the brass/copper bodies and the drone silhouette
+  // from the warm sunset sky.
+  var rimLight = new THREE.DirectionalLight(0xa8d4ff, 1.2);
+  rimLight.position.set(5.5, 2.2, -11);
+  scene.add(rimLight);
+
+  // -------------------------------------------------------- POST-PROCESSING --
+  // Minimal composer, no external passes: scene -> buffer -> bright pass at 1/4
+  // res -> separable blur -> composite to the canvas (bloom + MSAA fallback).
+  // The buffer is tagged sRGB so the built-in materials encode exactly as they
+  // do when drawing straight to the canvas (r128 takes outputEncoding from the
+  // render target's texture), so ACES still happens once, inside the materials,
+  // instead of a second time in an output pass.
+  var post = (function () {
+    var QUAD_VERT = [
+      'varying vec2 vUv;',
+      'void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }'
+    ].join('\n');
+    var rtOpts = {
+      minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter,
+      format: THREE.RGBAFormat, stencilBuffer: false
+    };
+    var sceneRT, bloomA, bloomB, quad, quadScene, quadCam;
+    var brightMat, blurMat, compositeMat;
+    var halfTexel = new THREE.Vector2(0.25, 0.25);
+    var api = { enabled: true };
+    try {
+      var msaa = !!(renderer.capabilities && renderer.capabilities.isWebGL2);
+      sceneRT = msaa
+        ? new THREE.WebGLMultisampleRenderTarget(2, 2, rtOpts)
+        : new THREE.WebGLRenderTarget(2, 2, rtOpts);
+      sceneRT.texture.encoding = THREE.sRGBEncoding;
+      sceneRT.depthBuffer = true;
+      bloomA = new THREE.WebGLRenderTarget(2, 2, rtOpts);
+      bloomA.depthBuffer = false;
+      bloomB = new THREE.WebGLRenderTarget(2, 2, rtOpts);
+      bloomB.depthBuffer = false;
+
+      quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), null);
+      quad.frustumCulled = false;
+      quadScene = new THREE.Scene();
+      quadScene.add(quad);
+      quadCam = new THREE.Camera();
+
+      brightMat = new THREE.ShaderMaterial({
+        uniforms: {
+          tDiffuse: { value: null },
+          uThreshold: { value: 0.82 },
+          uKnee: { value: 0.22 }
+        },
+        vertexShader: QUAD_VERT,
+        fragmentShader: [
+          'uniform sampler2D tDiffuse;',
+          'uniform float uThreshold, uKnee;',
+          'varying vec2 vUv;',
+          'void main(){',
+          '  vec3 c = texture2D(tDiffuse, vUv).rgb;',
+          '  float l = max(c.r, max(c.g, c.b));',
+          '  gl_FragColor = vec4(c * smoothstep(uThreshold, uThreshold + uKnee, l), 1.0);',
+          '}'
+        ].join('\n'),
+        depthTest: false,
+        depthWrite: false
+      });
+
+      blurMat = new THREE.ShaderMaterial({
+        uniforms: { tDiffuse: { value: null }, uDir: { value: new THREE.Vector2() } },
+        vertexShader: QUAD_VERT,
+        fragmentShader: [
+          'uniform sampler2D tDiffuse;',
+          'uniform vec2 uDir;',
+          'varying vec2 vUv;',
+          'void main(){',
+          '  vec2 o1 = uDir * 1.3846153846;',
+          '  vec2 o2 = uDir * 3.2307692308;',
+          '  vec3 sum = texture2D(tDiffuse, vUv).rgb * 0.2270270270;',
+          '  sum += (texture2D(tDiffuse, vUv + o1).rgb + texture2D(tDiffuse, vUv - o1).rgb) * 0.3162162162;',
+          '  sum += (texture2D(tDiffuse, vUv + o2).rgb + texture2D(tDiffuse, vUv - o2).rgb) * 0.0702702703;',
+          '  gl_FragColor = vec4(sum, 1.0);',
+          '}'
+        ].join('\n'),
+        depthTest: false,
+        depthWrite: false
+      });
+
+      compositeMat = new THREE.ShaderMaterial({
+        uniforms: {
+          tDiffuse: { value: null },
+          tBloom: { value: null },
+          uTexel: { value: new THREE.Vector2(1 / 1024, 1 / 512) },
+          uStrength: { value: 0.26 },
+          uAA: { value: msaa ? 0 : 1 }
+        },
+        vertexShader: QUAD_VERT,
+        fragmentShader: [
+          'uniform sampler2D tDiffuse, tBloom;',
+          'uniform vec2 uTexel;',
+          'uniform float uStrength, uAA;',
+          'varying vec2 vUv;',
+          'float luma(vec3 c){ return dot(c, vec3(0.2126, 0.7152, 0.0722)); }',
+          'void main(){',
+          '  vec4 base = texture2D(tDiffuse, vUv);',
+          '  vec3 col = base.rgb;',
+          // WebGL1 has no MSAA in the composer buffer, so blend the four
+          // diagonals only where the local contrast says there is an edge.
+          '  if (uAA > 0.5) {',
+          '    vec3 nw = texture2D(tDiffuse, vUv + uTexel * vec2(-1.0, 1.0)).rgb;',
+          '    vec3 ne = texture2D(tDiffuse, vUv + uTexel * vec2( 1.0, 1.0)).rgb;',
+          '    vec3 sw = texture2D(tDiffuse, vUv + uTexel * vec2(-1.0, -1.0)).rgb;',
+          '    vec3 se = texture2D(tDiffuse, vUv + uTexel * vec2( 1.0, -1.0)).rgb;',
+          '    float lc = luma(col);',
+          '    float lo = min(lc, min(min(luma(nw), luma(ne)), min(luma(sw), luma(se))));',
+          '    float hi = max(lc, max(max(luma(nw), luma(ne)), max(luma(sw), luma(se))));',
+          '    col = mix(col, (nw + ne + sw + se) * 0.25, smoothstep(0.10, 0.40, hi - lo) * 0.45);',
+          '  }',
+          '  col += texture2D(tBloom, vUv).rgb * uStrength * base.a;',
+          '  // Ordered-ish dither: hides banding on the 8-bit sky gradients.',
+          '  col += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;',
+          '  gl_FragColor = vec4(col, base.a);',
+          '}'
+        ].join('\n'),
+        depthTest: false,
+        depthWrite: false
+      });
+
+      function draw(mat, target) {
+        quad.material = mat;
+        renderer.setRenderTarget(target || null);
+        renderer.render(quadScene, quadCam);
+      }
+
+      api.resize = function (w, h) {
+        var pr = renderer.getPixelRatio();
+        var bw = Math.max(2, Math.round(w * pr)), bh = Math.max(2, Math.round(h * pr));
+        sceneRT.setSize(bw, bh);
+        var qw = Math.max(2, bw >> 2), qh = Math.max(2, bh >> 2);
+        bloomA.setSize(qw, qh);
+        bloomB.setSize(qw, qh);
+        compositeMat.uniforms.uTexel.value.set(1 / bw, 1 / bh);
+        halfTexel.set(1 / qw, 1 / qh);
+      };
+
+      api.render = function (sc, cam) {
+        renderer.setRenderTarget(sceneRT);
+        renderer.render(sc, cam);
+
+        brightMat.uniforms.tDiffuse.value = sceneRT.texture;
+        draw(brightMat, bloomA);
+        // Two widening rounds -> a soft halo instead of a sharp copy.
+        for (var i = 0; i < 2; i++) {
+          var spread = 1 + i * 1.7;
+          blurMat.uniforms.tDiffuse.value = bloomA.texture;
+          blurMat.uniforms.uDir.value.set(halfTexel.x * spread, 0);
+          draw(blurMat, bloomB);
+          blurMat.uniforms.tDiffuse.value = bloomB.texture;
+          blurMat.uniforms.uDir.value.set(0, halfTexel.y * spread);
+          draw(blurMat, bloomA);
+        }
+
+        compositeMat.uniforms.tDiffuse.value = sceneRT.texture;
+        compositeMat.uniforms.tBloom.value = bloomA.texture;
+        draw(compositeMat, null);
+        renderer.setRenderTarget(null);
+      };
+    } catch (e) {
+      return null;
+    }
+    return api;
+  })();
 
   // --------------------------------------------------------------- AUDIO ---
   var FX = {
@@ -224,15 +395,6 @@
   if (scoreForm) {
     scoreForm.addEventListener('submit', function (e) { e.preventDefault(); submitScore(); });
   }
-  if (playerInput && saveScoreBtn) {
-    playerInput.addEventListener('input', function () {
-      if (saveScoreBtn.disabled && playerInput.value.trim() !== '' &&
-          playerInput.value.trim() !== savedPlayerName) {
-        saveScoreBtn.disabled = false;
-      }
-    });
-  }
-
   // ------------------------------------------------------------- TEXTURES --
   function glowTexture(inner, outer) {
     var c = document.createElement('canvas');
@@ -544,19 +706,25 @@
   var mistGeometry = new THREE.PlaneGeometry(1, 1);
 
   // ------------------------------------------------------------ MATERIALS --
-  var brassMat = new THREE.MeshPhongMaterial({ color: 0xb7813f, specular: 0xffe6b0, shininess: 92, emissive: 0x1b0d03 });
-  var copperMat = new THREE.MeshPhongMaterial({ color: 0xc06634, specular: 0xffc084, shininess: 70, emissive: 0x200a02 });
-  var darkBrassMat = new THREE.MeshPhongMaterial({ color: 0x6e4a22, specular: 0xd9a55d, shininess: 50, emissive: 0x0e0601 });
-  var ironMat = new THREE.MeshPhongMaterial({ color: 0x323946, specular: 0x93a4bb, shininess: 34, emissive: 0x07090d });
-  var glassMat = new THREE.MeshPhongMaterial({
-    color: 0xa9efff, specular: 0xffffff, shininess: 160, emissive: 0x0b4660,
+  // PBR metals instead of Phong: the PMREM sky environment (buildEnvironment)
+  // is only used by Standard/Physical materials, so metalness/roughness give real
+  // reflections on the brass and copper hulls.
+  var brassMat = new THREE.MeshStandardMaterial({ color: 0xb7813f, metalness: 0.95, roughness: 0.30, emissive: 0x1b0d03, envMapIntensity: 1.15 });
+  var copperMat = new THREE.MeshStandardMaterial({ color: 0xc06634, metalness: 0.95, roughness: 0.36, emissive: 0x200a02, envMapIntensity: 1.15 });
+  var darkBrassMat = new THREE.MeshStandardMaterial({ color: 0x6e4a22, metalness: 0.90, roughness: 0.46, emissive: 0x0e0601, envMapIntensity: 1.0 });
+  var ironMat = new THREE.MeshStandardMaterial({ color: 0x323946, metalness: 0.80, roughness: 0.54, emissive: 0x07090d, envMapIntensity: 0.9 });
+  var glassMat = new THREE.MeshStandardMaterial({
+    color: 0xa9efff, metalness: 0.15, roughness: 0.10, emissive: 0x0b4660, envMapIntensity: 1.8,
     transparent: true, opacity: 0.58, side: THREE.DoubleSide
   });
-  var amberGlowMat = new THREE.MeshBasicMaterial({ color: 0xffc46a });
-  var redGlowMat = new THREE.MeshBasicMaterial({ color: 0xff4538 });
-  var cyanGlowMat = new THREE.MeshBasicMaterial({ color: 0x8ff6ff });
-  var gearMat = new THREE.MeshPhongMaterial({ color: 0xd9a441, specular: 0xfff0bd, shininess: 130, emissive: 0x6b3707 });
-  var trimMat = new THREE.MeshPhongMaterial({ color: 0x8a5a2a, specular: 0xffd489, shininess: 70, emissive: 0x2a1202 });
+  // Emissive parts push past 1.0 before ACES so the bloom pass has something to
+  // pick up; ACES keeps them from clipping harshly.
+  function glowColor(hex, gain) { return new THREE.Color(hex).multiplyScalar(gain); }
+  var amberGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0xffc46a, 1.6) });
+  var redGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0xff4538, 1.7) });
+  var cyanGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0x8ff6ff, 1.6) });
+  var gearMat = new THREE.MeshStandardMaterial({ color: 0xd9a441, metalness: 0.92, roughness: 0.26, emissive: 0x6b3707, emissiveIntensity: 0.6, envMapIntensity: 1.0 });
+  var trimMat = new THREE.MeshStandardMaterial({ color: 0x8a5a2a, metalness: 0.85, roughness: 0.34, emissive: 0x2a1202, envMapIntensity: 1.1 });
 
   var redGlowSprite = new THREE.SpriteMaterial({
     map: softGlowTex, color: 0xff5a3c, transparent: true, opacity: 0.6,
@@ -564,6 +732,12 @@
   });
   var amberGlowSprite = new THREE.SpriteMaterial({
     map: softGlowTex, color: 0xffc46a, transparent: true, opacity: 0.58,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  // Gears get their own dimmer halo: the shared amber sprite is nearly white at
+  // its core and the bloom pass blew the pickups out.
+  var gearGlowSprite = new THREE.SpriteMaterial({
+    map: softGlowTex, color: 0xffc46a, transparent: true, opacity: 0.26,
     depthWrite: false, blending: THREE.AdditiveBlending
   });
   var cyanGlowSprite = new THREE.SpriteMaterial({
@@ -799,7 +973,6 @@
   function onModelsReady(loaded) {
     var kit = buildPlatformKit(loaded.platform);
     if (!kit) { revealGame(); return; }
-    try { scene.environment = buildEnvironment(); } catch (e) { /* metals just look darker */ }
     PLATFORM_KIT = kit;
     MODELS = loaded;
     applyDroneModel(loaded.drone);
@@ -1345,8 +1518,8 @@
     var grp = new THREE.Group();
     var mesh = new THREE.Mesh(gearGeo, gearMat);
     grp.add(mesh);
-    var glow = new THREE.Sprite(amberGlowSprite);
-    glow.scale.set(1.25, 1.25, 1);
+    var glow = new THREE.Sprite(gearGlowSprite);
+    glow.scale.set(1.0, 1.0, 1);
     grp.add(glow);
     grp.position.set(x, y, 0.05);
     grp.userData = { baseY: y, phase: Math.random() * Math.PI * 2, taken: false };
@@ -1416,7 +1589,7 @@
     if (nextTier !== lastTier) {
       lastTier = nextTier;
       tier = nextTier;
-      speed = Math.min(MAX_SPEED, BASE_SPEED + (tier - 1) * 0.55);
+      speed = Math.min(MAX_SPEED, BASE_SPEED + (tier - 1) * 0.6);
       showEvent(tr('hero_game_tier').toUpperCase() + ' ' + tier + '  //  BOOST', 'tier');
       FX.tier();
     }
@@ -1592,6 +1765,34 @@
         if (data && data.scores) renderLeaderboard(data.scores);
       }).catch(function () {});
   }
+  // HMAC-SHA256 hex signature using the shared game token. Must match the
+  // canonical string and verification in hero-scores.php.
+  function hmacHex(key, msg) {
+    if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) {
+      return Promise.reject(new Error('crypto-unavailable'));
+    }
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey(
+      'raw', enc.encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    ).then(function (k) {
+      return crypto.subtle.sign('HMAC', k, enc.encode(msg));
+    }).then(function (buf) {
+      var bytes = new Uint8Array(buf), out = '';
+      for (var i = 0; i < bytes.length; i++) out += ('0' + bytes[i].toString(16)).slice(-2);
+      return out;
+    });
+  }
+  function scoreCanonical(p) {
+    return [
+      p.player,
+      Number(p.time).toFixed(2),
+      Number(p.distance).toFixed(1),
+      String(p.gems),
+      String(p.score),
+      String(p.ts)
+    ].join('|');
+  }
+
   function submitScore() {
     if (submittingScore || state !== 'finished') return;
     var name = playerInput ? playerInput.value.trim() : '';
@@ -1610,17 +1811,23 @@
     if (saveScoreBtn) saveScoreBtn.disabled = true;
     setScoreStatus(tr('hero_game_saving'));
 
-    fetch(scoresUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      credentials: 'same-origin',
-      body: JSON.stringify({
-        player: encoded,
-        time: +runT.toFixed(2),
-        distance: Math.round(distance * 10) / 10,
-        gems: got,
-        score: scoreValue()
-      })
+    var payload = {
+      player: encoded,
+      time: +runT.toFixed(2),
+      distance: Math.round(distance * 10) / 10,
+      gems: got,
+      score: scoreValue(),
+      ts: Math.floor(Date.now() / 1000)
+    };
+    var signed = signKey ? hmacHex(signKey, scoreCanonical(payload)) : Promise.resolve('');
+    signed.then(function (sign) {
+      payload.sign = sign;
+      return fetch(scoresUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(payload)
+      });
     }).then(function (res) {
       return res.json().then(function (data) { return { ok: res.ok, data: data }; });
     }).then(function (res) {
@@ -1629,7 +1836,12 @@
       if (!res.ok || data.status !== 200) {
         // Allow retry on failure.
         if (saveScoreBtn) saveScoreBtn.disabled = false;
-        setScoreStatus(data.message || tr('hero_game_save_error'), true);
+        setScoreStatus(
+          data.code === 'AuthorizationError'
+            ? tr('hero_game_sign_error')
+            : (data.message || tr('hero_game_save_error')),
+          true
+        );
         return;
       }
       savedPlayerName = name;
@@ -1782,10 +1994,9 @@
       }
       if (scoreForm) scoreForm.removeAttribute('inert');
       if (playerInput) playerInput.value = savedPlayerName;
-      var runScore = scoreValue();
-      var shouldAutoSave = !!savedPlayerName && (best === null || runScore >= (best ? best.score : 0));
-      if (shouldAutoSave) submitScore();
-      else if (playerInput && !reduceMotion) playerInput.focus();
+      // Never submit automatically: the player confirms the score explicitly.
+      // Do not autofocus the name field: keeping focus out of the input lets
+      // the keyboard shortcuts (Enter/Space) restart the game from the recap.
     }, 350);
   }
 
@@ -1822,7 +2033,8 @@
     e.preventDefault();
     if (e.repeat) return;
     if (state === 'attract') { start(); return; }
-    if (state === 'finished') { start(); return; }
+    // On the final screen only Enter closes/restarts the run.
+    if (state === 'finished') return;
     if (state === 'playing') doJump();
   });
   window.addEventListener('keyup', function (e) {
@@ -1833,8 +2045,8 @@
     if (e.target.closest && e.target.closest('a,button,input,label,form,select,textarea,.ds-hero__recap-card')) return;
     FX.ensure();
     if (state === 'playing') doJump();
-    else if (state === 'finished') start();
-    else start();
+    else if (state === 'attract') start();
+    // On the final screen only Enter (or the restart button) closes it.
   }
   hero.addEventListener('mousedown', heroPress);
   hero.addEventListener('touchstart', heroPress, { passive: true });
@@ -2101,12 +2313,25 @@
     var a = camera.aspect;
     viewZ = a > 2.1 ? 11.4 : a > 1.5 ? 12.4 : a > 1.0 ? 14.2 : 17.0;
     camera.updateProjectionMatrix();
+    if (post) {
+      // Narrow viewports keep the cheaper direct-to-canvas path.
+      post.enabled = w >= 720;
+      post.resize(w, h);
+    }
   }
   window.addEventListener('resize', resize);
+
+  function renderFrame() {
+    if (post && post.enabled) post.render(scene, camera);
+    else renderer.render(scene, camera);
+  }
 
   // ---------------------------------------------------------------- INIT ----
   reset();
   clearWorld();
+  // The metals need their sky-matched PMREM environment before the first frame
+  // (the procedural drone is the fallback when the Blender models fail).
+  try { scene.environment = buildEnvironment(); } catch (e) { /* metals stay darker */ }
   loadModels();
   refreshHud(true);
   resize();
@@ -2121,7 +2346,7 @@
     var dt = Math.min(clock.getDelta(), 0.05);
     elapsed += dt;
     step(dt, elapsed);
-    renderer.render(scene, camera);
+    renderFrame();
     raf = requestAnimationFrame(frame);
   }
 
@@ -2144,11 +2369,12 @@
     jump: doJump,
     tick: function (n, silent) {
       for (var i = 0; i < (n || 1); i++) { elapsed += 1 / 60; step(1 / 60, elapsed); }
-      if (!silent) renderer.render(scene, camera);
+      if (!silent) renderFrame();
     },
     info: function () {
       return {
         state: state,
+        post: !!(post && post.enabled),
         x: +p.x.toFixed(2),
         y: +p.y.toFixed(2),
         distance: +distance.toFixed(1),

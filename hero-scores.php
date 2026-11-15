@@ -74,6 +74,31 @@ try {
     $data = $_POST;
   }
 
+  // Verify the HMAC signature created by the game client with the shared
+  // token. The canonical string must stay in sync with scoreCanonical() in
+  // assets/js/hero-game.js.
+  $signToken = (string)($config["heroGameSignToken"] ?? "");
+  if ($signToken === "") {
+    api_reply_error("Score signing is not configured", "InternalServerError", 503);
+  }
+  $sign = isset($data["sign"]) && is_string($data["sign"]) ? strtolower(trim($data["sign"])) : "";
+  $ts = isset($data["ts"]) && is_numeric($data["ts"]) ? (int)$data["ts"] : 0;
+  if ($sign === "" || $ts <= 0 || abs(time() - $ts) > 300) {
+    api_reply_error("Invalid or expired signature", "AuthorizationError", 401);
+  }
+  $canonical = implode("|", [
+    (string)($data["player"] ?? ""),
+    number_format((float)($data["time"] ?? 0), 2, ".", ""),
+    number_format((float)($data["distance"] ?? 0), 1, ".", ""),
+    (string)(isset($data["gems"]) ? (int)$data["gems"] : ""),
+    (string)(isset($data["score"]) ? (int)$data["score"] : ""),
+    (string)$ts,
+  ]);
+  $expectedSign = hash_hmac("sha256", $canonical, $signToken);
+  if (!hash_equals($expectedSign, $sign)) {
+    api_reply_error("Invalid or expired signature", "AuthorizationError", 401);
+  }
+
   if (!isset($data["player"]) || !is_string($data["player"]) || $data["player"] === "") {
     api_reply_error("Missing player", "ValidationError", 400);
   }

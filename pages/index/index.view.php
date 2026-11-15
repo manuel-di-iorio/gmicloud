@@ -318,6 +318,7 @@ window.HERO_GAME_CONFIG = <?= json_encode([
   'maxGears'  => HERO_GAME_MAX_GEARS,
   'maxScore'  => hero_game_max_points(),
   'scoresUrl' => '/hero-scores.php',
+  'signKey'   => $config['heroGameSignToken'] ?? '',
   'modelsUrl' => '/assets/models/hero/',
   'modelsVersion' => max(array_map(fn($m) => (int) asset_version("assets/models/hero/$m.glb"), ['drone', 'sprocket', 'zeppelin', 'platform', 'skyprops'])),
   'i18n'      => [
@@ -332,6 +333,7 @@ window.HERO_GAME_CONFIG = <?= json_encode([
     'hero_game_invalid_name' => __('hero_game_invalid_name'),
     'hero_game_saving'       => __('hero_game_saving'),
     'hero_game_save_error'   => __('hero_game_save_error'),
+    'hero_game_sign_error'   => __('hero_game_sign_error'),
     'hero_game_saved'        => __('hero_game_saved'),
     'hero_game_kept'         => __('hero_game_kept'),
     'hero_game_new_best'     => __('hero_game_new_best'),

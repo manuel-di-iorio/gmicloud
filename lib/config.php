@@ -25,6 +25,8 @@ $config = [
   "recaptchaSecret" => $env['RECAPTCHA_SECRET'],
   "maintenance" => $env['MAINTENANCE'] === 'true',
   "maintenanceMessage" => $env['MAINTENANCE_MESSAGE'],
+  // Shared secret used to sign and verify hero mini-game score submissions.
+  "heroGameSignToken" => $env['HERO_GAME_SIGN_TOKEN'] ?? '',
 ];
 
 function asset_version($path) {
