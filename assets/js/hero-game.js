@@ -69,7 +69,7 @@
 
   var scene = new THREE.Scene();
   // Atmospheric perspective for the models; the sky shaders ignore fog.
-  scene.fog = new THREE.Fog(0x8e5e70, 70, 240);
+  scene.fog = new THREE.Fog(0x8e5e70, 90, 420);
   var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 260);
   var viewZ = 12;
 
@@ -755,7 +755,6 @@
 
   // Distant floating islands and airships, recycled around the camera.
   var skyProps = [];
-  var SKY_SPAN = 300;
   var SKY_LAYOUT = [
     { name: 'IslandA', x: 24, y: -1, z: -140, s: 2.6, ry: -0.35 },
     { name: 'IslandB', x: 95, y: 3, z: -170, s: 3.2, ry: 0.5 },
@@ -776,17 +775,21 @@
       scene.add(obj);
       skyProps.push({
         obj: obj, d: d, phase: Math.random() * Math.PI * 2,
+        r: (d.name === 'IslandA' ? 8 : d.name === 'IslandB' ? 6 : 5.5) * d.s,
         gear: obj.getObjectByName('IslandA_Gear'), prop: obj.getObjectByName('Airship_Prop')
       });
     });
   }
   function updateSkyProps(dt, t) {
     var cx = camera.position.x;
+    var tanH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
     skyProps.forEach(function (sp) {
       var o = sp.obj;
       if (sp.d.vx) o.position.x += sp.d.vx * dt;
-      if (o.position.x < cx - 150) o.position.x += SKY_SPAN;
-      else if (o.position.x > cx + SKY_SPAN - 150) o.position.x -= SKY_SPAN;
+      // Recycle only once fully off-screen (visible half-width at its depth + its radius).
+      var half = tanH * 1.15 * (camera.position.z - o.position.z) + sp.r;
+      if (o.position.x < cx - half - 4) o.position.x = cx + half + sp.r * 0.5 + Math.random() * 40;
+      else if (o.position.x > cx + half + 160) o.position.x = cx - half - sp.r * 0.5 - Math.random() * 20;
       o.position.y = sp.d.y + Math.sin(t * 0.3 + sp.phase) * 0.3 * sp.d.s;
       if (sp.gear) sp.gear.rotation.z += dt * 0.25;
       if (sp.prop) sp.prop.rotation.x += dt * 7;
