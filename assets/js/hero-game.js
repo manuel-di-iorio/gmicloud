@@ -634,97 +634,10 @@
   var puffGeometry = new THREE.PlaneGeometry(1, 1);
   var puffMaterial = makeCloudMaterial(1.0, 0.012, 0x9d7b6a);
 
-  // Cloud road shader: lit fbm volume with soft, misty edges.
-  var platformVert = [
-    'varying vec3 vPos; varying vec3 vNormal; varying vec3 vWorld;',
-    'void main(){',
-    '  vPos = position;',
-    '  vNormal = normalize(mat3(modelMatrix) * normal);',
-    '  vWorld = (modelMatrix * vec4(position, 1.0)).xyz;',
-    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-    '}'
-  ].join('\n');
-  function makePlatformMaterial(w, h, d) {
-    return new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: U_TIME,
-        uSunDir: { value: SUN_DIR },
-        uSize: { value: new THREE.Vector3(w, h, d) }
-      },
-      vertexShader: platformVert,
-      fragmentShader: NOISE_GLSL + '\n' + [
-        'uniform float uTime;',
-        'uniform vec3 uSize, uSunDir;',
-        'varying vec3 vPos; varying vec3 vNormal; varying vec3 vWorld;',
-        'void main(){',
-        '  float n = fbm3(vWorld * 0.50 + vec3(uTime * 0.020, 0.0, uTime * 0.010));',
-        '  float n2 = fbm3(vWorld * 1.30 + vec3(-uTime * 0.028, 0.0, uTime * 0.012));',
-        '  float yn = clamp(vPos.y / uSize.y + 0.5, 0.0, 1.0);',
-        '  vec2 hx = abs(vPos.xz) / vec2(uSize.x * 0.5, uSize.z * 0.5);',
-        '  float side = smoothstep(0.58, 1.0, max(hx.x, hx.y));',
-        '  float alpha = (1.0 - side * 0.70) * (0.82 + 0.18 * yn);',
-        '  alpha *= 0.92 + 0.08 * n;',
-        '  float sun = max(dot(normalize(vNormal), normalize(uSunDir)), 0.0);',
-        '  vec3 cool = vec3(0.34, 0.45, 0.65);',
-        '  vec3 warm = vec3(0.99, 0.94, 0.87);',
-        '  vec3 base = mix(cool, warm, clamp(yn * 0.70 + n * 0.45, 0.0, 1.0));',
-        '  vec3 col = base * (0.55 + 0.55 * sun);',
-        '  col += vec3(1.0, 0.72, 0.40) * pow(sun, 2.0) * 0.30;',
-        '  col += vec3(0.40, 0.72, 1.0) * smoothstep(0.55, 0.90, n2) * 0.10;',
-        '  col += vec3(1.0, 0.82, 0.52) * pow(max(vNormal.y, 0.0), 5.0) * 0.10;',
-        '  gl_FragColor = vec4(col, clamp(alpha, 0.0, 1.0));',
-        '}'
-      ].join('\n'),
-      transparent: true,
-      depthWrite: true
-    });
-  }
-
-  var mistMaterial = new THREE.ShaderMaterial({
-    uniforms: { uTime: U_TIME },
-    vertexShader: [
-      'varying vec2 vUv;',
-      'void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }'
-    ].join('\n'),
-    fragmentShader: NOISE_GLSL + '\n' + [
-      'uniform float uTime;',
-      'varying vec2 vUv;',
-      'void main(){',
-      '  vec2 p = vUv * 6.0; p.x += uTime * 0.03;',
-      '  float n = fbm2(p);',
-      '  float n2 = fbm2(p * 1.8 - uTime * 0.02);',
-      '  float a = smoothstep(0.44, 0.86, n * 0.55 + n2 * 0.55);',
-      '  a *= smoothstep(0.0, 0.18, vUv.x) * smoothstep(1.0, 0.82, vUv.x);',
-      '  a *= smoothstep(0.0, 0.18, vUv.y) * smoothstep(1.0, 0.82, vUv.y);',
-      '  gl_FragColor = vec4(vec3(1.0, 0.89, 0.74), a * 0.42);',
-      '}'
-    ].join('\n'),
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending
-  });
-  var mistGeometry = new THREE.PlaneGeometry(1, 1);
-
   // ------------------------------------------------------------ MATERIALS --
-  // PBR metals instead of Phong: the PMREM sky environment (buildEnvironment)
-  // is only used by Standard/Physical materials, so metalness/roughness give real
-  // reflections on the brass and copper hulls.
-  var brassMat = new THREE.MeshStandardMaterial({ color: 0xb7813f, metalness: 0.95, roughness: 0.30, emissive: 0x1b0d03, envMapIntensity: 1.15 });
-  var copperMat = new THREE.MeshStandardMaterial({ color: 0xc06634, metalness: 0.95, roughness: 0.36, emissive: 0x200a02, envMapIntensity: 1.15 });
-  var darkBrassMat = new THREE.MeshStandardMaterial({ color: 0x6e4a22, metalness: 0.90, roughness: 0.46, emissive: 0x0e0601, envMapIntensity: 1.0 });
-  var ironMat = new THREE.MeshStandardMaterial({ color: 0x323946, metalness: 0.80, roughness: 0.54, emissive: 0x07090d, envMapIntensity: 0.9 });
-  var glassMat = new THREE.MeshStandardMaterial({
-    color: 0xa9efff, metalness: 0.15, roughness: 0.10, emissive: 0x0b4660, envMapIntensity: 1.8,
-    transparent: true, opacity: 0.58, side: THREE.DoubleSide
-  });
-  // Emissive parts push past 1.0 before ACES so the bloom pass has something to
-  // pick up; ACES keeps them from clipping harshly.
-  function glowColor(hex, gain) { return new THREE.Color(hex).multiplyScalar(gain); }
-  var amberGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0xffc46a, 1.6) });
-  var redGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0xff4538, 1.7) });
-  var cyanGlowMat = new THREE.MeshBasicMaterial({ color: glowColor(0x8ff6ff, 1.6) });
+  // The gears are the only hand-made mesh left; every other object is a
+  // Blender model.
   var gearMat = new THREE.MeshStandardMaterial({ color: 0xd9a441, metalness: 0.92, roughness: 0.26, emissive: 0x6b3707, emissiveIntensity: 0.6, envMapIntensity: 1.0 });
-  var trimMat = new THREE.MeshStandardMaterial({ color: 0x8a5a2a, metalness: 0.85, roughness: 0.34, emissive: 0x2a1202, envMapIntensity: 1.1 });
 
   var redGlowSprite = new THREE.SpriteMaterial({
     map: softGlowTex, color: 0xff5a3c, transparent: true, opacity: 0.6,
@@ -750,8 +663,8 @@
   });
 
   // ------------------------------------------------------- BLENDER MODELS --
-  // PBR models authored in Blender (scripts/blender/build_hero_models.py).
-  // Until they load (or if loading fails) the procedural meshes below are used.
+  // PBR models authored in Blender (scripts/blender/build_hero_models.py):
+  // every mesh in the hero game comes from these .glb files.
   var MODELS = null;
   var PLATFORM_KIT = null;
   var PLATFORM_CAP = 0.55;
@@ -906,7 +819,7 @@
   }
 
   function loadModels() {
-    if (!THREE.GLTFLoader) { revealGame(); return; }
+    if (!THREE.GLTFLoader) return;
     var loader = new THREE.GLTFLoader();
     var names = ['drone', 'sprocket', 'zeppelin', 'platform', 'skyprops'];
     var loaded = {}, left = names.length, failed = false;
@@ -917,8 +830,9 @@
         loaded[name] = gltf.scene;
         if (--left === 0) onModelsReady(loaded);
       }, undefined, function () {
-        // Only a load error falls back to the procedural meshes.
-        if (!failed) { failed = true; revealGame(); }
+        // Nothing to draw without the models: keep the hero static instead of
+        // showing an empty scene.
+        if (!failed) { failed = true; console.warn('[hero] failed to load ' + name + '.glb'); }
       });
     });
   }
@@ -972,7 +886,7 @@
 
   function onModelsReady(loaded) {
     var kit = buildPlatformKit(loaded.platform);
-    if (!kit) { revealGame(); return; }
+    if (!kit) { console.warn('[hero] platform.glb has no DeckMid/CapL/CapR kit'); return; }
     PLATFORM_KIT = kit;
     MODELS = loaded;
     applyDroneModel(loaded.drone);
@@ -983,164 +897,12 @@
   }
 
   // ------------------------------------------------------------- PLAYER ----
-  function buildDrone() {
-    var root = new THREE.Group();
-    var body = new THREE.Group();
-    root.add(body);
-
-    // Main brass hull.
-    var hull = new THREE.Mesh(new THREE.SphereGeometry(0.43, 26, 20), brassMat);
-    hull.scale.set(1.28, 0.82, 0.94);
-    body.add(hull);
-
-    // Hammered copper belly.
-    var belly = new THREE.Mesh(new THREE.SphereGeometry(0.34, 22, 16), copperMat);
-    belly.scale.set(1.08, 0.62, 0.78);
-    belly.position.set(-0.06, -0.18, 0);
-    body.add(belly);
-
-    // Brass trim bands around the hull.
-    var band = new THREE.Mesh(new THREE.TorusGeometry(0.37, 0.026, 8, 30), darkBrassMat);
-    band.rotation.y = Math.PI / 2;
-    band.position.x = -0.10;
-    body.add(band);
-    var band2 = band.clone();
-    band2.position.x = 0.28;
-    body.add(band2);
-
-    // Nose cone + copper muzzle ring.
-    var nose = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.52, 22), copperMat);
-    nose.rotation.z = -Math.PI / 2;
-    nose.position.set(0.62, 0.01, 0);
-    body.add(nose);
-    var muzzle = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.035, 8, 22), brassMat);
-    muzzle.rotation.y = Math.PI / 2;
-    muzzle.position.set(0.83, 0.01, 0);
-    body.add(muzzle);
-
-    // Canopy: glass bubble with a brass rim.
-    var canopy = new THREE.Mesh(
-      new THREE.SphereGeometry(0.29, 24, 16, 0, Math.PI * 2, 0, Math.PI * 0.54),
-      glassMat
-    );
-    canopy.scale.set(1.18, 0.92, 0.92);
-    canopy.position.set(0.20, 0.20, 0);
-    body.add(canopy);
-    var canopyRim = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.025, 7, 24), brassMat);
-    canopyRim.rotation.x = Math.PI / 2;
-    canopyRim.position.set(0.20, 0.19, 0);
-    body.add(canopyRim);
-
-    // Pilot optic inside the canopy.
-    var optic = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 10), cyanGlowMat);
-    optic.scale.set(1, 1, 0.6);
-    optic.position.set(0.34, 0.26, 0.055);
-    body.add(optic);
-
-    // Furnace cage + glowing core under the belly.
-    var furnace = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.24, 14), ironMat);
-    furnace.position.set(-0.08, -0.36, 0);
-    body.add(furnace);
-    var core = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 10), amberGlowMat);
-    core.position.set(-0.08, -0.39, 0);
-    body.add(core);
-    var coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: softGlowTex, color: 0xffa63d, transparent: true, opacity: 0.75,
-      depthWrite: false, blending: THREE.AdditiveBlending
-    }));
-    coreGlow.scale.set(1.15, 1.15, 1);
-    coreGlow.position.copy(core.position);
-    body.add(coreGlow);
-
-    // Side propeller nacelles with protective rings.
-    var props = [];
-    [-1, 1].forEach(function (side) {
-      var pod = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.11, 0.34, 14), copperMat);
-      pod.rotation.x = Math.PI / 2;
-      pod.position.set(-0.08, 0.12, side * 0.50);
-      body.add(pod);
-      var arm = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.055, 0.07), darkBrassMat);
-      arm.position.set(-0.08, 0.12, side * 0.33);
-      body.add(arm);
-      var guard = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.022, 6, 22), brassMat);
-      guard.position.set(-0.08, 0.12, side * 0.50);
-      body.add(guard);
-      var prop = new THREE.Group();
-      prop.position.set(-0.08, 0.12, side * 0.50);
-      for (var b = 0; b < 3; b++) {
-        var blade = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.34, 0.018), darkBrassMat);
-        blade.position.y = 0.11;
-        blade.rotation.z = b * Math.PI * 2 / 3;
-        prop.add(blade);
-      }
-      var hub = new THREE.Mesh(new THREE.SphereGeometry(0.055, 10, 8), brassMat);
-      prop.add(hub);
-      body.add(prop);
-      props.push(prop);
-    });
-
-    // Tail fins + rudder.
-    var fin = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.22, 0.045), copperMat);
-    fin.position.set(-0.58, 0.20, 0);
-    fin.rotation.z = 0.22;
-    body.add(fin);
-    var rudder = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.34, 0.035), brassMat);
-    rudder.position.set(-0.66, 0.02, 0);
-    rudder.rotation.z = 0.18;
-    body.add(rudder);
-
-    // Chimney + steam pipe.
-    var chimney = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.065, 0.22, 10), ironMat);
-    chimney.position.set(-0.34, 0.32, 0.16);
-    chimney.rotation.z = -0.25;
-    body.add(chimney);
-    var chimneyLip = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.018, 6, 14), brassMat);
-    chimneyLip.rotation.x = Math.PI / 2;
-    chimneyLip.position.set(-0.30, 0.43, 0.16);
-    body.add(chimneyLip);
-
-    // Antenna with a small beacon.
-    var antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.014, 0.42, 6), darkBrassMat);
-    antenna.position.set(-0.20, 0.48, -0.08);
-    antenna.rotation.z = -0.16;
-    body.add(antenna);
-    var beacon = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 8), cyanGlowMat);
-    beacon.position.set(-0.235, 0.69, -0.08);
-    body.add(beacon);
-    var beaconGlow = new THREE.Sprite(cyanGlowSprite);
-    beaconGlow.scale.set(0.45, 0.45, 1);
-    beaconGlow.position.copy(beacon.position);
-    body.add(beaconGlow);
-
-    // Little portholes on the visible side.
-    for (var i = 0; i < 3; i++) {
-      var port = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.035, 12), amberGlowMat);
-      port.rotation.x = Math.PI / 2;
-      port.position.set(-0.28 + i * 0.20, -0.02, 0.425);
-      body.add(port);
-      var portRing = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.012, 6, 14), darkBrassMat);
-      portRing.position.copy(port.position);
-      body.add(portRing);
-    }
-
-    // Side gear ornament.
-    var cog = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.024, 6, 10), trimMat);
-    cog.position.set(-0.34, -0.08, 0.42);
-    body.add(cog);
-
-    // Engine light.
-    var light = new THREE.PointLight(0xff9a3c, 1.0, 4.5, 2);
-    light.position.set(-0.08, -0.30, 0);
-    body.add(light);
-
-    root.userData = {
-      body: body, props: props, core: core, coreGlow: coreGlow,
-      beacon: beacon, light: light, baseY: 0
-    };
-    return root;
-  }
-
-  var player = buildDrone();
+  // The drone itself comes from drone.glb (applyDroneModel): this rig only owns
+  // the transform the model hangs from.
+  var player = new THREE.Group();
+  var playerBody = new THREE.Group();
+  player.add(playerBody);
+  player.userData = { body: playerBody, props: [], beacon: null, light: null, baseY: 0 };
   var playerBody = player.userData.body;
   var playerHalo = new THREE.Sprite(new THREE.SpriteMaterial({
     map: softGlowTex, color: 0xffb45f, transparent: true, opacity: 0.34,
@@ -1170,8 +932,6 @@
     player.userData = {
       body: playerBody,
       props: ['PropL', 'PropR'].map(function (n) { return model.getObjectByName(n); }).filter(Boolean),
-      core: model.getObjectByName('Core') || null,
-      coreGlow: null,
       beacon: model.getObjectByName('Beacon'),
       light: light,
       baseY: 0
@@ -1189,125 +949,32 @@
   scene.add(shadow);
 
   // -------------------------------------------------------------- ENEMIES --
-  var enemyGeo = {
-    sphere: new THREE.SphereGeometry(0.38, 18, 14),
-    band: new THREE.TorusGeometry(0.40, 0.055, 8, 22),
-    ring: new THREE.TorusGeometry(0.50, 0.028, 6, 10),
-    eyePort: new THREE.CylinderGeometry(0.14, 0.17, 0.13, 14),
-    eye: new THREE.SphereGeometry(0.105, 12, 10),
-    zeppelin: new THREE.SphereGeometry(0.60, 20, 16),
-    zeppBand: new THREE.TorusGeometry(0.30, 0.024, 6, 22),
-    gondola: new THREE.BoxGeometry(0.44, 0.19, 0.22),
-    blade: new THREE.BoxGeometry(0.035, 0.28, 0.012),
-    lantern: new THREE.SphereGeometry(0.075, 10, 8),
-    hub: new THREE.SphereGeometry(0.055, 10, 8)
-  };
-
   function buildSprocket() {
-    if (MODELS) {
-      var mg = new THREE.Group();
-      var model = MODELS.sprocket.clone(true);
-      var eyePos = nodePos(model, 'Eye');
-      mg.add(model);
-      var eyeGlow = new THREE.Sprite(redGlowSprite);
-      eyeGlow.scale.set(1.2, 1.2, 1);
-      eyeGlow.position.copy(eyePos);
-      mg.add(eyeGlow);
-      mg.userData.ring = model.getObjectByName('Ring');
-      mg.userData.ringAxis = 'y';
-      mg.userData.cog = model.getObjectByName('Cog');
-      return mg;
-    }
-    var g = new THREE.Group();
-    var core = new THREE.Mesh(enemyGeo.sphere, ironMat);
-    core.scale.set(1.0, 0.94, 0.94);
-    g.add(core);
-
-    var band = new THREE.Mesh(enemyGeo.band, brassMat);
-    band.rotation.x = Math.PI / 2;
-    g.add(band);
-
-    var ring = new THREE.Mesh(enemyGeo.ring, copperMat);
-    ring.rotation.x = Math.PI / 2;
-    ring.userData.spin = true;
-    g.add(ring);
-
-    var eyePort = new THREE.Mesh(enemyGeo.eyePort, darkBrassMat);
-    eyePort.rotation.z = Math.PI / 2;
-    eyePort.position.x = -0.38;
-    g.add(eyePort);
-    var eye = new THREE.Mesh(enemyGeo.eye, redGlowMat);
-    eye.scale.x = 0.62;
-    eye.position.x = -0.45;
-    g.add(eye);
-
-    var glow = new THREE.Sprite(redGlowSprite);
-    glow.scale.set(1.3, 1.3, 1);
-    glow.position.x = -0.45;
-    g.add(glow);
-
-    var cog = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.032, 6, 8), trimMat);
-    cog.position.set(0.05, 0.33, 0);
-    cog.userData.spin = true;
-    g.add(cog);
-
-    g.userData.ring = ring;
-    return g;
+    var mg = new THREE.Group();
+    var model = MODELS.sprocket.clone(true);
+    var eyePos = nodePos(model, 'Eye');
+    mg.add(model);
+    var eyeGlow = new THREE.Sprite(redGlowSprite);
+    eyeGlow.scale.set(1.2, 1.2, 1);
+    eyeGlow.position.copy(eyePos);
+    mg.add(eyeGlow);
+    mg.userData.ring = model.getObjectByName('Ring');
+    mg.userData.ringAxis = 'y';
+    mg.userData.cog = model.getObjectByName('Cog');
+    return mg;
   }
 
   function buildZeppelin() {
-    if (MODELS) {
-      var mg = new THREE.Group();
-      var model = MODELS.zeppelin.clone(true);
-      var lampPos = nodePos(model, 'Lantern');
-      mg.add(model);
-      var lampGlow = new THREE.Sprite(redGlowSprite);
-      lampGlow.scale.set(1.4, 1.4, 1);
-      lampGlow.position.copy(lampPos);
-      mg.add(lampGlow);
-      mg.userData.prop = model.getObjectByName('Prop') || new THREE.Object3D();
-      return mg;
-    }
-    var g = new THREE.Group();
-    var body = new THREE.Mesh(enemyGeo.zeppelin, copperMat);
-    body.scale.set(1.65, 0.54, 0.54);
-    g.add(body);
-
-    for (var i = 0; i < 3; i++) {
-      var b = new THREE.Mesh(enemyGeo.zeppBand, brassMat);
-      b.rotation.y = Math.PI / 2;
-      b.position.x = -0.55 + i * 0.55;
-      g.add(b);
-    }
-
-    var gondola = new THREE.Mesh(enemyGeo.gondola, darkBrassMat);
-    gondola.position.set(-0.02, -0.38, 0);
-    g.add(gondola);
-    var skid = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.035, 0.035), brassMat);
-    skid.position.set(-0.02, -0.49, 0);
-    g.add(skid);
-
-    var lantern = new THREE.Mesh(enemyGeo.lantern, redGlowMat);
-    lantern.position.set(-0.94, 0.02, 0);
-    g.add(lantern);
-    var lglow = new THREE.Sprite(redGlowSprite);
-    lglow.scale.set(1.5, 1.5, 1);
-    lglow.position.copy(lantern.position);
-    g.add(lglow);
-
-    var prop = new THREE.Group();
-    prop.position.set(0.97, 0.02, 0);
-    for (var j = 0; j < 3; j++) {
-      var blade = new THREE.Mesh(enemyGeo.blade, darkBrassMat);
-      blade.position.y = 0.12;
-      blade.rotation.z = j * Math.PI * 2 / 3;
-      prop.add(blade);
-    }
-    var hub = new THREE.Mesh(enemyGeo.hub, brassMat);
-    prop.add(hub);
-    g.add(prop);
-    g.userData.prop = prop;
-    return g;
+    var mg = new THREE.Group();
+    var model = MODELS.zeppelin.clone(true);
+    var lampPos = nodePos(model, 'Lantern');
+    mg.add(model);
+    var lampGlow = new THREE.Sprite(redGlowSprite);
+    lampGlow.scale.set(1.4, 1.4, 1);
+    lampGlow.position.copy(lampPos);
+    mg.add(lampGlow);
+    mg.userData.prop = model.getObjectByName('Prop') || new THREE.Object3D();
+    return mg;
   }
 
   // --------------------------------------------------------------- GEARS ---
@@ -1342,8 +1009,6 @@
   var JUMP_V = 12.0;
   var COYOTE = 0.11;
   var TIER_TIME = 20;
-  var PLATFORM_H = 1.35;
-  var PLATFORM_D = 3.1;
 
   var state = 'attract'; // attract | playing | dying | finished
   var p = { x: START_X, y: START_TOP, vy: 0, grounded: true, coyote: 0, buffer: 0 };
@@ -1379,34 +1044,15 @@
   }
 
   // --------------------------------------------------------- WORLD BUILD ---
+  // The deck is built from platform.glb, merged into one mesh per material at
+  // the requested width.
   function makePlatformVisual(x, y, w) {
     var tilt = (Math.random() - 0.5) * 0.05;
-    if (PLATFORM_KIT) {
-      var deckMesh = buildPlatformModel(w);
-      deckMesh.position.set(x, y, 0);
-      deckMesh.rotation.z = tilt;
-      scene.add(deckMesh);
-      return { mesh: deckMesh, tip: null, mist: null, model: true };
-    }
-    var mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(w, PLATFORM_H, PLATFORM_D),
-      makePlatformMaterial(w, PLATFORM_H, PLATFORM_D)
-    );
-    mesh.position.set(x, y - PLATFORM_H / 2, 0);
-    mesh.rotation.z = tilt;
-    scene.add(mesh);
-
-    var tip = new THREE.Mesh(new THREE.BoxGeometry(w * 0.96, 0.07, 0.11), trimMat);
-    tip.position.set(x, y + 0.03, PLATFORM_D / 2 - 0.05);
-    tip.rotation.z = tilt;
-    scene.add(tip);
-
-    var mist = new THREE.Mesh(mistGeometry, mistMaterial);
-    mist.scale.set(w, PLATFORM_D, 1);
-    mist.rotation.x = -Math.PI / 2;
-    mist.position.set(x, y + 0.07, 0);
-    scene.add(mist);
-    return { mesh: mesh, tip: tip, mist: mist, model: false };
+    var deckMesh = buildPlatformModel(w);
+    deckMesh.position.set(x, y, 0);
+    deckMesh.rotation.z = tilt;
+    scene.add(deckMesh);
+    return { mesh: deckMesh };
   }
 
   function addStartPlatform() {
@@ -1414,7 +1060,7 @@
     var vis = makePlatformVisual(-1, START_TOP, w);
     var pl = {
       x: -1, y: START_TOP, hw: w / 2, w: w,
-      mesh: vis.mesh, tip: vis.tip, mist: vis.mist, model: vis.model, puffs: []
+      mesh: vis.mesh, puffs: []
     };
     // Soft cloud fringe at the edges of the start pad.
     addPlatformPuffs(pl, true);
@@ -1430,10 +1076,8 @@
       var side = (i % 2 === 0) ? 1 : -1;
       var s = 1.8 + Math.random() * 1.9;
       mesh.scale.set(s * 1.5, s * 0.68, 1);
-      // Sky-decks float on the clouds; the old cloud road was wrapped by them.
-      var py = pl.model
-        ? pl.y - (side > 0 ? 1.25 : 0.7) - Math.random() * 0.4
-        : pl.y + 0.22 + Math.random() * 0.35;
+      // Sky-decks float on the clouds.
+      var py = pl.y - (side > 0 ? 1.25 : 0.7) - Math.random() * 0.4;
       mesh.position.set(
         pl.x + (Math.random() - 0.5) * pl.w * 0.95,
         py,
@@ -1477,7 +1121,7 @@
     var vis = makePlatformVisual(x, y, w);
     var pl = {
       x: x, y: y, hw: w / 2, w: w,
-      mesh: vis.mesh, tip: vis.tip, mist: vis.mist, model: vis.model, puffs: []
+      mesh: vis.mesh, puffs: []
     };
     addPlatformPuffs(pl, isRest);
     platforms.push(pl);
@@ -1546,17 +1190,7 @@
 
   function disposePlatform(pl) {
     scene.remove(pl.mesh);
-    if (pl.model) {
-      pl.mesh.children.forEach(function (c) { c.geometry.dispose(); });
-    } else {
-      pl.mesh.geometry.dispose();
-      pl.mesh.material.dispose();
-    }
-    if (pl.tip) {
-      scene.remove(pl.tip);
-      pl.tip.geometry.dispose();
-    }
-    if (pl.mist) scene.remove(pl.mist);
+    pl.mesh.children.forEach(function (c) { c.geometry.dispose(); });
     pl.puffs.forEach(function (puff) { scene.remove(puff); });
   }
 
@@ -1572,6 +1206,9 @@
       if (pt.mesh.material) pt.mesh.material.dispose();
     });
     particles = [];
+    // The world is built from the platform kit: nothing to place until it is
+    // there (onModelsReady rebuilds once the models are loaded).
+    if (!PLATFORM_KIT) return;
     gen.nextX = 14;
     gen.lastY = START_TOP;
     gen.count = 0;
@@ -2171,9 +1808,7 @@
       var spin = (state === 'playing' ? 22 + speed * 2.2 : 12) * dt;
       player.userData.props.forEach(function (prop) { prop.rotation.z += spin; });
       var pulse = 0.7 + 0.3 * Math.sin(t * 7.5);
-      if (player.userData.core) player.userData.core.scale.setScalar(0.85 + pulse * 0.28);
-      if (player.userData.coreGlow) player.userData.coreGlow.scale.set(1.0 + pulse * 0.45, 1.0 + pulse * 0.45, 1);
-      player.userData.light.intensity = 0.7 + pulse * 0.5;
+      if (player.userData.light) player.userData.light.intensity = 0.7 + pulse * 0.5;
       playerHalo.material.opacity = (0.20 + pulse * 0.14) * haloStrength;
 
       // Steam trail.
@@ -2327,8 +1962,7 @@
   // ---------------------------------------------------------------- INIT ----
   reset();
   clearWorld();
-  // The metals need their sky-matched PMREM environment before the first frame
-  // (the procedural drone is the fallback when the Blender models fail).
+  // The metals need their sky-matched PMREM environment before the first frame.
   try { scene.environment = buildEnvironment(); } catch (e) { /* metals stay darker */ }
   loadModels();
   refreshHud(true);
