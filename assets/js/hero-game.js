@@ -700,7 +700,7 @@
   }
 
   function loadModels() {
-    if (!THREE.GLTFLoader) return;
+    if (!THREE.GLTFLoader) { revealGame(); return; }
     var loader = new THREE.GLTFLoader();
     var names = ['drone', 'sprocket', 'zeppelin', 'platform'];
     var loaded = {}, left = names.length, failed = false;
@@ -710,19 +710,27 @@
         prepModel(gltf.scene);
         loaded[name] = gltf.scene;
         if (--left === 0) onModelsReady(loaded);
-      }, undefined, function () { failed = true; });
+      }, undefined, function () {
+        // Only a load error falls back to the procedural meshes.
+        if (!failed) { failed = true; revealGame(); }
+      });
     });
+  }
+
+  function revealGame() {
+    hero.classList.remove('is-loading');
   }
 
   function onModelsReady(loaded) {
     var kit = buildPlatformKit(loaded.platform);
-    if (!kit) return;
+    if (!kit) { revealGame(); return; }
     try { scene.environment = buildEnvironment(); } catch (e) { /* metals just look darker */ }
     PLATFORM_KIT = kit;
     MODELS = loaded;
     applyDroneModel(loaded.drone);
     // Swap the decor in place unless a run is in progress.
     if (state === 'attract' || state === 'finished') clearWorld();
+    revealGame();
   }
 
   // ------------------------------------------------------------- PLAYER ----
@@ -1610,6 +1618,7 @@
   }
 
   function start() {
+    if (hero.classList.contains('is-loading')) return;
     FX.ensure();
     reset();
     clearWorld();

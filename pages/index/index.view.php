@@ -77,7 +77,7 @@
 })();
 </script>
 
-<div class="ds-hero" id="hero-stage">
+<div class="ds-hero is-loading" id="hero-stage">
   <canvas id="hero-game" class="ds-hero__game" aria-hidden="true"></canvas>
   <div class="ds-hero__scrim" aria-hidden="true"></div>
   <div class="ds-hero__vignette" aria-hidden="true"></div>

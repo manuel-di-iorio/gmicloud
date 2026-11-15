@@ -240,6 +240,18 @@
   z-index: 0;
 }
 
+/* Game layers stay hidden until the Blender models have loaded. */
+.ds-hero.is-loading .ds-hero__game,
+.ds-hero.is-loading .ds-hero__hint,
+.ds-hero.is-loading .ds-hero__best {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ds-hero__game {
+  transition: opacity 0.5s ease;
+}
+
 .ds-hero__scrim {
   position: absolute;
   inset: 0;
