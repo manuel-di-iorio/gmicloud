@@ -1327,11 +1327,11 @@
     if (!early && gen.count > 6 && runT > 5 && w >= 4.2 && Math.random() < Math.min(0.78, 0.10 + d * 0.62)) {
       var kind = Math.random() < 0.30 + d * 0.12 ? 'zeppelin' : 'sprocket';
       // Sprockets (ground-level) need wider platforms to be jumpable.
-      if (kind === 'sprocket' && w < 5.2) kind = 'zeppelin';
+      if (kind === 'sprocket' && w < 6.0) kind = 'zeppelin';
       spawnEnemy(x, y, w, kind, d);
-      if (d > 0.62 && Math.random() < 0.18 && w >= 6.0) {
+      if (d > 0.62 && Math.random() < 0.18 && w >= 7.0) {
         var kind2 = Math.random() < 0.5 ? 'sprocket' : 'zeppelin';
-        if (kind2 === 'sprocket' && w < 5.2) kind2 = 'zeppelin';
+        if (kind2 === 'sprocket' && w < 6.0) kind2 = 'zeppelin';
         spawnEnemy(x, y, w, kind2, d);
       }
     }
