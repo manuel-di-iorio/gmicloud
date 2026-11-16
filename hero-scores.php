@@ -190,7 +190,7 @@ try {
     "best"     => $bestScore,
     "rank"     => $rank,
     "maxScore" => $maxScore,
-    "scores"   => hero_scores_list(5),
+    "scores"   => hero_scores_list(10),
   ]);
 } catch (Throwable $e) {
   error_log("[hero-scores] " . $e->getMessage());

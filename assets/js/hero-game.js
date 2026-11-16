@@ -1392,7 +1392,7 @@
   }
   function fetchLeaderboard() {
     if (!leaderboardBody || typeof fetch !== 'function') return;
-    fetch(scoresUrl + '?limit=5', {
+    fetch(scoresUrl + '?limit=10', {
       headers: { 'Accept': 'application/json' },
       credentials: 'same-origin'
     }).then(function (res) { return res.json(); })
